@@ -3,7 +3,6 @@ const usersServices = require("../services/usersServices.js");
 const companyNamePattern = /^[A-Za-z0-9&-]{3,20}$/;
 const passwordPattern =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-const usersServices = require("../services/usersServices.js");
 
 const createUser = async (req, res) => {
   try {
