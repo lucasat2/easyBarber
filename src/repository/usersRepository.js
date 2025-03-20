@@ -13,7 +13,7 @@ const insertNewUser = async (
     const isEmailRegisteredQuery = "SELECT * FROM users WHERE email = $1";
 
     const insertUserQuery =
-      "INSERT INTO users (name, surname, companyName, email, password) VALUES ($1, $2, $3, $4, $5)";
+      "INSERT INTO users (name, surname, company_name, email, password) VALUES ($1, $2, $3, $4, $5)";
 
     client = await pool.connect();
 
