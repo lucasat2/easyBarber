@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadastro EasyBarber</title>
+    <link rel="stylesheet" href="../css/signUp.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="form-container">
+        <div class="logo">
+          <img src="../assets/signUp/logo.jpeg" alt="Logo EasyBarber" />
+        </div>
+
+        <div class="form-box">
+          <h2>Faça o seu cadastro</h2>
+
+          <form>
+            <div class="input-row">
+              <input type="text" id="nome" placeholder="Nome" />
+              <input type="text" id="sobrenome" placeholder="Sobrenome" />
+            </div>
+
+            <input type="text" id="empresa" placeholder="Nome da Empresa" />
+            <input type="email" id="email" placeholder="Email" />
+
+            <div class="password-field">
+              <input type="password" id="senha" placeholder="Senha" />
+              <span class="toggle-password"></span>
+            </div>
+
+            <button type="submit" class="cadastro-btn">Cadastre-se</button>
+
+            <p class="login-link">
+              Já tem uma conta?
+              <a href="/">Entre na sua conta</a>
+            </p>
+          </form>
+        </div>
+      </div>
+
+      <div class="image-container"></div>
+    </div>
+    <script src="../script/siginUp.js"></script>
+  </body>
+
+</html>
