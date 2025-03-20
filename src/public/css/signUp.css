@@ -23,79 +23,58 @@ body {
   background-color: #fff;
 }
 
-.left-side {
-  flex: 1;
-  background-color: #333;
+.form-container {
+  width: 50%;
+  background: white;
   position: relative;
-  overflow: hidden;
-}
-
-.barber-pole {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 70%;
-  /* Aumentando a transparência (reduzindo a opacidade) */
-}
-
-.right-side {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  position: relative;
-  justify-content: center;
   align-items: center;
 }
 
-.logo-container {
+/* Repositioned logo higher and more to the left */
+.logo {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 10px;
+  left: 15px;
   z-index: 2;
 }
 
-.logo {
-  width: 150px;
-  height: 120px;
-  margin-top: -30px;
-  object-fit: cover;
-  margin-right: -30px;
-  margin-left: -30px;
-
-
+.logo img {
+  width: 135px;
+  /* Reduced size for better positioning */
+  height: auto;
+  object-fit: contain;
+  margin-top: -25px;
+  margin-left: -20px;
 }
 
-.login-container {
+.form-box {
   width: 350px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  background: #DEE33E;
   padding: 30px;
-  background-color: #DEE33E;
   border-radius: 15px;
-  margin: 0;
+  margin-top: 120px;
+  /* Increased top margin to create more space below logo */
 }
 
-h1 {
+h2 {
   font-size: 22px;
   margin-bottom: 25px;
   color: #333;
   text-align: center;
 }
 
-form {
-  width: 100%;
-}
-
-.input-group {
-  position: relative;
-  margin-bottom: 15px;
+.input-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 input {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
+  margin-bottom: 10px;
   border: none;
   border-radius: 5px;
   background-color: #fff;
@@ -103,7 +82,20 @@ input {
   outline: none;
 }
 
-.password-toggle {
+input::placeholder {
+  color: #666;
+}
+
+input:focus {
+  outline: none;
+}
+
+.password-field {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.toggle-password {
   position: absolute;
   right: 15px;
   top: 50%;
@@ -112,18 +104,7 @@ input {
   color: #777;
 }
 
-.forgot-password {
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-.forgot-password a {
-  color: #333;
-  text-decoration: none;
-  font-size: 12px;
-}
-
-.login-button {
+.cadastro-btn {
   width: 100%;
   padding: 12px;
   background-color: #a3a31a;
@@ -136,20 +117,32 @@ input {
   margin-bottom: 15px;
 }
 
-.login-button:hover {
+.cadastro-btn:hover {
   background-color: #8a8a15;
 }
 
-.register-link {
+.login-link {
   text-align: center;
   font-size: 12px;
   color: #333;
 }
 
-.register-link a {
+.login-link a {
   color: #333;
   text-decoration: none;
   font-weight: bold;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+.image-container {
+  width: 50%;
+  background-image: url('https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80');
+  background-size: cover;
+  background-position: center;
+  opacity: 60%;
 }
 
 @media (max-width: 768px) {
@@ -159,17 +152,30 @@ input {
     height: auto;
   }
 
-  .left-side {
+  .image-container {
     display: none;
   }
 
-  .right-side {
+  .form-container {
     width: 100%;
   }
 
-  .login-container {
+  .logo {
+    position: relative;
+    top: 20px;
+    left: 0;
+    text-align: center;
+    width: 100%;
+  }
+
+  .form-box {
     width: 90%;
-    margin: 10px auto;
+    margin: 60px auto 10px auto;
     padding: 20px;
+  }
+
+  .input-row {
+    flex-direction: column;
+    gap: 0;
   }
 }
