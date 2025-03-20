@@ -1,5 +1,5 @@
 document.getElementById("logoutButton").addEventListener("click", async () => {
-  const response = await fetch("http://localhost:3000/api/logout", {
+  const response = await fetch("/api/logout", {
     method: "POST",
     credentials: "include",
   });
