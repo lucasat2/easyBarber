@@ -28,6 +28,22 @@ const createUser = async (name, surname, companyName, email, password) => {
   }
 };
 
+const updateUser = async (userId, userData) => {
+  try {
+    // Verifica se o usuário existe
+    const existingUser = await userRepository.getUserById(userId);
+    if (!existingUser) {
+      return null;
+    }
+
+    // Atualiza os dados do usuário
+    const updatedUser = await userRepository.updateUser(userId, userData);
+    return updatedUser;
+  } catch (error) {
+    throw new Error('Erro ao atualizar usuário: ' + error.message);
+  }
+};
+
 module.exports = {
-  createUser,
+  createUser,updateUser
 };
