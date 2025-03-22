@@ -1,6 +1,6 @@
 import onNavigate from "../event.js";
 
-export default function login(){
+export default function login() {
   const div = document.createElement("div");
   div.innerHTML = `
       <div class="container">
@@ -38,47 +38,48 @@ export default function login(){
 
   const form = div.querySelector("#loginForm");
   form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+    e.preventDefault();
 
-      const email = div.querySelector("#email").value;
-      const password = div.querySelector("#senha").value;
+    const email = div.querySelector("#email").value;
+    const password = div.querySelector("#senha").value;
 
-      const response = await fetch("/api/login", {
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-      });
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (response.ok) {
-          console.log("Login bem-sucedido:", data);
-          window.location.pathname = "acesso";
-      } else {
-          console.error("Erro no login:", data);
-          alert("Email ou senha incorretos!");
-      }
+    if (response.ok) {
+      console.log("Login bem-sucedido:", data);
+      const event = onNavigate("/acess");
+      document.dispatchEvent(event);
+    } else {
+      console.error("Erro no login:", data);
+      alert("Email ou senha incorretos!");
+    }
   });
 
   div.querySelector("#goToSignUp").addEventListener("click", (e) => {
-      e.preventDefault();
-      const event = onNavigate("/signUp");
-      window.dispatchEvent(event);
+    e.preventDefault();
+    const event = onNavigate("/signUp");
+    document.dispatchEvent(event);
   });
 
   const passwordToggle = div.querySelector(".password-toggle");
   const passwordInput = div.querySelector("#senha");
 
   passwordToggle.addEventListener("click", () => {
-      if (passwordInput.type === "password") {
-          passwordInput.type = "text";
-          passwordToggle.innerHTML = `<i class="fas fa-eye"></i>`;
-      } else {
-          passwordInput.type = "password";
-          passwordToggle.innerHTML = `<i class="fas fa-eye-slash"></i>`;
-      }
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+      passwordToggle.innerHTML = `<i class="fas fa-eye"></i>`;
+    } else {
+      passwordInput.type = "password";
+      passwordToggle.innerHTML = `<i class="fas fa-eye-slash"></i>`;
+    }
   });
   return div;
 }

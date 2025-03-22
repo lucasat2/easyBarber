@@ -1,49 +1,34 @@
 import router from "./router.js";
 import onNavigate from "./event.js";
 
-const root = document.getElementById("root");
+const objectRouter = router();
 
-const link = document.createElement("link");
-link.id = "dynamic-css";
-link.rel = "stylesheet";
-document.head.appendChild(link);
+const link = document.getElementById("dynamic-css");
 
-function render(path) {
-    console.log("Renderizando path:", path);
-    const page = router.getPage(path);
-    console.log(page);
-    
-        root.innerHTML = "";
-        if (page) {
-        root.appendChild(page);
-    
-        if (path === "/" || path === "/login") {
-            link.href = "./css/login.css";
-        } else if (path === "/signUp") {
-            link.href = "./css/signUp.css";
-        } else if (path === "/acesso") {
-            link.href = "./css/acesso.css";
-        } else {
-            console.warn("Sem CSS definido para essa rota:", path);
-            link.href = "";
-        }
-    
-        if (window.location.pathname !== path) {
-            history.pushState({}, "", path);
-        }
-        } else {
-        root.innerHTML = "<h1>Página não encontrada</h1>";
-        }
-    }
-    
+const actualPage = document.getElementById("root");
 
-window.addEventListener("onstatechange", (e) => {
-    const path = e.detail.path;
-    render(path);
+document.addEventListener("onstatechange", function (event) {
+  const pathPage = event.detail.path;
+
+  const page = objectRouter.getPage(pathPage)?.();
+
+  history.pushState({}, "", pathPage);
+
+  actualPage.innerHTML = "";
+
+  actualPage.appendChild(page);
+
+  if (pathPage === "/") {
+    link.href = "./css/login.css";
+  } else if (pathPage === "/signUp") {
+    link.href = "./css/signUp.css";
+  } else if (pathPage === "/acess") {
+    link.href = "./css/acess.css";
+  } else {
+    console.warn("Sem CSS definido para essa rota:", pathPage);
+    link.href = "";
+  }
 });
 
-window.addEventListener("popstate", () => {
-    render(window.location.pathname);
-});
-
-render(window.location.pathname);
+actualPage.appendChild(objectRouter.getPage("/")?.());
+link.href = "./css/login.css";

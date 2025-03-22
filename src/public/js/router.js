@@ -1,23 +1,17 @@
 import login from "./pages/login.js";
 import signUp from "./pages/signUp.js";
-import acesso from "./pages/acesso.js";
+import acess from "./pages/acess.js";
 
-const routes = {
+function router() {
+  const routes = {
     "/": login,
-    "/login": login,
     "/signUp": signUp,
-    "/acesso": acesso,
+    "/acess": acess,
 
-    getPage(path) {
-        console.log("Buscando rota:", path);
-    
-        if (this[path]) {
-            return this[path]();
-        } 
-        console.error(`Rota não encontrada: ${path}`);
-        return null
-    }
-    
-};
-
-export default routes;
+    getPage: function (path) {
+      return routes[path];
+    },
+  };
+  return routes;
+}
+export default router;
