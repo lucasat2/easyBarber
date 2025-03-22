@@ -1,17 +1,13 @@
-import { createAppointmentsCard } from "./appointmentsCard.js";
+import { createSchedulingTimelineCard } from "./schedulingTimelineCard.js";
 
-function createAppointmentsDashboard() {
-  const appointmentsDashboard = document.createElement("div");
-  appointmentsDashboard.style.width = "700px";
-  appointmentsDashboard.style.display = "grid";
-  appointmentsDashboard.style.fontFamily = `"Fredoka", sans-serif`;
-  appointmentsDashboard.style.gridTemplateColumns = "repeat(7, 1fr)";
-  appointmentsDashboard.style.gap = "15px";
+function createSchedulingTimelineDiv() {
+  const schedulingTimelineDiv = document.createElement("div");
+  schedulingTimelineDiv.classList.add("schedulingTimelineDiv");
 
   const days = ["D", "S", "T", "Q", "Q", "S", "S"];
 
   for (let i = 0; i < days.length; i++) {
-    const appointmentsCard = createAppointmentsCard(
+    const schedulingTimelineDivHeader = createSchedulingTimelineCard(
       false,
       "",
       days[i],
@@ -19,7 +15,8 @@ function createAppointmentsDashboard() {
       "30px",
       "80px"
     );
-    appointmentsDashboard.appendChild(appointmentsCard);
+    schedulingTimelineDivHeader.classList.add("schedulingTimelineDivHeader");
+    schedulingTimelineDiv.appendChild(schedulingTimelineDivHeader);
   }
 
   const today = new Date();
@@ -37,7 +34,7 @@ function createAppointmentsDashboard() {
   const monthStartDay = monthStartDate.getUTCDay();
 
   for (let j = 0; j < monthStartDay; j++) {
-    const appointmentsCard = createAppointmentsCard(
+    const schedulingTimelineCard = createSchedulingTimelineCard(
       false,
       "",
       "",
@@ -45,13 +42,13 @@ function createAppointmentsDashboard() {
       "80px",
       "80px"
     );
-    appointmentsDashboard.appendChild(appointmentsCard);
+    schedulingTimelineDiv.appendChild(schedulingTimelineCard);
   }
 
   for (let k = 0; k < getDaysInMonth; k++) {
     const date = new Date(currentYear, currentMonth, k + 1);
 
-    const appointmentsCard = createAppointmentsCard(
+    const schedulingTimelineCard = createSchedulingTimelineCard(
       true,
       date.toISOString(),
       k + 1,
@@ -59,10 +56,11 @@ function createAppointmentsDashboard() {
       "80px",
       "80px"
     );
-    appointmentsDashboard.appendChild(appointmentsCard);
+    schedulingTimelineCard.classList.add("schedulingTimelineCard");
+    schedulingTimelineDiv.appendChild(schedulingTimelineCard);
   }
 
-  return appointmentsDashboard;
+  return schedulingTimelineDiv;
 }
 
-export { createAppointmentsDashboard };
+export { createSchedulingTimelineDiv };
