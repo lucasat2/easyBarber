@@ -52,7 +52,7 @@ export default function login() {
 
     if (response.ok) {
       console.log("Login bem-sucedido:", data);
-      const event = onNavigate("/acess");
+      const event = onNavigate("/");
       document.dispatchEvent(event);
     } else {
       console.error("Erro no login:", data);
