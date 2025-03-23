@@ -5,7 +5,7 @@ const objectRouter = router();
 
 const link = document.getElementById("dynamic-css");
 
-const actualPage = document.getElementById("root");
+const currentPage = document.getElementById("root");
 
 document.addEventListener("onstatechange", function (event) {
   const pathPage = event.detail.path;
@@ -14,9 +14,9 @@ document.addEventListener("onstatechange", function (event) {
 
   history.pushState({}, "", pathPage);
 
-  actualPage.innerHTML = "";
+  currentPage.innerHTML = "";
 
-  actualPage.appendChild(page);
+  currentPage.appendChild(page);
 
   if (pathPage === "/") {
     link.href = "./css/login.css";
@@ -30,5 +30,5 @@ document.addEventListener("onstatechange", function (event) {
   }
 });
 
-actualPage.appendChild(objectRouter.getPage("/")?.());
+currentPage.appendChild(objectRouter.getPage("/")?.());
 link.href = "./css/login.css";
