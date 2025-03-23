@@ -17,6 +17,7 @@ import { SchedulingTimelineSelectionContainer } from "./SchedulingTimelineSelect
 
 function InitialSchedulingTimelineSection() {
   const schedulingTimelineSection = document.createElement("div");
+  schedulingTimelineSection.id = "schedulingTimelineSection";
   schedulingTimelineSection.classList.add("initialSchedulingTimelineSection");
 
   const selectElement = SchedulingTimelineSelectionContainer(

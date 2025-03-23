@@ -3,32 +3,7 @@ import { SchedulingTimelineEmployeesCard } from "./SchedulingTimelineEmployeesCa
 import { SchedulingTimelineDateCard } from "./SchedulingTimelineDateCard.js";
 import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
 
-// const test = [
-//   {
-//     name: "Gabriell",
-//   },
-//   {
-//     name: "Bruno",
-//   },
-//   {
-//     name: "Lucas",
-//   },
-//   {
-//     name: "Fabiano",
-//   },
-// ];
-
-function EmployeeScheduleDashboard() {
-  if (document.querySelector(".initialSchedulingTimelineSection")) {
-    const initialSchedulingTimelineSection = document.querySelector(
-      ".initialSchedulingTimelineSection"
-    );
-    initialSchedulingTimelineSection.innerHTML = "";
-    initialSchedulingTimelineSection.classList.remove(
-      "initialSchedulingTimelineSection"
-    );
-  }
-
+function EmployeeScheduleDashboard(employeeName, staff) {
   const employeeSchedulingTimelineSection = document.createElement("div");
   employeeSchedulingTimelineSection.classList.add(
     "employeeSchedulingTimelineSection"
@@ -44,12 +19,12 @@ function EmployeeScheduleDashboard() {
 
   const selectElement = SchedulingTimelineSelectionContainer(
     "Selecione um funcionário",
-    test
+    staff
   );
   employeeSchedulingTimelineHeader.appendChild(selectElement);
 
   const employeeCard = SchedulingTimelineEmployeesCard(
-    "this.value",
+    employeeName,
     "../assets/signUp/logo.jpeg"
   );
   employeeSchedulingTimelineHeader.appendChild(employeeCard);
@@ -89,5 +64,3 @@ function EmployeeScheduleDashboard() {
 }
 
 export { EmployeeScheduleDashboard };
-
-// document.body.appendChild(EmployeeScheduleDashboard());
