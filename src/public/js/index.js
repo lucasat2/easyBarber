@@ -22,9 +22,7 @@ document.addEventListener("onstatechange", function (event) {
     link.href = "./css/login.css";
   } else if (pathPage === "/signUp") {
     link.href = "./css/signUp.css";
-  } else if (pathPage === "/acess") {
-    link.href = "./css/acess.css";
-  } else {
+  }  else {
     console.warn("Sem CSS definido para essa rota:", pathPage);
     link.href = "";
   }
