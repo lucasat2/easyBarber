@@ -1,3 +1,5 @@
+import { EmployeeScheduleDashboard } from "./EmployeeScheduleDashboard.js";
+
 function SchedulingTimelineSelectionContainer(initialOptionText, data) {
   const selectionSection = document.createElement("div");
   selectionSection.classList.add("schedulingTimelineHeaderSelectionSection");
@@ -7,6 +9,25 @@ function SchedulingTimelineSelectionContainer(initialOptionText, data) {
     "schedulingTimelineHeaderSelectionContainer"
   );
   selectionSection.appendChild(selectionContainer);
+
+  selectionContainer.addEventListener("change", function () {
+    const selectValue = this.value;
+
+    const employeeScheduleTimeline = EmployeeScheduleDashboard(
+      selectValue,
+      data
+    );
+
+    const schedulingTimelineSection = document.getElementById(
+      "schedulingTimelineSection"
+    );
+    schedulingTimelineSection.innerHTML = "";
+    schedulingTimelineSection.classList.remove(
+      "initialSchedulingTimelineSection"
+    );
+    schedulingTimelineSection.classList.add("schedulingTimelineSection");
+    schedulingTimelineSection.appendChild(employeeScheduleTimeline);
+  });
 
   const initialOption = document.createElement("option");
   initialOption.innerText = initialOptionText;
