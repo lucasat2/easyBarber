@@ -1,4 +1,4 @@
-function createSchedulingTimelineCard(
+function SchedulingTimelineCard(
   shouldBindDataToDiv,
   date,
   text,
@@ -23,4 +23,4 @@ function createSchedulingTimelineCard(
   return schedulingTimelineCard;
 }
 
-export { createSchedulingTimelineCard };
+export { SchedulingTimelineCard };
