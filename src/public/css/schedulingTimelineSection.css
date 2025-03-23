@@ -4,20 +4,77 @@
   box-sizing: border-box;
 }
 
-.schedulingTimelineHeader {
+.initialSchedulingTimelineSection {
+  width: 70vw;
+  height: 70vh;
+  padding: 15px 50px;
+  border-radius: 5px;
   display: flex;
+  flex-direction: column;
+}
+
+.initialSchedulingTimelineDiv {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
   justify-content: center;
   align-items: center;
-  width: 900px;
+  font-family: "Fredoka", sans-serif;
+  font-size: 50px;
+  color: #9fa324;
+}
+
+.initialSchedulingTimelineImage {
+  background-image: url("../assets/schedulingTimelinePage/initialSchedullingTimelineIcon.svg");
+  width: 100px;
   height: 100px;
-  column-gap: 50px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.employeeSchedulingTimelineSection {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 10px;
+  border-radius: 5px;
+}
+
+.employeeSchedulingTimelineHeader {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 900px;
+  height: 70px;
   font-family: "Fredoka", sans-serif;
   font-size: 16px;
 }
 
+.employeeSchedulingTimelineHeaderManagementButton {
+  font-family: "Fredoka", sans-serif;
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  background-color: #9fa324;
+  cursor: pointer;
+  color: white;
+  transition: all 0.1s ease;
+}
+
+.employeeSchedulingTimelineHeaderManagementButton:hover {
+  color: #9fa324;
+  background-color: white;
+  border: 1px solid #9fa324;
+}
+
 .schedulingTimelineHeaderSelectionSection {
   width: 240px;
-  height: 50px;
+  height: 47px;
   position: relative;
 }
 
@@ -29,19 +86,18 @@
   border: 1px solid #f5f5f5;
   border-radius: 12px;
   font-family: "Fredoka", sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   appearance: none;
+  cursor: pointer;
   transition: all 0.1s ease;
 }
 
 .schedulingTimelineHeaderSelectionContainer:focus {
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid black;
   outline: none;
 }
 
 .schedulingTimelineHeaderSelectionContainer:hover {
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid black;
 }
 
@@ -68,8 +124,8 @@
 }
 
 .schedulingTimelineHeaderEmployeesCardImage {
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -81,29 +137,39 @@
   justify-content: flex-start;
   align-items: center;
   padding-right: 20px;
+  font-size: 14px;
 }
 
 .schedulingTimelineHeaderDateCard {
   display: flex;
   align-items: center;
   column-gap: 10px;
-  width: fit-content;
-  height: 50px;
 }
 
-.schedulingTimelineHeaderCardImageContainer {
-  border: 1px solid black;
-  border-radius: 50px;
-  padding: 7px;
+.schedulingTimelineHeaderDateCardCarousel {
+  display: flex;
 }
 
-.schedulingTimelineHeaderCardImage {
-  width: 35px;
-  height: 35px;
-  background-image: url(../assets/schedulingTimelinePage/calendarIcon.svg);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
+.schedulingTimelineHeaderDateCardCarouselForwardMonth {
+  font-size: 30px;
+  transition: all 0.1s ease;
+  cursor: pointer;
+}
+
+.schedulingTimelineHeaderDateCardCarouselForwardMonth:hover {
+  color: #9fa324;
+  transform: scale(1.1);
+}
+
+.schedulingTimelineHeaderDateCardCarouselPreviousMonth {
+  font-size: 30px;
+  transition: all 0.1s ease;
+  cursor: pointer;
+}
+
+.schedulingTimelineHeaderDateCardCarouselPreviousMonth:hover {
+  color: #9fa324;
+  transform: scale(1.1);
 }
 
 .schedulingTimelineHeaderDateCardText {
@@ -111,41 +177,7 @@
   justify-content: flex-start;
   align-items: center;
   color: #9fa324;
-}
-
-.schedulingTimelineHeaderDateBlocker {
-  display: flex;
-  align-items: center;
-  column-gap: 10px;
-}
-
-.schedulingTimelineHeaderDateBlockerInput {
-  display: none;
-}
-
-.schedulingTimelineHeaderDateBlockerCheckboxIndicator {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #ccc;
-  border-radius: 4px;
-  transition: all 0.1s ease;
-}
-
-.schedulingTimelineHeaderDateBlockerCheckboxIndicator:hover {
-  border-color: #9fa324;
-}
-
-.schedulingTimelineHeaderDateBlockerInput:checked
-  + .schedulingTimelineHeaderDateBlockerCheckboxIndicator {
-  background-color: #9fa324;
-  border-color: #9fa324;
-}
-
-.schedulingTimelineHeaderDateBlockerSpan {
-  display: flex;
-  align-items: center;
-  font-weight: 500;
+  font-size: 15px;
 }
 
 .schedulingTimelineMain {
@@ -169,6 +201,8 @@
   font-family: "Fredoka", sans-serif;
   border-radius: 10px;
   transition: all 0.2s ease;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 .schedulingTimelineMainCard:hover {
