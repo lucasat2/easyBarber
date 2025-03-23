@@ -18,10 +18,7 @@ export default function login() {
                 <input type="email" id="email" placeholder="Email" required>
               </div>
               <div class="input-group">
-                <input type="password" id="senha" placeholder="Senha" required>
-                <span class="password-toggle">
-                  <i class="fas fa-eye-slash"></i>
-                </span>
+                <input type="password" id="password" placeholder="Senha" required>
               </div>
               <div class="forgot-password">
                 <a href="#">Esqueceu sua senha?</a>
@@ -41,7 +38,7 @@ export default function login() {
     e.preventDefault();
 
     const email = div.querySelector("#email").value;
-    const password = div.querySelector("#senha").value;
+    const password = div.querySelector("#password").value;
 
     const response = await fetch("/api/login", {
       method: "POST",
@@ -72,14 +69,5 @@ export default function login() {
   const passwordToggle = div.querySelector(".password-toggle");
   const passwordInput = div.querySelector("#senha");
 
-  passwordToggle.addEventListener("click", () => {
-    if (passwordInput.type === "password") {
-      passwordInput.type = "text";
-      passwordToggle.innerHTML = `<i class="fas fa-eye"></i>`;
-    } else {
-      passwordInput.type = "password";
-      passwordToggle.innerHTML = `<i class="fas fa-eye-slash"></i>`;
-    }
-  });
   return div;
 }

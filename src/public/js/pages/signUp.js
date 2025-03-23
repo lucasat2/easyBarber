@@ -22,7 +22,7 @@ export default function signUp() {
               <input type="email" id="email" placeholder="Email" required />
 
               <div class="password-field">
-                <input type="password" id="senha" placeholder="Senha" required />
+                <input type="password" id="password" placeholder="Senha" required />
                 <span class="toggle-password"><i class="fas fa-eye-slash"></i></span>
               </div>
 
@@ -48,7 +48,7 @@ export default function signUp() {
     const surname = div.querySelector("#sobrenome").value;
     const companyName = div.querySelector("#empresa").value;
     const email = div.querySelector("#email").value;
-    const password = div.querySelector("#senha").value;
+    const password = div.querySelector("#password").value;
 
     const response = await fetch("/api/users", {
       method: "POST",
@@ -75,7 +75,7 @@ export default function signUp() {
   });
 
   const passwordToggle = div.querySelector(".toggle-password");
-  const passwordInput = div.querySelector("#senha");
+  const passwordInput = div.querySelector("#password");
 
   passwordToggle.addEventListener("click", () => {
     if (passwordInput.type === "password") {
