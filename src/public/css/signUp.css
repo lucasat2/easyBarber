@@ -95,15 +95,6 @@ input:focus {
   margin-bottom: 10px;
 }
 
-.toggle-password {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: #777;
-}
-
 .cadastro-btn {
   width: 100%;
   padding: 12px;
