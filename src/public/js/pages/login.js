@@ -5,11 +5,11 @@ export default function login() {
   div.innerHTML = `
       <div class="container">
         <div class="left-side">
-          <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-03-17%20at%2021.37.19%20%281%29-e4mZCWIVSsbAGvnf9H8KyMoHij9gWy.jpeg" alt="Barber Pole" class="barber-pole">
+          <img src="../assets/login/barberPole.jpeg" alt="Barber Pole" class="barber-pole">
         </div>
         <div class="right-side">
           <div class="logo-container">
-            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-03-17%20at%2021.37.18-ZNKibpAq66bklKiRQPEZfic0NYcAv2.jpeg" alt="EasyBarber Logo" class="logo">
+            <img src="../assets/logo.jpeg" alt="EasyBarber Logo" class="logo">
           </div>
           <div class="login-container">
             <h1>Entre na sua conta</h1>
@@ -52,10 +52,12 @@ export default function login() {
 
     if (response.ok) {
       console.log("Login bem-sucedido:", data);
+      //Ao invés de console colocar modal
       const event = onNavigate("/");
       document.dispatchEvent(event);
     } else {
       console.error("Erro no login:", data);
+      //Ao invés de console colocar modal
       alert("Email ou senha incorretos!");
     }
   });
@@ -65,9 +67,6 @@ export default function login() {
     const event = onNavigate("/signUp");
     document.dispatchEvent(event);
   });
-
-  const passwordToggle = div.querySelector(".password-toggle");
-  const passwordInput = div.querySelector("#senha");
 
   return div;
 }

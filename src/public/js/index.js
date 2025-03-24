@@ -1,5 +1,4 @@
 import router from "./router.js";
-import onNavigate from "./event.js";
 
 const objectRouter = router();
 

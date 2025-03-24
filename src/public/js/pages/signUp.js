@@ -6,11 +6,11 @@ export default function signUp() {
       <div class="container">
         <div class="form-container">
           <div class="logo">
-            <img src="../assets/signUp/logo.jpeg" alt="Logo EasyBarber" />
+            <img src="../assets/logo.jpeg" alt="Logo EasyBarber" />
           </div>
 
           <div class="form-box">
-            <h2>Faça o seu cadastro</h2>
+            <h2>Faça o seu cadastro</h2>  
 
             <form id="signUpForm">
               <div class="input-row">
@@ -23,7 +23,6 @@ export default function signUp() {
 
               <div class="password-field">
                 <input type="password" id="password" placeholder="Senha" required />
-                <span class="toggle-password"><i class="fas fa-eye-slash"></i></span>
               </div>
 
               <button type="submit" class="cadastro-btn">Cadastre-se</button>
@@ -62,8 +61,10 @@ export default function signUp() {
 
     if (response.ok) {
       console.log("Cadastro realizado com sucesso:", data);
+      //Mudar console.log para modal
     } else {
       console.error("Erro no cadastro:", data);
+      //Mudar console.log para modal
       alert("Erro ao criar conta. Tente novamente.");
     }
   });
@@ -72,19 +73,6 @@ export default function signUp() {
     e.preventDefault();
     const event = onNavigate("/");
     document.dispatchEvent(event);
-  });
-
-  const passwordToggle = div.querySelector(".toggle-password");
-  const passwordInput = div.querySelector("#password");
-
-  passwordToggle.addEventListener("click", () => {
-    if (passwordInput.type === "password") {
-      passwordInput.type = "text";
-      passwordToggle.innerHTML = `<i class="fas fa-eye"></i>`;
-    } else {
-      passwordInput.type = "password";
-      passwordToggle.innerHTML = `<i class="fas fa-eye-slash"></i>`;
-    }
   });
 
   return div;
