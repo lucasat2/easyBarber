@@ -41,24 +41,44 @@ const insertNewUser = async (
   }
 };
 
-const updateUser = async (userId, userData) => {
+const updateUser = async (userId, name, surname, companyName, email, phone, cnpj) => {
   let client;
   try {
     client = await pool.connect();
 
-    const fields = Object.keys(userData);
-    const values = Object.values(userData);
+    await client.query("BEGIN");
 
-    if (fields.length === 0) {
-      throw new Error("Nenhum dado para atualizar.");
+    if (name) {
+      const query = "UPDATE users SET name = $1, updated_at = NOW() WHERE id = $2";
+      await client.query(query, [name, userId]);
     }
+    if (surname) {
+      const query = "UPDATE users SET surname = $1, updated_at = NOW() WHERE id = $2";
+      await client.query(query, [surname, userId]);
+    }
+    if (companyName) {
+      const users = await client.query("SELECT * FROM users WHERE id = $1", [userId]);
 
-    const setClause = fields.map((field, index) => `${field} = $${index + 2}`).join(", ");
-    const query = `UPDATE users SET ${setClause} WHERE id = $1 RETURNING *`;
+      const query = "UPDATE company SET name = $1, updated_at = NOW()  WHERE id = $2";
+      await client.query(query, [companyName, users.rows[0].company_id]);
+    }
+    if (email) {
+      const query = "UPDATE users SET email = $1, updated_at = NOW() WHERE id = $2";
+      await client.query(query, [email, userId]);
+    }
+    if (phone) {
+      const query = "UPDATE users SET phone = $1, updated_at = NOW() WHERE id = $2";
+      await client.query(query, [phone, userId]);
+    }
+    if (cnpj) {
+      const users = await client.query("SELECT * FROM users WHERE id = $1", [userId]);
 
-    const { rows } = await client.query(query, [userId, ...values]);
-    return rows[0] || null;
+      const query = "UPDATE company SET cnpj = $1, updated_at = NOW() WHERE id = $2";
+      await client.query(query, [cnpj, users.rows[0].company_id]);
+    }
+    await client.query("COMMIT");
   } catch (error) {
+    await client.query("ROLLBACK");
     throw error;
   } finally {
     if (client) {
@@ -67,7 +87,25 @@ const updateUser = async (userId, userData) => {
   }
 };
 
+const getUserById = async (userId) => {
+  let client;
+  try {
+    client = await pool.connect();
+
+    const query = "SELECT * FROM users WHERE id = $1";
+    const { rows } = await client.query(query, [userId]);
+    return rows[0];
+  } catch (error) {
+    throw error;
+  } finally {
+    if (client) {
+      client.release();
+    }
+  }
+}
+
 module.exports = {
   insertNewUser,
   updateUser,
+  getUserById,
 };

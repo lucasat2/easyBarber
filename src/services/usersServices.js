@@ -28,19 +28,21 @@ const createUser = async (name, surname, companyName, email, password) => {
   }
 };
 
-const updateUser = async (userId, userData) => {
+const updateUser = async (userId, name, surname, companyName, email, phone, cnpj) => {
   try {
-    // Verifica se o usuário existe
-    const existingUser = await userRepository.getUserById(userId);
+   
+    const existingUser = await usersRepository.getUserById(userId);
     if (!existingUser) {
-      return null;
+      return {
+        errorCode: 404,
+        errorMessage: "Usuário não encontrado",
+      };
     }
 
-    // Atualiza os dados do usuário
-    const updatedUser = await userRepository.updateUser(userId, userData);
-    return updatedUser;
+    await usersRepository.updateUser(userId, name, surname, companyName, email, phone, cnpj);
+    
   } catch (error) {
-    throw new Error('Erro ao atualizar usuário: ' + error.message);
+    throw error;
   }
 };
 

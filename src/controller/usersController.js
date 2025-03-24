@@ -3,6 +3,7 @@ const usersServices = require("../services/usersServices.js");
 const companyNamePattern = /^[A-Za-z0-9&-]{3,20}$/;
 const passwordPattern =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+const cnpjPattern = /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/;
 
 const createUser = async (req, res) => {
   try {
@@ -74,21 +75,33 @@ const createUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const userId = req.params.id; 
-    const userData = req.body; 
+    const userId = req.cookies.id;
+    const { name, surname, companyName, email, phone, cnpj } = req.body;
 
-    
-    const updatedUser = await userService.updateUser(userId, userData);
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'Usuário não encontrado.' });
+    if (cnpj && !cnpjPattern.test(cnpj)) {
+      return res.status(400).json({ error: "CNPJ inválido" });
     }
 
-    return res.status(200).json(updatedUser);
+    if (email && !validator.isEmail(email)) {
+      return res.status(400).json({ error: "Formato de e-mail inválido" });
+    };
+
+    if (phone && !validator.isMobilePhone(phone, 'pt-BR')) {
+      return res.status(400).json({ error: "Telefone inválido" });
+    }
+
+    const updatedUser = await usersServices.updateUser(userId, name, surname, companyName, email, phone, cnpj);
+
+    if (updatedUser) {
+      return res.status(updateUser.errorCode).json({ error: updatedUser.errorMessage });
+    }
+
+    return res.status(200).json({ message: 'Usuário atualizado com sucesso.' });
+
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Erro ao atualizar usuário.' });
+    return res.status(500).json({ error: 'Erro ao atualizar usuário.' });
   }
 };
 
-module.exports = {createUser, updateUser };
+module.exports = { createUser, updateUser };
