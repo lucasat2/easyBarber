@@ -12,10 +12,6 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/", (req, res) => {
-  res.status(200).sendFile(path.join(__dirname, "public", "html", "login.html"));
-});
-
 app.use("/api", routes);
 
 app.listen(port, () => {

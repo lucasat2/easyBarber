@@ -1,0 +1,72 @@
+import onNavigate from "../event.js";
+
+export default function login() {
+  const div = document.createElement("div");
+  div.innerHTML = `
+      <div class="container">
+        <div class="left-side">
+          <img src="../assets/login/barberPole.jpeg" alt="Barber Pole" class="barber-pole">
+        </div>
+        <div class="right-side">
+          <div class="logo-container">
+            <img src="../assets/logo.jpeg" alt="EasyBarber Logo" class="logo">
+          </div>
+          <div class="login-container">
+            <h1>Entre na sua conta</h1>
+            <form id="loginForm">
+              <div class="input-group">
+                <input type="email" id="email" placeholder="Email" required>
+              </div>
+              <div class="input-group">
+                <input type="password" id="password" placeholder="Senha" required>
+              </div>
+              <div class="forgot-password">
+                <a href="#">Esqueceu sua senha?</a>
+              </div>
+              <button type="submit" class="login-button">Entrar</button>
+              <div class="register-link">
+                Não tem uma conta? <a href="#" id="goToSignUp">Cadastre-se</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+  `;
+
+  const form = div.querySelector("#loginForm");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const email = div.querySelector("#email").value;
+    const password = div.querySelector("#password").value;
+
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("Login bem-sucedido:", data);
+      //Ao invés de console colocar modal
+      const event = onNavigate("/");
+      document.dispatchEvent(event);
+    } else {
+      console.error("Erro no login:", data);
+      //Ao invés de console colocar modal
+      alert("Email ou senha incorretos!");
+    }
+  });
+
+  div.querySelector("#goToSignUp").addEventListener("click", (e) => {
+    e.preventDefault();
+    const event = onNavigate("/signUp");
+    document.dispatchEvent(event);
+  });
+
+  return div;
+}
