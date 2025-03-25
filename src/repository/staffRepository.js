@@ -1,13 +1,17 @@
 const pool = require("../db");
+let client
 
 const getAllStaff = async () => {
   const query = "SELECT * FROM staff";
   try {
+
     const client = await pool.connect();
     const result = await client.query(query);
     return result.rows;
+
   } catch (error) {
     throw error;
+    
   } finally {
     if (client) {
       client.release();
@@ -16,39 +20,45 @@ const getAllStaff = async () => {
 };
 
 const createStaff = async (
-  id,
-  company_id,
   name,
   surname,
   cpf,
   email,
   phone_number,
+  birthdate,
   cep,
   address,
-  created_at,
-  updated_at
+  userId
 ) => {
-  const query = 
-    "INSERT INTO staff (name, surname, cpf, email, phone_number, cep, address, created_at, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)";
+  const companyIdQuery = 
+    "SELECT * FROM users WHERE id = $1";
+
+  const createStaffQuery = 
+    "INSERT INTO staff (company_id, name, surname, cpf, email, phone_number, birthdate, cep, address) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)";
 
   try {
     const client = await pool.connect();
 
-    await client.query(query, [
-      company_id,
+    const {rows:[user]} = await client.query(companyIdQuery, [userId])
+    console.log(user)
+    const companyId = user.company_id
+
+
+    await client.query(createStaffQuery, [
+      companyId,
       name,
       surname,
       cpf,
       email,
       phone_number,
+      birthdate,
       cep,
-      address,
-      created_at,
-      updated_at
+      address
     ]);
 
   } catch (error){
     throw error;
+
   } finally {
     if (client){
       client.release();
@@ -57,7 +67,6 @@ const createStaff = async (
 }
 
 const updateStaff = async (
-  company_id,
   name,
   surname,
   cpf,
@@ -65,8 +74,7 @@ const updateStaff = async (
   phone_number,
   cep,
   address,
-  created_at,
-  updated_at
+  id
 ) => {
   const query =
     "UPDATE staff SET name = $1, surname = $2, cpf = $3, email = $4, phone_number = $5, cep = $6, address = $7, updated_at = $8 WHERE id = $9";
@@ -88,6 +96,7 @@ const updateStaff = async (
 
   } catch (error){
     throw error;
+    
   } finally {
     if (client){
       client.release();
