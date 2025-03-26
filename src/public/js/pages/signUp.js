@@ -1,19 +1,17 @@
 import onNavigate from "../event.js";
 
 export default function signUp() {
-  const link = document.getElementById("dynamic-css")
-  link.href = "./css/signUp.css"
   
   const div = document.createElement("div");
 
   const container = document.createElement("div");
-  container.classList.add("container");
+  container.classList.add("signupPrincipalContainer");
 
   const formContainer = document.createElement("div");
-  formContainer.classList.add("form-container");
+  formContainer.classList.add("signupFormContainer");
 
   const logo = document.createElement("div");
-  logo.classList.add("logo");
+  logo.classList.add("signupLogoImage");
 
   const logoImg = document.createElement("img");
   logoImg.src = "../assets/logo.jpeg";
@@ -22,28 +20,31 @@ export default function signUp() {
   logo.appendChild(logoImg);
 
   const formBox = document.createElement("div");
-  formBox.classList.add("form-box");
+  formBox.classList.add("signupFormBox");
 
   const titulo = document.createElement("h2");
   titulo.textContent = "Faça o seu cadastro";
+  titulo.classList.add("signupTitleStyle")
 
   const form = document.createElement("form");
   form.id = "signUpForm";
 
   const inputRow = document.createElement("div");
-  inputRow.classList.add("input-row");
+  inputRow.classList.add("signupInputRow");
 
   const inputNome = document.createElement("input");
   inputNome.type = "text";
   inputNome.id = "nome";
   inputNome.placeholder = "Nome";
   inputNome.required = true;
+  inputNome.classList.add("signupInputStyle")
 
   const inputSobrenome = document.createElement("input");
   inputSobrenome.type = "text";
   inputSobrenome.id = "sobrenome";
   inputSobrenome.placeholder = "Sobrenome";
   inputSobrenome.required = true;
+  inputSobrenome.classList.add("signupInputStyle")
 
   inputRow.appendChild(inputNome);
   inputRow.appendChild(inputSobrenome);
@@ -53,31 +54,34 @@ export default function signUp() {
   inputEmpresa.id = "empresa";
   inputEmpresa.placeholder = "Nome da Empresa";
   inputEmpresa.required = true;
+  inputEmpresa.classList.add("signupInputStyle")
 
   const inputEmail = document.createElement("input");
   inputEmail.type = "email";
   inputEmail.id = "email";
   inputEmail.placeholder = "Email";
   inputEmail.required = true;
+  inputEmail.classList.add("signupInputStyle")
 
   const passwordField = document.createElement("div");
-  passwordField.classList.add("password-field");
+  passwordField.classList.add("signupPasswordField");
 
   const inputPassword = document.createElement("input");
   inputPassword.type = "password";
   inputPassword.id = "password";
   inputPassword.placeholder = "Senha";
   inputPassword.required = true;
+  inputPassword.classList.add("signupInputStyle")
 
   passwordField.appendChild(inputPassword);
 
   const btnCadastro = document.createElement("button");
   btnCadastro.type = "submit";
-  btnCadastro.classList.add("cadastro-btn");
+  btnCadastro.classList.add("signupRegisterButton");
   btnCadastro.textContent = "Cadastre-se";
 
   const loginLink = document.createElement("p");
-  loginLink.classList.add("login-link");
+  loginLink.classList.add("signupLoginLink");
 
   const textoLogin = document.createTextNode("Já tem uma conta? ");
 
@@ -105,7 +109,7 @@ export default function signUp() {
   formContainer.appendChild(formBox);
 
   const imageContainer = document.createElement("div");
-  imageContainer.classList.add("image-container");
+  imageContainer.classList.add("signupImageContainer");
 
   container.appendChild(formContainer);
   container.appendChild(imageContainer);

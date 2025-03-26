@@ -1,70 +1,72 @@
 import onNavigate from "../event.js";
 
 export default function login() {
-  const link = document.getElementById("dynamic-css")
-  link.href = "./css/login.css"
   
   const div = document.createElement("div");
 
-  const container = document.createElement("div");
-  container.classList.add("container");
+  const loginPrincipalContainer = document.createElement("div");
+  loginPrincipalContainer.classList.add("loginPrincipalContainer");
 
   const leftSide = document.createElement("div");
-  leftSide.classList.add("left-side");
+  leftSide.classList.add("loginLeftSideStyle");
 
   const barberPole = document.createElement("img");
   barberPole.src = "../assets/login/barberPole.jpeg";
   barberPole.alt = "Barber Pole";
-  barberPole.classList.add("barber-pole");
+  barberPole.classList.add("loginBarberPoleStyle");
 
   leftSide.appendChild(barberPole);
 
   const rightSide = document.createElement("div");
-  rightSide.classList.add("right-side");
+  rightSide.classList.add("loginRightSideStyle");
 
   const logoContainer = document.createElement("div");
-  logoContainer.classList.add("logo-container");
+  logoContainer.classList.add("loginLogoContainer");
 
   const logo = document.createElement("img");
   logo.src = "../assets/logo.jpeg";
   logo.alt = "EasyBarber Logo";
-  logo.classList.add("logo");
+  logo.classList.add("loginLogoStyle");
 
   logoContainer.appendChild(logo);
 
   const loginContainer = document.createElement("div");
-  loginContainer.classList.add("login-container");
+  loginContainer.classList.add("loginSecondContainer");
 
   const titulo = document.createElement("h1");
+  titulo.classList.add("loginTitleStyle")
   titulo.textContent = "Entre na sua conta";
 
   const form = document.createElement("form");
+  form.classList.add("loginFormStyle")
   form.id = "loginForm";
 
   const inputGroupEmail = document.createElement("div");
-  inputGroupEmail.classList.add("input-group");
+  inputGroupEmail.classList.add("loginInputGroupStyle");
 
   const inputEmail = document.createElement("input");
   inputEmail.type = "email";
   inputEmail.id = "email";
   inputEmail.placeholder = "Email";
   inputEmail.required = true;
+  inputEmail.classList.add("loginInputStyle")
 
   inputGroupEmail.appendChild(inputEmail);
 
   const inputGroupSenha = document.createElement("div");
-  inputGroupSenha.classList.add("input-group");
+  inputGroupSenha.classList.add("loginInputGroupStyle");
 
   const inputSenha = document.createElement("input");
   inputSenha.type = "password";
   inputSenha.id = "password";
   inputSenha.placeholder = "Senha";
   inputSenha.required = true;
+  inputSenha.classList.add("loginInputStyle")
 
   inputGroupSenha.appendChild(inputSenha);
 
   const forgotPassword = document.createElement("div");
-  forgotPassword.classList.add("forgot-password");
+  forgotPassword.classList.add("loginForgotPassword");
 
   const linkEsqueci = document.createElement("a");
   linkEsqueci.href = "#";
@@ -74,11 +76,11 @@ export default function login() {
 
   const loginButton = document.createElement("button");
   loginButton.type = "submit";
-  loginButton.classList.add("login-button");
+  loginButton.classList.add("loginLoginButton");
   loginButton.textContent = "Entrar";
 
   const registerLink = document.createElement("div");
-  registerLink.classList.add("register-link");
+  registerLink.classList.add("loginRegisterLink");
 
   const textoCadastro = document.createTextNode("Não tem uma conta? ");
   const linkCadastro = document.createElement("a");
@@ -101,10 +103,10 @@ export default function login() {
   rightSide.appendChild(logoContainer);
   rightSide.appendChild(loginContainer);
 
-  container.appendChild(leftSide);
-  container.appendChild(rightSide);
+  loginPrincipalContainer.appendChild(leftSide);
+  loginPrincipalContainer.appendChild(rightSide);
 
-  div.appendChild(container);
+  div.appendChild(loginPrincipalContainer);
 
   const sendForm = div.querySelector("#loginForm");
   sendForm.addEventListener("submit", async (e) => {
