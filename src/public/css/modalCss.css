@@ -1,10 +1,4 @@
-body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f2f2f2;
-    margin: 2rem;
-  }
-  
-  .modal-overlay {
+  .appointmentModalOverlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -17,28 +11,32 @@ body {
     z-index: 1000;
   }
   
-  .modal {
+  .appointmentModal {
+    font-family: 'Segoe UI', sans-serif;
     background-color: #ffffff;
     padding: 2rem;
     border-radius: 12px;
     width: 500px;
+    min-height: 550px;
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    margin: 2rem;
   }
   
-  h2 {
+  
+  .modalAppointTitle {
     text-align: center;
     margin-bottom: 0.5rem;
   }
   
-  .form-row {
+  .modalFormRows {
     display: flex;
     gap: 1rem;
   }
   
-  label {
+  .modalLabel {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -47,10 +45,7 @@ body {
     color: #333;
   }
   
-  select,
-  input[type="date"],
-  input[type="datetime-local"],
-  textarea {
+  .modalBoxStyles {
     margin-top: 0.5rem;
     padding: 0.6rem;
     border: 1px solid #ccc;
@@ -59,18 +54,21 @@ body {
     background-color: #f9f9f9;
   }
   
-  textarea {
+  textarea.modalBoxStyles {
+    width: 100%;
+    height: auto;
+    min-height: 5px;
     resize: vertical;
-    height: 80px;
-  }
+    box-sizing: border-box;
+  }  
   
-  .modal-buttons {
+  .appointmentModalButtons {
     display: flex;
     justify-content: space-between;
     margin-top: 1rem;
   }
   
-  .modal-buttons button {
+  .appointmentModalButtons button {
     flex: 1;
     padding: 0.7rem;
     border: none;
@@ -81,17 +79,17 @@ body {
     margin: 0 0.25rem;
   }
   
-  #btn-salvar {
+  #appointmentButtonSave {
     background-color: #e2e200;
     color: #000;
   }
   
-  #btn-cancelar {
+  #appointmentButtonCancel {
     background-color: #e63946;
     color: #fff;
   }
   
-  .toggle-container {
+  .appointmentToggleContainer {
     display: flex;
     background: #e9e9e9;
     border-radius: 10px;
@@ -99,7 +97,7 @@ body {
     margin-bottom: 1rem;
   }
   
-  .toggle-container button {
+  .appointmentToggleContainer button {
     flex: 1;
     padding: 0.8rem;
     border: none;
@@ -108,18 +106,13 @@ body {
     font-size: 0.95rem;
   }
   
-  .toggle-active {
+  .appointmentToggleActive {
     background-color: #e2e200;
     color: #000;
   }
   
-  .toggle-inactive {
+  .appointmentToggleInactive {
     background-color: #f0f0f0;
     color: #444;
   }
-  
 
-.modal {
-    min-height: 550px;
-  }
-  
