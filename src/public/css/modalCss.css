@@ -1,0 +1,125 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f2f2f2;
+    margin: 2rem;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  label {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #333;
+  }
+  
+  select,
+  input[type="date"],
+  input[type="datetime-local"],
+  textarea {
+    margin-top: 0.5rem;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background-color: #f9f9f9;
+  }
+  
+  textarea {
+    resize: vertical;
+    height: 80px;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+  }
+  
+  .modal-buttons button {
+    flex: 1;
+    padding: 0.7rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 0 0.25rem;
+  }
+  
+  #btn-salvar {
+    background-color: #e2e200;
+    color: #000;
+  }
+  
+  #btn-cancelar {
+    background-color: #e63946;
+    color: #fff;
+  }
+  
+  .toggle-container {
+    display: flex;
+    background: #e9e9e9;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  
+  .toggle-container button {
+    flex: 1;
+    padding: 0.8rem;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.95rem;
+  }
+  
+  .toggle-active {
+    background-color: #e2e200;
+    color: #000;
+  }
+  
+  .toggle-inactive {
+    background-color: #f0f0f0;
+    color: #444;
+  }
+  
+
+.modal {
+    min-height: 550px;
+  }
+  

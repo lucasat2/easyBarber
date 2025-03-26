@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Modal Estilizado</title>
+  <link href="./css/modalCss.css" rel="stylesheet">
+</head>
+<body>
+
+  <button onclick="createModal()">Abrir Modal</button>
+
+  <script>
+
+    const title = document.createElement('h2');
+    function createModal() {
+      //Cria a estrutura do modal
+        const overlay = document.createElement('div');
+        overlay.classList.add('modal-overlay');
+      
+        const modal = document.createElement('div');
+        modal.classList.add('modal');
+
+      //Botões de mudança de estado
+        const toggleContainer = document.createElement('div');
+        toggleContainer.classList.add('toggle-container');
+      
+        const btnAppoint = document.createElement('button');
+        btnAppoint.textContent = 'Agendar novo horário';
+        btnAppoint.classList.add('toggle-active');
+      
+        const btnBlock = document.createElement('button');
+        btnBlock.textContent = 'Bloquear um horário';
+        btnBlock.classList.add('toggle-inactive');
+      
+
+      //Onde ficará o formulário
+        const formContainer = document.createElement('div');
+      
+      // Troca visual e de conteúdo
+        btnAppoint.addEventListener('click', () => {
+          updateToggle('agendar')
+          renderForm('agendar');
+        });
+      
+        btnBlock.addEventListener('click', () => {
+          updateToggle('bloquear')
+          renderForm('bloquear');
+        });
+
+      //Atualiza visual dos botões de escolha
+      function updateToggle(mode) {
+        if (mode === 'agendar') {
+          btnAppoint.classList.add('toggle-active');
+          btnAppoint.classList.remove('toggle-inactive');
+          btnBlock.classList.add('toggle-inactive');
+          btnBlock.classList.remove('toggle-active');
+        } else {
+          btnBlock.classList.add('toggle-active');
+          btnBlock.classList.remove('toggle-inactive');
+          btnAppoint.classList.add('toggle-inactive');
+          btnAppoint.classList.remove('toggle-active');
+        }
+      }
+      
+      //Função para gerar dois formulários diferentes
+        function renderForm(mode) {
+          formContainer.innerHTML = '';
+      
+          if (mode === 'agendar') {
+            formContainer.appendChild(createApointForm());
+          } else {
+            formContainer.appendChild(createBlockForm());
+          }
+        }
+
+      //Posicionamento dos elementos
+        toggleContainer.appendChild(btnAppoint);
+        toggleContainer.appendChild(btnBlock);
+      
+        title.textContent = 'Agendamento';
+      
+        modal.appendChild(toggleContainer);
+        modal.appendChild(title);
+        modal.appendChild(formContainer);
+      
+        renderForm('agendar');
+      
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+      }
+      
+      //Função cria campo de input
+      function createField(labelText, element) {
+        const label = document.createElement('label');
+        label.textContent = labelText;
+        label.appendChild(element);
+        return label;
+      }
+      
+
+      //Função para criar o formulário de agendamento
+      function createApointForm() {
+        const container = document.createElement('div');
+        title.textContent = "Agendamento"
+      
+
+      //Deve ser atualizado para buscar funcionários do banco de dados
+        const selectStaff = document.createElement('select');
+        ['Selecionar profissional', 'João', 'Maria'].forEach(nome => {
+          const option = document.createElement('option');
+          option.value = nome.toLowerCase();
+          option.textContent = nome;
+          selectStaff.appendChild(option);
+        });
+      
+      //Deve ser atualizado para buscar serviços do banco de dados
+        const selectService = document.createElement('select');
+        ['Selecionar serviço', 'Corte', 'Barba'].forEach(servico => {
+          const option = document.createElement('option');
+          option.value = servico.toLowerCase();
+          option.textContent = servico;
+          selectService.appendChild(option);
+        });
+      
+        const inputData = document.createElement('input');
+        inputData.type = 'date';
+      
+      //Deve ser atualizado para buscar clientes do banco de dados
+        const selectClient = document.createElement('select');
+        ['Selecionar cliente', 'Carlos', 'Ana'].forEach(nome => {
+          const option = document.createElement('option');
+          option.value = nome.toLowerCase();
+          option.textContent = nome;
+          selectClient.appendChild(option);
+        });
+      
+      //Cria elementos
+        const selectDateTime = document.createElement('select');
+        ['Horário inicial', '08:00', '09:00', '10:00'].forEach(horario => {
+          const option = document.createElement('option');
+          option.value = horario;
+          option.textContent = horario;
+          selectDateTime.appendChild(option);
+        });
+      
+        const textareaObs = document.createElement('textarea');
+        textareaObs.placeholder = 'Observações';
+      
+        const btnSave = document.createElement('button');
+        btnSave.id = 'btn-salvar';
+        btnSave.textContent = 'Salvar';
+      
+        const btnCancel = document.createElement('button');
+        btnCancel.id = 'btn-cancelar';
+        btnCancel.textContent = 'Cancelar';
+      
+      //Adiciona eventos nos botões
+        btnCancel.addEventListener('click', () => {
+          document.body.removeChild(document.querySelector('.modal-overlay'));
+        });
+      
+        btnSave.addEventListener('click', () => {
+          alert('Agendamento salvo!');
+          document.body.removeChild(document.querySelector('.modal-overlay'));
+        });
+      
+      //Adiciona elementos nas linhas corretas
+        const line1 = document.createElement('div');
+        line1.classList.add('form-row');
+        line1.appendChild(createField('Profissional', selectStaff));
+        line1.appendChild(createField('Serviço', selectService));
+      
+        const line2 = document.createElement('div');
+        line2.classList.add('form-row');
+        line2.appendChild(createField('Data', inputData));
+        line2.appendChild(createField('Cliente', selectClient));
+      
+        const line3 = document.createElement('div');
+        line3.classList.add('form-row');
+        line3.appendChild(createField('Horário inicial', selectDateTime));
+
+      //Prende elementos finais nos bodys
+        const divButtons = document.createElement('div');
+        divButtons.classList.add('modal-buttons');
+        divButtons.appendChild(btnSave);
+        divButtons.appendChild(btnCancel);
+      
+        container.appendChild(line1);
+        container.appendChild(line2);
+        container.appendChild(line3);
+        container.appendChild(createField('Observações', textareaObs));
+        container.appendChild(divButtons);
+      
+        return container;
+      }
+      
+      //Função para gerar formulário de bloquear horário
+      function createBlockForm() {
+        const container = document.createElement('div');
+
+        title.textContent="Bloqueio"
+      
+      //Cria elementos principais dos formulários
+        const selectStaff = document.createElement('select');
+        ['Selecionar profissional', 'João', 'Maria'].forEach(nome => {
+          const option = document.createElement('option');
+          option.value = nome.toLowerCase();
+          option.textContent = nome;
+          selectStaff.appendChild(option);
+        });
+      
+        const inputStartDate = document.createElement('input');
+        inputStartDate.type = 'datetime-local';
+      
+        const inputEndDate = document.createElement('input');
+        inputEndDate.type = 'datetime-local';
+
+        const textareaObs = document.createElement('textarea');
+        textareaObs.placeholder = 'Observações';
+      
+        const btnSave = document.createElement('button');
+        btnSave.id = 'btn-salvar';
+        btnSave.textContent = 'Salvar bloqueio';
+      
+        const btnCancel = document.createElement('button');
+        btnCancel.id = 'btn-cancelar';
+        btnCancel.textContent = 'Cancelar';
+      
+      //Adiciona eventos nos botões
+        btnCancel.addEventListener('click', () => {
+          document.body.removeChild(document.querySelector('.modal-overlay'));
+        });
+      
+        btnSave.addEventListener('click', () => {
+          alert('Horário bloqueado!');
+          document.body.removeChild(document.querySelector('.modal-overlay'));
+        });
+      
+      //Adiciona e prende elementos nas divs corretas
+        const line1 = document.createElement('div');
+        line1.classList.add('form-row');
+        line1.appendChild(createField('Profissional', selectStaff));
+      
+        const line2 = document.createElement('div');
+        line2.classList.add('form-row');
+        line2.appendChild(createField('Início do bloqueio', inputStartDate));
+        line2.appendChild(createField('Fim do bloqueio', inputEndDate));
+
+      
+        const divButtons = document.createElement('div');
+        divButtons.classList.add('modal-buttons');
+        divButtons.appendChild(btnSave);
+        divButtons.appendChild(btnCancel);
+      
+        container.appendChild(line1);
+        container.appendChild(line2);
+        container.appendChild(createField('Observações', textareaObs));
+        container.appendChild(divButtons);
+      
+        return container;
+      }
+      
+  </script>
+
+</body>
+</html>
