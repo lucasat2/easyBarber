@@ -1,44 +1,46 @@
 const appointmentsRepository = require("../repository/appointmentsRepository.js");
 
-const listAllAppointmentsByEmployee = async employeeId => {
-	try {
-		const result = await appointmentsRepository.getAllAppointmentsByEmployee(
-			employeeId
-		);
+const listAllAppointmentsByEmployee = async (employeeId) => {
+  try {
+    const result = await appointmentsRepository.getAllAppointmentsByEmployee(
+      employeeId
+    );
 
-		return result;
-	} catch (e) {
-		throw e;
-	}
+    return result;
+  } catch (e) {
+    throw e;
+  }
 };
 
 const createAppointment = async (
-	employeeId,
-	serviceId,
-	date,
-	clientId,
-	startTime,
-	observation
+  employeeId,
+  serviceId,
+  date,
+  clientName,
+  clientEmail,
+  clientPhoneNumber,
+  startTime,
+  observation
 ) => {
-	try {
-		const result = await appointmentsRepository.insertNewAppointment(
-			employeeId,
-			serviceId,
-			date,
-			clientId,
-			startTime,
-			observation
-		);
+  try {
+    const result = await appointmentsRepository.insertNewAppointment(
+      employeeId,
+      serviceId,
+      date,
+      clientName,
+      clientEmail,
+      clientPhoneNumber,
+      startTime,
+      observation
+    );
 
-		if (result) {
-			result;
-		}
-	} catch (error) {
-		throw error;
-	}
+    return result;
+  } catch (error) {
+    throw error;
+  }
 };
 
 module.exports = {
-	createAppointment,
-	listAllAppointmentsByEmployee
+  createAppointment,
+  listAllAppointmentsByEmployee,
 };
