@@ -1,17 +1,36 @@
 const pool = require("../db");
-let client
+const { all } = require("../routes");
+let client;
 
-const getAllStaff = async () => {
-  const query = "SELECT * FROM staffs";
+const getAllStaff = async (userId) => {
   try {
+    const getCompanyData = "SELECT * FROM users WHERE id = $1";
 
     const client = await pool.connect();
-    const result = await client.query(query);
-    return result.rows;
 
+    const {
+      rows: [user],
+    } = await client.query(getCompanyData, [userId]);
+
+    if (!user) {
+      return { errorStatus: 404, errorMessage: "Usuário não encontrado" };
+    }
+
+    const companyId = user.company_id;
+
+    const getAllEmployees = "SELECT * FROM staffs WHERE company_id = $1";
+
+    const { rows: allEmployees } = await client.query(getAllEmployees, [
+      companyId,
+    ]);
+
+    if (!allEmployees) {
+      return { errorStatus: 404, errorMessage: "Falha ao listar funcionários" };
+    }
+
+    return allEmployees;
   } catch (error) {
     throw error;
-    
   } finally {
     if (client) {
       client.release();
@@ -24,89 +43,38 @@ const createStaff = async (
   surname,
   cpf,
   email,
-  phone_number,
+  phoneNumber,
   birthdate,
-  cep,
+  postalCode,
   userId
 ) => {
-  const companyIdQuery = 
-    "SELECT * FROM users WHERE id = $1";
+  const getUserDataQuery = "SELECT * FROM users WHERE id = $1";
 
-  const createStaffQuery = 
-    "INSERT INTO staff (company_id, name, surname, cpf, email, phone_number, birthdate, cep) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)";
+  const createStaffsQuery =
+    "INSERT INTO staffs (company_id, name, surname, cpf, email, phone_number, birthdate, postal_code) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)";
 
   try {
     const client = await pool.connect();
 
-    const {rows:[user]} = await client.query(companyIdQuery, [userId])
-    console.log(user)
-    const companyId = user.company_id
+    const {
+      rows: [userData],
+    } = await client.query(getUserDataQuery, [userId]);
 
+    if (!userData) {
+      return { errorStatus: 404, errorMessage: "Usuário não encontrado" };
+    }
+    const companyId = userData.company_id;
 
-    await client.query(createStaffQuery, [
+    await client.query(createStaffsQuery, [
       companyId,
       name,
       surname,
       cpf,
       email,
-      phone_number,
+      phoneNumber,
       birthdate,
-      cep,
+      postalCode,
     ]);
-
-  } catch (error){
-    throw error;
-
-  } finally {
-    if (client){
-      client.release();
-    }
-  }
-}
-
-const updateStaff = async (
-  name,
-  surname,
-  cpf,
-  email,
-  phone_number,
-  cep,
-  id
-) => {
-  const query =
-    "UPDATE staff SET name = $1, surname = $2, cpf = $3, email = $4, phone_number = $5, cep = $6, updated_at = $8 WHERE id = $9";
-
-  try {
-    const client = await pool.connect();
-
-    await client.query(query, [
-      name,
-      surname,
-      cpf,
-      email,
-      phone_number,
-      cep,
-      updated_at,
-      id
-    ]);
-
-  } catch (error){
-    throw error;
-    
-  } finally {
-    if (client){
-      client.release();
-    }
-  }
-}
-
-const removeStaff = async (id) => {
-  const query = "DELETE FROM staffs WHERE id = $1";
-
-  try {
-    const client = await pool.connect();
-
-    await client.query(query, [id]);
   } catch (error) {
     throw error;
   } finally {
@@ -114,6 +82,103 @@ const removeStaff = async (id) => {
       client.release();
     }
   }
-}
+};
+
+const updateStaff = async (
+  name,
+  surname,
+  cpf,
+  email,
+  phoneNumber,
+  birthdate,
+  postalCode,
+  id
+) => {
+
+  try {
+
+  const client = await pool.connect();
+
+  await client.query("BEGIN")
+
+  if (name) {
+    const updateStaffName =
+      "UPDATE staffs SET name = $1, updated_at = NOW() WHERE id = $2";
+
+    await client.query(updateStaffName, [name, id]);
+  }
+
+  if (surname) {
+    const updateStaffSurname =
+      "UPDATE staffs SET surname = $1, updated_at = NOW() WHERE id = $2";
+
+    await client.query(updateStaffSurname, [surname, id]);
+  }
+
+  if (cpf) {
+    const updateStaffCpf =
+      "UPDATE staffs SET cpf = $1, updated_at = NOW() WHERE id = $2";
+
+    await client.query(updateStaffCpf, [cpf, id]);
+  }
+
+  if (email) {
+    const updateStaffEmail =
+      "UPDATE staffs SET email = $1, updated_at = NOW() WHERE id = $2";
+
+    await client.query(updateStaffEmail, [email, id]);
+  }
+
+  if (phoneNumber) {
+    const updtadeStaffPhoneNumber =
+      "UPDATE staffs SET phone_number = $1, updated_at = NOW() WHERE id = $2";
+
+    await client.query(updtadeStaffPhoneNumber, [phoneNumber, id]);
+  }
+
+  if (birthdate) {
+    const updtadeStaffBirthdate =
+      "UPDATE staffs SET birthdate = $1, updated_at = NOW() WHERE id = $2";
+
+    await client.query(updtadeStaffBirthdate, [birthdate, id]);
+  }
+
+  if (postalCode) {
+    const updateStaffPostalCode =
+      "UPDATE staffs SET postal_code = $1, updated_at = NOW() WHERE id = $2";
+
+    await client.query(updateStaffPostalCode, [postalCode, id]);
+  }
+
+  await client.query("COMMIT")
+
+  } catch (error) {
+    await client.query("ROLLBACK")
+    throw error;
+
+  } finally {
+    if (client) {
+      client.release();
+    }
+  }
+};
+
+const removeStaff = async (id) => {
+  const deleteStaff = "DELETE FROM staffs WHERE id = $1";
+
+  try {
+    const client = await pool.connect();
+
+    await client.query(deleteStaff, [id]);
+
+  } catch (error) {
+    throw error;
+
+  } finally {
+    if (client) {
+      client.release();
+    }
+  }
+};
 
 module.exports = { getAllStaff, createStaff, updateStaff, removeStaff };

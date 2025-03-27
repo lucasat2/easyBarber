@@ -1,159 +1,225 @@
 const validator = require("validator");
-const staffServices = require ("../services/staffServices");
+const staffServices = require("../services/staffServices");
 const surnamePattern = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]{3,50}$/;
 const phonePattern = /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/;
-const todayDate = new Date()
-
-
+const codePostalPattern = /^\d{5}-?\d{3}$/;
+const cpfPattern = / ^\d{3}\.\d{3}\.\d{3}\-\d{2}$/;
+const todayDate = new Date();
 
 const list = async (req, res) => {
   try {
-    const response = await staffServices.listAllStaff();
+    const userId = req.user.id;
 
-    res.status(200).json({response});
+    if (!validator.isUUID(userId)) {
+      return res.status(400).json({
+        error: "ID de usuário inválido",
+      });
+    }
 
+    const response = await staffServices.listAllStaff(userId);
+
+    if (!Array.isArray(response)) {
+      return res
+        .status(response.errorStatus)
+        .json({ error: response.errorMessage });
+    }
+
+    res.status(200).json({ response });
   } catch (error) {
-    console.log(error)
+    console.log(error);
 
-    res.status(500).json({error: "Falha ao listar os funcionários"});
+    res.status(500).json({ error: "Falha ao listar os funcionários" });
   }
 };
 
 const create = async (req, res) => {
-  try{  
-    const {name, surname, cpf, email, phone_number, birthdate, cep, address} = req.body;
+  try {
+    const { name, surname, cpf, email, phoneNumber, birthdate, postalCode } =
+      req.body;
 
-    const userId = req.cookies.id 
+    const userId = req.user.id;
 
-    if (!name || !surname || !cpf || !email || !phone_number || !birthdate || !cep || !address ) {
+    if (!validator.isUUID(userId)) {
+      return res.status(400).json({
+        error: "ID de usuário inválido",
+      });
+    }
+
+    if (
+      !name ||
+      !surname ||
+      !cpf ||
+      !email ||
+      !phoneNumber ||
+      !birthdate ||
+      !postalCode
+    ) {
       return res
         .status(400)
         .json({ error: "Preenchimento obrigatório de todos os campos" });
     }
 
-    if (
-      !validator.isAlpha(name, "pt-BR") ||
-      !validator.isLength(name, { min: 3, max: 20 })
-    ) {
+    if (!validator.isAlpha(name, "pt-BR")) {
       return res.status(400).json({
-        error:
-          "O nome deve ter entre 3 e 20 caracteres, e conter apenas letras",
+        error: "O nome deve conter apenas letras",
       });
     }
 
-    if (!surnamePattern.test(surname)) {
+    if (!validator.isAlpha(surname, "pt-BR", { ignore: " " })) {
       return res.status(400).json({
-        error:
-          "O sobrenome deve ter entre 3 e 50 caracteres, e conter apenas letras",
+        error: "O sobrenome deve conter apenas letras",
       });
     }
 
-    if(!phonePattern.test(phone_number)) {
+    if (!cpfPattern.test(cpf)) {
       return res.status(400).json({
-        error:
-          "O telefone deve conter DDD e entre 9 ou 8 números"
-      })
+        error: "O formato de CPF está inválido",
+      });
     }
 
-    if (birthdate >= todayDate) {
+    if (!phonePattern.test(phoneNumber)) {
       return res.status(400).json({
-        error:
-          "Data de nascimento não pode ser presente ou futura"
-      })
+        error: "O telefone deve conter DDD e entre 9 ou 8 números",
+      });
+    }
+
+    if (birthdate >= todayDate && !validator.isDate(birthdate)) {
+      return res.status(400).json({
+        error: "Data de nascimento não pode ser presente ou futura",
+      });
     }
 
     if (!validator.isEmail(email)) {
       return res.status(400).json({ error: "Formato de e-mail inválido" });
     }
 
-    await staffServices.createStaff(
-      name, 
-      surname, 
-      cpf, 
-      email, 
-      phone_number, 
+    if (!codePostalPattern.test(postalCode)) {
+      return res.status(400).json({ error: "Formato de CEP inválido" });
+    }
+
+    const result = await staffServices.createStaff(
+      name,
+      surname,
+      cpf,
+      email,
+      phoneNumber,
       birthdate,
-      cep, 
-      address,
+      postalCode,
       userId
     );
 
-    res.status(201).json({ message: "Funcionário criado com sucesso" });
+    if (result) {
+      return res
+        .status(result.errorStatus)
+        .json({ error: result.errorMessage });
+    }
 
+    res.status(201).json({ message: "Funcionário criado com sucesso" });
   } catch (error) {
     console.log(error);
 
-    res.status(500).json({ error: "Falha ao criar o funcionário" });;
+    res.status(500).json({ error: "Falha ao criar o funcionário" });
   }
-}
+};
 
 const update = async (req, res) => {
-  try{  
-    const {name, surname, cpf, email, phone_number, cep, address, id} = req.body;
+  try {
+    const {
+      name,
+      surname,
+      cpf,
+      email,
+      phoneNumber,
+      birthdate,
+      postalCode,
+      id,
+    } = req.body;
 
     if (
-      !validator.isAlpha(name, "pt-BR") ||
-      !validator.isLength(name, { min: 3, max: 20 })
+      !name ||
+      !surname ||
+      !cpf ||
+      !email ||
+      !phoneNumber ||
+      !birthdate ||
+      !postalCode
     ) {
+      return res
+        .status(400)
+        .json({ error: "Preenchimento obrigatório de todos os campos" });
+    }
+
+    if (!validator.isUUID(id)) {
       return res.status(400).json({
-        error:
-          "O nome deve ter entre 3 e 20 caracteres, e conter apenas letras",
+        error: "ID de funcionário inválido",
       });
     }
 
-    if (!surnamePattern.test(surname)) {
+    if (!validator.isAlpha(name, "pt-BR")) {
       return res.status(400).json({
-        error:
-          "O sobrenome deve ter entre 3 e 50 caracteres, e conter apenas letras",
+        error: "O nome deve conter apenas letras",
       });
     }
 
-    if(!phonePattern.test(phone_number)) {
+    if (!validator.isAlpha(surname, "pt-BR", { ignore: " " })) {
       return res.status(400).json({
-        error:
-          "O telefone deve conter DDD e entre 9 ou 8 números"
-      })
+        error: "O sobrenome deve conter apenas letras",
+      });
     }
 
-    if (birthdate >= todayDate) {
+    if (!cpfPattern.test(cpf)) {
       return res.status(400).json({
-        error:
-          "Data de nascimento não pode ser presente ou futura"
-      })
+        error: "O formato de CPF está inválido",
+      });
+    }
+
+    if (!phonePattern.test(phoneNumber)) {
+      return res.status(400).json({
+        error: "O telefone deve conter DDD e entre 9 ou 8 números",
+      });
+    }
+
+    if (birthdate >= todayDate && !validator.isDate(birthdate)) {
+      return res.status(400).json({
+        error: "Data de nascimento não pode ser presente ou futura",
+      });
     }
 
     if (!validator.isEmail(email)) {
       return res.status(400).json({ error: "Formato de e-mail inválido" });
     }
 
+    if (!codePostalPattern.test(postalCode)) {
+      return res.status(400).json({ error: "Formato de CEP inválido" });
+    }
+
     await staffServices.updateStaff(
-      name, 
-      surname, 
-      cpf, 
-      email, 
-      phone_number, 
-      cep, 
-      address,
+      name,
+      surname,
+      cpf,
+      email,
+      phoneNumber,
+      birthdate,
+      postalCode,
       id
     );
 
     res.status(201).json({ message: "Funcionário atualizado com sucesso" });
   } catch (error) {
-
-    res.status(500).json({ error: "Falha ao atualizar o funcionário" });;
-  }
-}
-
-const remove  = async (req, res) => {
-  const id = req.body.id;
-
-  try {
-    const response = await staffServices.deleteStaff(id);
-
-    res.status(200).json({response});
-  } catch (error) {
-    res.status(500).json({error});
+    res.status(500).json({ error: "Falha ao atualizar o funcionário" });
   }
 };
 
-module.exports = {list, create, update, remove}
+const remove = async (req, res) => {
+  const id = req.body.id;
+
+  try {
+    await staffServices.deleteStaff(id);
+
+    res.status(200).json({ message: "Funcionário deletado com sucesso" });
+  } catch (error) {
+    res.status(500).json({ error: "Falha ao deletar o funcionário" });
+  }
+};
+
+module.exports = { list, create, update, remove };

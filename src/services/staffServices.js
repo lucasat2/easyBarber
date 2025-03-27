@@ -1,38 +1,66 @@
 const staffRepository = require("../repository/staffRepository.js");
 
-
-const listAllStaff = async () => {
+const listAllStaff = async (userId) => {
   try {
-    const staff = await staffRepository.getAllStaff();
+    const result = await staffRepository.getAllStaff(userId);
 
-    return staff;
+    return result;
   } catch (error) {
     throw error;
   }
 };
 
-const createStaff = async (staffName, surname, cpf, email, phone_number, birthdate, cep, address, userId) => {
+const createStaff = async (
+  name,
+  surname,
+  cpf,
+  email,
+  phoneNumber,
+  birthdate,
+  postalCode,
+  userId
+) => {
   try {
-    await staffRepository.createStaff(      
-      staffName,
+    const result = await staffRepository.createStaff(
+      name,
       surname,
       cpf,
       email,
-      phone_number,
+      phoneNumber,
       birthdate,
-      cep,
-      address,
-      userId);
+      postalCode,
+      userId
+    );
 
+    if (result) {
+      return result;
+    }
   } catch (error) {
     throw error;
   }
 };
 
-const updateStaff = async (staffName, surname, cpf, email, phone_number, cep, address, id) => {
+const updateStaff = async (
+  name,
+  surname,
+  cpf,
+  email,
+  phoneNumber,
+  birthdate,
+  postalCode,
+  id
+) => {
   try {
-    await staffRepository.updateStaff(staffName, surname, cpf, email, phone_number, cep, address, id);
-
+    await staffRepository.updateStaff(
+      name,
+      surname,
+      cpf,
+      email,
+      phoneNumber,
+      birthdate,
+      postalCode,
+      id
+    );
   } catch (error) {
     throw error;
   }
@@ -41,10 +69,9 @@ const updateStaff = async (staffName, surname, cpf, email, phone_number, cep, ad
 const deleteStaff = async (id) => {
   try {
     await staffRepository.removeStaff(id);
-
   } catch (error) {
     throw error;
   }
 };
 
-module.exports = {listAllStaff, createStaff, updateStaff, deleteStaff}
+module.exports = { listAllStaff, createStaff, updateStaff, deleteStaff };
