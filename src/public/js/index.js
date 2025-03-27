@@ -1,6 +1,7 @@
 import router from "./router.js";
 import login from "./pages/login.js";
 
+
 const currentPage = document.getElementById("root");
 
 function changePage() {

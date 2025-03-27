@@ -140,7 +140,7 @@ export default function login() {
 
 	div.querySelector("#goToSignUp").addEventListener("click", e => {
 		e.preventDefault();
-		const event = onNavigate("/signUp");
+		const event = onNavigate("/signup");
 		document.dispatchEvent(event);
 	});
 
