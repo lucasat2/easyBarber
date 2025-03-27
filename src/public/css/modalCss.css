@@ -79,12 +79,12 @@
     margin: 0 0.25rem;
   }
   
-  #appointmentButtonSave {
+  #modalButtonSaveAppointment, #modalButtonSaveBlock {
     background-color: #e2e200;
     color: #000;
   }
   
-  #appointmentButtonCancel {
+  #modalButtonCancelAppointment, #modalButtonCancelBlock {
     background-color: #e63946;
     color: #fff;
   }

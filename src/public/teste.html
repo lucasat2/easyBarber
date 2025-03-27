@@ -86,6 +86,13 @@ function createModal() {
   
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        document.body.removeChild(overlay);
+      }
+    });
+    
   }
   
   //Função cria campo de input  
@@ -170,12 +177,12 @@ function createModal() {
   
     // Botões
     const btnSave = document.createElement('button');
-    btnSave.id = 'appointmentButtonSave';
+    btnSave.id = 'modalButtonSaveAppointment' 
     btnSave.textContent = 'Salvar';
     btnSave.type = 'submit'; // importante!
   
     const btnCancel = document.createElement('button');
-    btnCancel.id = 'appointmentButtonCancel';
+    btnCancel.id = 'modalButtonCancelAppointment'
     btnCancel.textContent = 'Cancelar';
     btnCancel.type = 'button';
   
@@ -264,12 +271,12 @@ function createModal() {
   
     // Botões
     const btnSave = document.createElement('button');
-    btnSave.id = 'appointmentButtonSave';
+    btnSave.id = 'modalButtonSaveBlock';
     btnSave.textContent = 'Salvar bloqueio';
     btnSave.type = 'submit';
   
     const btnCancel = document.createElement('button');
-    btnCancel.id = 'appointmentButtonCancel';
+    btnCancel.id = 'modalButtonCancelBlock';
     btnCancel.textContent = 'Cancelar';
     btnCancel.type = 'button';
   
