@@ -2,7 +2,7 @@ const pool = require("../db");
 let client
 
 const getAllStaff = async () => {
-  const query = "SELECT * FROM staff";
+  const query = "SELECT * FROM staffs";
   try {
 
     const client = await pool.connect();
@@ -27,14 +27,13 @@ const createStaff = async (
   phone_number,
   birthdate,
   cep,
-  address,
   userId
 ) => {
   const companyIdQuery = 
     "SELECT * FROM users WHERE id = $1";
 
   const createStaffQuery = 
-    "INSERT INTO staff (company_id, name, surname, cpf, email, phone_number, birthdate, cep, address) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)";
+    "INSERT INTO staff (company_id, name, surname, cpf, email, phone_number, birthdate, cep) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)";
 
   try {
     const client = await pool.connect();
@@ -53,7 +52,6 @@ const createStaff = async (
       phone_number,
       birthdate,
       cep,
-      address
     ]);
 
   } catch (error){
@@ -73,11 +71,10 @@ const updateStaff = async (
   email,
   phone_number,
   cep,
-  address,
   id
 ) => {
   const query =
-    "UPDATE staff SET name = $1, surname = $2, cpf = $3, email = $4, phone_number = $5, cep = $6, address = $7, updated_at = $8 WHERE id = $9";
+    "UPDATE staff SET name = $1, surname = $2, cpf = $3, email = $4, phone_number = $5, cep = $6, updated_at = $8 WHERE id = $9";
 
   try {
     const client = await pool.connect();
@@ -89,7 +86,6 @@ const updateStaff = async (
       email,
       phone_number,
       cep,
-      address,
       updated_at,
       id
     ]);
@@ -105,7 +101,7 @@ const updateStaff = async (
 }
 
 const removeStaff = async (id) => {
-  const query = "DELETE FROM staff WHERE id = $1";
+  const query = "DELETE FROM staffs WHERE id = $1";
 
   try {
     const client = await pool.connect();
