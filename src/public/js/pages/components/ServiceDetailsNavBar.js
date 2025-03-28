@@ -1,10 +1,6 @@
-import {InitialSchedulingTimelineSection} from "./InitialSchedulingTimelineSection.js";
-
-//
-//
+import { InitialSchedulingTimelineSection } from "./InitialSchedulingTimelineSection.js";
 import DailyServicesModal from "./DailyServicesModal.js";
-//
-//
+import ServiceDetailsModal from "./ServiceDetailsModal.js";
 
 export default function header() {
 	const root = document.getElementById("root");
@@ -215,6 +211,19 @@ export default function header() {
 			main.innerHTML = "Equipe";
 		} else if (activeItem.id == "Serviço") {
 			main.innerHTML = "Serviço";
+
+			const serviceDetails = {
+				user: "João Silva",
+				service: "Corte com navalha",
+				time: "10h30 - 11h15",
+				employee: "Bruno",
+				price: "40,00",
+				registrationDate: "17/03/2025 - 18h55",
+				notes: "Cliente preferencial",
+			};
+
+			const modal = ServiceDetailsModal(serviceDetails);
+			document.body.appendChild(modal);
 		}
 	}
 
