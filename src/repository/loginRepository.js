@@ -1,6 +1,6 @@
 const pool = require("../db");
 
-const getUser = async (email) => {
+const getUserData = async (email) => {
   let client;
 
   try {
@@ -22,4 +22,4 @@ const getUser = async (email) => {
   }
 };
 
-module.exports = { getUser };
+module.exports = { getUserData };
