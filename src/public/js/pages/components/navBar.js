@@ -1,5 +1,11 @@
 import {InitialSchedulingTimelineSection} from "./InitialSchedulingTimelineSection.js";
 
+//
+//
+import DailyServicesModal from "./DailyServicesModal.js";
+//
+//
+
 export default function header() {
 	const root = document.getElementById("root");
 	// Resetando a página
@@ -140,13 +146,74 @@ export default function header() {
 		main.innerHTML = "";
 		main.style.padding = "1rem";
 
-		if ((activeItem.id == "Agendamentos")) {
+		if (activeItem.id == "Agendamentos") {
 			main.appendChild(InitialSchedulingTimelineSection());
-		} else if((activeItem.id == "Clientes")) {
+		} else if (activeItem.id == "Clientes") {
 			main.innerHTML = "Clientes";
-		} else if((activeItem.id == "Equipe")) {
+
+			//
+			//
+			//
+			// afim de teste somente
+			const listObj = [
+				{
+					professional: "Fabiano",
+					client: "João Silva",
+					email: "joao.silva@email.com",
+					date: "2025-04-10",
+					hour: "14:00",
+					description: "Desenvolvimento de site institucional",
+					price: 2500,
+					status: false
+				},
+				{
+					professional: "Bruno",
+					client: "Maria Oliveira",
+					email: "maria.oliveira@email.com",
+					date: "2025-04-12",
+					hour: "09:30",
+					description: "Criação de landing page para campanha de marketing",
+					price: 1800,
+					status: false
+				},
+				{
+					professional: "Lucas",
+					client: "Carlos Mendes",
+					email: "carlos.mendes@email.com",
+					date: "2025-04-15",
+					hour: "11:00",
+					description: "Sistema de agendamento para barbearia",
+					price: 3200,
+					status: false
+				},
+				{
+					professional: "Gabriell",
+					client: "Ana Souza",
+					email: "ana.souza@email.com",
+					date: "2025-04-18",
+					hour: "16:45",
+					description: "E-commerce para loja de roupas",
+					price: 5400,
+					status: false
+				},
+				{
+					professional: "Vitor",
+					client: "Lucas Pereira",
+					email: "lucas.pereira@email.com",
+					date: "2025-04-22",
+					hour: "10:15",
+					description: "Aplicativo mobile para controle de estoque, Aplicativo mobile para controle de estoque, Aplicativo mobile para controle de estoque, Aplicativo mobile para controle de estoque, Aplicativo mobile para controle de estoque, Aplicativo mobile para controle de estoque, Aplicativo mobile para controle de estoque, Aplicativo mobile para controle de estoque, Aplicativo mobile para controle de estoque, Aplicativo mobile para controle de estoque, ",
+					price: 7200,
+					status: true
+				}
+			];
+			main.appendChild(DailyServicesModal(listObj));
+			//
+			//
+			//
+		} else if (activeItem.id == "Equipe") {
 			main.innerHTML = "Equipe";
-		} else if((activeItem.id == "Serviço")) {
+		} else if (activeItem.id == "Serviço") {
 			main.innerHTML = "Serviço";
 		}
 	}
@@ -164,6 +231,7 @@ export default function header() {
 		li.style.borderRadius = "10px";
 		li.style.display = "flex";
 		li.style.alignItems = "center";
+		li.style.cursor = "pointer";
 		li.addEventListener("click", function () {
 			highlightActiveButton(li);
 		});
@@ -177,6 +245,7 @@ export default function header() {
 	buttonSair.style.width = "100%";
 	buttonSair.style.height = "3rem";
 	buttonSair.style.background = "#EB4335";
+	buttonSair.style.cursor = "pointer";
 	buttonSair.style.borderRadius = "10px";
 	buttonSair.style.display = "flex";
 	buttonSair.style.justifyContent = "center";
