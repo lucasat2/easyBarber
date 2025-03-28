@@ -1,48 +1,75 @@
-const servicesModel = require("../models/servicesModel");
+const servicesRepository = require("../repository/servicesRepository");
 
-const createService = async (company_id, name, description, price, average_duration) => {
+const createService = async (
+  userId,
+  name,
+  description,
+  price,
+  averageDuration
+) => {
   try {
-    const service = await servicesModel.createService(company_id, name, description, price, average_duration);
-    return service;
+    const result = await servicesRepository.createService(
+      userId,
+      name,
+      description,
+      price,
+      averageDuration
+    );
+    if (result) {
+      return result;
+    }
   } catch (error) {
-    console.log(error);
-    return { error: true, errorCode: 500, errorMessage: "Falha ao criar o serviço" };
+    throw error;
   }
 };
 
-const getServices = async () => {
+const listAllCompanyServices = async (userId) => {
   try {
-    const services = await servicesModel.getServices();
-    return services;
+    const result = await servicesRepository.listAllCompanyServices(userId);
+
+    return result;
   } catch (error) {
-    console.log(error);
-    return { error: true, errorCode: 500, errorMessage: "Falha ao buscar os serviços" };
+    throw error;
   }
 };
 
-const updateService = async (id, name, description, price, average_duration) => {
+const updateService = async (
+  userId,
+  serviceID,
+  name,
+  description,
+  price,
+  averageDuration
+) => {
   try {
-    const service = await servicesModel.updateService(id, name, description, price, average_duration);
-    return service;
+    const result = await servicesRepository.updateService(
+      userId,
+      serviceID,
+      name,
+      description,
+      price,
+      averageDuration
+    );
+
+    if (result) {
+      return result;
+    }
   } catch (error) {
-    console.log(error);
-    return { error: true, errorCode: 500, errorMessage: "Falha ao atualizar o serviço" };
+    throw error;
   }
 };
 
-const deleteService = async (id) => {
+const deleteService = async (serviceID) => {
   try {
-    const service = await servicesModel.deleteService(id);
-    return service;
+    await servicesRepository.deleteService(serviceID);
   } catch (error) {
-    console.log(error);
-    return { error: true, errorCode: 500, errorMessage: "Falha ao deletar o serviço" };
+    throw error;
   }
 };
 
 module.exports = {
   createService,
-  getServices,
+  listAllCompanyServices,
   updateService,
   deleteService,
 };

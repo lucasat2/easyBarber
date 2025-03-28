@@ -1,16 +1,55 @@
+const validator = require("validator");
 const servicesService = require("../services/servicesService");
+const priceRegex = /^\d+(\.\d{1,2})?$/;
 
 const createService = async (req, res) => {
   try {
-    const { company_id, name, description, price, average_duration } = req.body;
+    const { name, description, price, avegareDuration } = req.body;
+    const userId = req.user.id;
 
-    if (!company_id || !name || !description || !price || !average_duration) {
-      return res.status(400).json({ error: "Preenchimento obrigatório de todos os campos" });
+    if (!validator.isUUID(userId)) {
+      return res.status(400).json({ error: "ID de usuário inválido" });
     }
 
-    const result = await servicesService.createService(company_id, name, description, price, average_duration);
+    if (!name || !description || !price || !avegareDuration) {
+      return res
+        .status(400)
+        .json({ error: "Preenchimento obrigatório de todos os campos" });
+    }
 
-    if (result.error) {
+    if (!validator.isAlpha(name, "pt-BR", { ignore: " " })) {
+      return res
+        .status(400)
+        .json({ error: "Nome do serviço deve conter apenas letras" });
+    }
+
+    if (!validator.isAlpha(description, "pt-BR", { ignore: " " })) {
+      return res
+        .status(400)
+        .json({ error: "Descrição deve conter apenas letras" });
+    }
+
+    if (!priceRegex.test(price)) {
+      return res.status(400).json({
+        error: "Preço deve ser um número válido com até duas casas decimais",
+      });
+    }
+
+    if (!validator.isInt(avegareDuration, { min: 1 })) {
+      return res
+        .status(400)
+        .json({ error: "Duração média deve ser em minutos" });
+    }
+
+    const result = await servicesService.createService(
+      userId,
+      name,
+      description,
+      price,
+      avegareDuration
+    );
+
+    if (result) {
       return res.status(result.errorCode).json({ error: result.errorMessage });
     }
 
@@ -21,28 +60,79 @@ const createService = async (req, res) => {
   }
 };
 
-const getServices = async (req, res) => {
+const listAllCompanyServices = async (req, res) => {
   try {
-    const services = await servicesService.getServices();
-    res.status(200).json(services);
+    const userId = req.user.id;
+
+    if (!validator.isUUID(userId)) {
+      return res.status(400).json({ error: "ID de usuário inválido" });
+    }
+
+    const result = await servicesService.listAllCompanyServices(userId);
+
+    if (!Array.isArray(result)) {
+      return res.status(result.errorCode).json({ error: result.errorMessage });
+    }
+
+    res.status(200).json(result);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Falha ao buscar os serviços" });
+
+    res.status(500).json({ error: "Falha ao buscar os serviços da empresa" });
   }
 };
 
 const updateService = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name, description, price, average_duration } = req.body;
+    const userId = req.user.id;
 
-    if (!name || !description || !price || !average_duration) {
-      return res.status(400).json({ error: "Preenchimento obrigatório de todos os campos" });
+    const { serviceID, name, description, price, averageDuration } = req.body;
+
+    if (!validator.isUUID(serviceID)) {
+      return res.status(400).json({ error: "ID de serviço inválido" });
     }
 
-    const result = await servicesService.updateService(id, name, description, price, average_duration);
+    if (!validator.isUUID(userId)) {
+      return res.status(400).json({ error: "ID de usuário inválido" });
+    }
 
-    if (result.error) {
+    if (name && !validator.isAlpha(name, "pt-BR", { ignore: " " })) {
+      return res
+        .status(400)
+        .json({ error: "Nome do serviço deve conter apenas letras" });
+    }
+
+    if (
+      description &&
+      !validator.isAlpha(description, "pt-BR", { ignore: " " })
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Descrição deve conter apenas letras" });
+    }
+
+    if (price && !validator.isFloat(price, { min: 0 })) {
+      return res
+        .status(400)
+        .json({ error: "Preço deve ser um número positivo" });
+    }
+
+    if (averageDuration && !validator.isInt(averageDuration, { min: 1 })) {
+      return res
+        .status(400)
+        .json({ error: "Duração média deve ser em minutos" });
+    }
+
+    const result = await servicesService.updateService(
+      userId,
+      serviceID,
+      name,
+      description,
+      price,
+      averageDuration
+    );
+
+    if (result) {
       return res.status(result.errorCode).json({ error: result.errorMessage });
     }
 
@@ -55,12 +145,9 @@ const updateService = async (req, res) => {
 
 const deleteService = async (req, res) => {
   try {
-    const { id } = req.params;
-    const result = await servicesService.deleteService(id);
+    const { serviceID } = req.body;
 
-    if (result.error) {
-      return res.status(result.errorCode).json({ error: result.errorMessage });
-    }
+    await servicesService.deleteService(serviceID);
 
     res.status(200).json({ message: "Serviço deletado com sucesso" });
   } catch (error) {
@@ -71,7 +158,7 @@ const deleteService = async (req, res) => {
 
 module.exports = {
   createService,
-  getServices,
+  listAllCompanyServices,
   updateService,
   deleteService,
 };
