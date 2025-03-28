@@ -66,9 +66,9 @@ const updateStaff = async (
   }
 };
 
-const deleteStaff = async (id) => {
+const deleteStaff = async (staffId) => {
   try {
-    await staffRepository.removeStaff(id);
+    await staffRepository.removeStaff(staffId);
   } catch (error) {
     throw error;
   }

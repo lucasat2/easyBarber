@@ -3,11 +3,12 @@ const staffServices = require("../services/staffServices");
 const phonePattern = /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/;
 const codePostalPattern = /^\d{5}-?\d{3}$/;
 const cpfPattern = /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/;
+const todayDate = new Date()
 
 const list = async (req, res) => {
   try {
     const userId = req.user.id;
-    console.log(1)
+
     if (!validator.isUUID(userId)) {
       return res.status(400).json({
         error: "ID de usuário inválido",
@@ -196,10 +197,10 @@ const update = async (req, res) => {
 };
 
 const remove = async (req, res) => {
-  const id = req.user.id;
 
+  const {staffId} = req.body
   try {
-    await staffServices.deleteStaff(id);
+    await staffServices.deleteStaff(staffId);
 
     res.status(200).json({ message: "Funcionário deletado com sucesso" });
   } catch (error) {

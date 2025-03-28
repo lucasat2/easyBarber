@@ -163,13 +163,13 @@ const updateStaff = async (
   }
 };
 
-const removeStaff = async (id) => {
+const removeStaff = async (staffId) => {
   const deleteStaff = "DELETE FROM staffs WHERE id = $1";
 
   try {
     client = await pool.connect();
 
-    await client.query(deleteStaff, [id]);
+    await client.query(deleteStaff, [staffId]);
 
   } catch (error) {
     throw error;

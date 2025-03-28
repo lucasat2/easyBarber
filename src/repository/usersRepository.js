@@ -18,7 +18,7 @@ const insertNewUser = async (
     const isEmailRegisteredQuery = "SELECT * FROM users WHERE email = $1";
 
     const insertNewAddressQuery =
-      "INSERT INTO companies_address (state, city, street, number, postal_code) VALUES ($1, $2, $3, $4, $5";
+      "INSERT INTO companies_address (state, city, street, number, postal_code) VALUES ($1, $2, $3, $4, $5)";
 
     const findAddressDataQuery =
       "SELECT * FROM companies_address WHERE number = $1 AND postal_code = $2";
