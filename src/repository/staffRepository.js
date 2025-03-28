@@ -1,12 +1,11 @@
 const pool = require("../db");
-const { all } = require("../routes");
 let client;
 
 const getAllStaff = async (userId) => {
   try {
     const getCompanyData = "SELECT * FROM users WHERE id = $1";
 
-    const client = await pool.connect();
+    client = await pool.connect();
 
     const {
       rows: [user],
@@ -34,6 +33,7 @@ const getAllStaff = async (userId) => {
   } finally {
     if (client) {
       client.release();
+      
     }
   }
 };
@@ -54,7 +54,7 @@ const createStaff = async (
     "INSERT INTO staffs (company_id, name, surname, cpf, email, phone_number, birthdate, postal_code) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)";
 
   try {
-    const client = await pool.connect();
+    client = await pool.connect();
 
     const {
       rows: [userData],
@@ -97,7 +97,7 @@ const updateStaff = async (
 
   try {
 
-  const client = await pool.connect();
+  client = await pool.connect();
 
   await client.query("BEGIN")
 
@@ -167,7 +167,7 @@ const removeStaff = async (id) => {
   const deleteStaff = "DELETE FROM staffs WHERE id = $1";
 
   try {
-    const client = await pool.connect();
+    client = await pool.connect();
 
     await client.query(deleteStaff, [id]);
 

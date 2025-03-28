@@ -1,16 +1,13 @@
 const validator = require("validator");
 const staffServices = require("../services/staffServices");
-const { post } = require("../routes");
-const surnamePattern = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]{3,50}$/;
 const phonePattern = /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/;
 const codePostalPattern = /^\d{5}-?\d{3}$/;
-const cpfPattern = / ^\d{3}\.\d{3}\.\d{3}\-\d{2}$/;
-const todayDate = new Date();
+const cpfPattern = /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/;
 
 const list = async (req, res) => {
   try {
     const userId = req.user.id;
-
+    console.log(1)
     if (!validator.isUUID(userId)) {
       return res.status(400).json({
         error: "ID de usuário inválido",
@@ -71,7 +68,7 @@ const create = async (req, res) => {
       });
     }
 
-    if (birthdate && birthdate >= todayDate && !validator.isDate(birthdate)) {
+    if (birthdate && (!validator.isDate(birthdate) || new Date(birthdate) >= todayDate)) {
       return res.status(400).json({
         error: "Data de nascimento não pode ser presente ou futura",
       });
@@ -167,7 +164,7 @@ const update = async (req, res) => {
       });
     }
 
-    if (birthdate >= todayDate && !validator.isDate(birthdate)) {
+    if (birthdate && (!validator.isDate(birthdate) || new Date(birthdate) >= todayDate)) {
       return res.status(400).json({
         error: "Data de nascimento não pode ser presente ou futura",
       });
@@ -199,7 +196,7 @@ const update = async (req, res) => {
 };
 
 const remove = async (req, res) => {
-  const id = req.body.id;
+  const id = req.user.id;
 
   try {
     await staffServices.deleteStaff(id);
