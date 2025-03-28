@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const servicesController = require("../controller/servicesController");
+const { verifyActiveSession } = require("../middleware");
 
-router.post("/", servicesController.createService);
-router.get("/", servicesController.listAllCompanyServices);
-router.put("/", servicesController.updateService);
-router.delete("/", servicesController.deleteService);
+router.post("/", verifyActiveSession, servicesController.createService);
+router.get("/", verifyActiveSession, servicesController.listAllCompanyServices);
+router.put("/", verifyActiveSession, servicesController.updateService);
+router.delete("/", verifyActiveSession, servicesController.deleteService);
 
 module.exports = router;
