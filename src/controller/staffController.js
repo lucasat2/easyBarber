@@ -1,5 +1,6 @@
 const validator = require("validator");
 const staffServices = require("../services/staffServices");
+const { post } = require("../routes");
 const surnamePattern = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]{3,50}$/;
 const phonePattern = /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/;
 const codePostalPattern = /^\d{5}-?\d{3}$/;
@@ -45,55 +46,42 @@ const create = async (req, res) => {
       });
     }
 
-    if (
-      !name ||
-      !surname ||
-      !cpf ||
-      !email ||
-      !phoneNumber ||
-      !birthdate ||
-      !postalCode
-    ) {
-      return res
-        .status(400)
-        .json({ error: "Preenchimento obrigatório de todos os campos" });
-    }
 
-    if (!validator.isAlpha(name, "pt-BR")) {
+    if (name && !validator.isAlpha(name, "pt-BR")) {
       return res.status(400).json({
         error: "O nome deve conter apenas letras",
       });
     }
 
-    if (!validator.isAlpha(surname, "pt-BR", { ignore: " " })) {
+    if (surname && !validator.isAlpha(surname, "pt-BR", { ignore: " " })) {
       return res.status(400).json({
         error: "O sobrenome deve conter apenas letras",
       });
     }
 
-    if (!cpfPattern.test(cpf)) {
+    if (cpf && !cpfPattern.test(cpf)) {
       return res.status(400).json({
         error: "O formato de CPF está inválido",
       });
     }
 
-    if (!phonePattern.test(phoneNumber)) {
+    if (phoneNumber && !phonePattern.test(phoneNumber)) {
       return res.status(400).json({
         error: "O telefone deve conter DDD e entre 9 ou 8 números",
       });
     }
 
-    if (birthdate >= todayDate && !validator.isDate(birthdate)) {
+    if (birthdate && birthdate >= todayDate && !validator.isDate(birthdate)) {
       return res.status(400).json({
         error: "Data de nascimento não pode ser presente ou futura",
       });
     }
 
-    if (!validator.isEmail(email)) {
+    if (email && !validator.isEmail(email)) {
       return res.status(400).json({ error: "Formato de e-mail inválido" });
     }
 
-    if (!codePostalPattern.test(postalCode)) {
+    if (postalCode && !codePostalPattern.test(postalCode)) {
       return res.status(400).json({ error: "Formato de CEP inválido" });
     }
 
