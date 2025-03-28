@@ -50,5 +50,4 @@ async function onPageLoad() {
 }
 
 window.addEventListener("load", onPageLoad);
-
-export { onPageLoad };
+export {onPageLoad};
