@@ -29,20 +29,21 @@
 
 .confirmationButtonContainer {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   gap: 10px;
 }
 
 .confirmationButton {
-  padding: 10px 20px;
+  padding: 10px 40px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
+  margin-right: 0;
 }
 
 .confirmButton {
-  background-color: #4caf50;
+  background-color: #9FA324;
   color: #fff;
 }
 

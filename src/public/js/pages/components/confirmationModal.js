@@ -1,4 +1,4 @@
-export default function confirmationModal(onConfirm, onCancel) {
+export default function externalServiceScheduling(onConfirm, onCancel) {
   const container = document.createElement("div");
   container.classList.add("confirmationModalOverlay");
 
