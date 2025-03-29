@@ -1,59 +1,62 @@
 import router from "./router.js";
 import login from "./pages/login.js";
 
-
 const currentPage = document.getElementById("root");
 
 function changePage() {
-  const objectRouter = router();
+	const objectRouter = router();
 
-  document.addEventListener("onstatechange", function (event) {
-    const pathPage = event.detail.path;
+	document.addEventListener("onstatechange", function (event) {
+		const pathPage = event.detail.path;
 
-    const page = objectRouter.getPage(pathPage)?.();
+		const page = objectRouter.getPage(pathPage)?.();
 
-    history.pushState({}, "", pathPage);
+		history.pushState({}, "", pathPage);
 
-    currentPage.innerHTML = "";
-    currentPage.appendChild(page);
-  });
+		currentPage.innerHTML = "";
+		currentPage.appendChild(page);
+	});
 
-  // Carrega a rota atual baseada na URL
-  const currentPath = window.location.pathname;
-  const page = objectRouter.getPage(currentPath)?.();
+	// Carrega a rota atual baseada na URL
+	const currentPath = window.location.pathname;
+	const page = objectRouter.getPage(currentPath)?.();
 
-  currentPage.innerHTML = "";
-  if (page) currentPage.appendChild(page);
-  else currentPage.appendChild(login());
+	currentPage.innerHTML = "";
+	if (page) currentPage.appendChild(page);
+	else currentPage.appendChild(login());
 }
 
 async function onPageLoad() {
-  const currentPath = window.location.pathname;
-	if (window.location.pathname === "/") {
+	const currentPath = window.location.pathname;
+	if (currentPath.startsWith("/customer")) {
+		alert(1)
+		return;
+	}
+	if (currentPath === "/") {
 		changePage();
 		return;
-	} else if (window.location.pathname === "/signUp") {
+	} else if (currentPath === "/signUp") {
 		changePage();
 		return;
 	}
 
-  // Se for rota pública (como login ou cadastro), carrega direto
-  if (["/", "/signup"].includes(currentPath)) {
-    changePage();
-    return;
-  }
+	// Se for rota pública (como login ou cadastro), carrega direto
+	if (["/", "/signup"].includes(currentPath)) {
+		changePage();
+		return;
+	}
 
-  // Verifica autenticação em rotas protegidas
-  const authResponse = await fetch("/api/me");
-  if (authResponse.status === 200) {
-    // Autenticado → continua para a rota atual
-    changePage();
-  } else {
-    // Não autenticado → volta para login
-    currentPage.innerHTML = "";
-    currentPage.appendChild(login());
-    history.pushState(null, null, "/");
-  }
+	// Verifica autenticação em rotas protegidas
+	const authResponse = await fetch("/api/me");
+	if (authResponse.status === 200) {
+		// Autenticado → continua para a rota atual
+		changePage();
+	} else {
+		// Não autenticado → volta para login
+		currentPage.innerHTML = "";
+		currentPage.appendChild(login());
+		history.pushState(null, null, "/");
+	}
 }
 
 window.addEventListener("load", onPageLoad);
