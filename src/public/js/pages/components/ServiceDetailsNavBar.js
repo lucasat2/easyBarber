@@ -1,156 +1,167 @@
-import { InitialSchedulingTimelineSection } from "./InitialSchedulingTimelineSection.js";
-import DailyServicesModal from "./DailyServicesModal.js";
-import ServiceDetailsModal from "./ServiceDetailsModal.js";
+// Import statements at the top
+import { InitialSchedulingTimelineSection } from "./InitialSchedulingTimelineSection.js"
+import DailyServicesModal from "./DailyServicesModal.js"
+import ServiceDetailsModal from "./ServiceDetailsModal.js"
+
 
 export default function header() {
-	const root = document.getElementById("root");
-	// Resetando a página
-	root.style.background = "#F5F5F5";
+	const root = document.getElementById("root")
+	root.style.background = "#F5F5F5"
+	root.style.width = "100%"
 
-	// Formatando as medidas
-	root.style.width = "100%";
+	// Create main container with flexbox
+	const divContainerNav = document.createElement("div")
+	divContainerNav.style.display = "flex"
+	divContainerNav.style.height = "100vh"
+	divContainerNav.style.overflow = "hidden"
 
-	// Começando o componente aqui
+	// Create main content container
+	const containerMain = document.createElement("div")
+	containerMain.style.width = "100%"
+	containerMain.style.display = "flex"
+	containerMain.style.flexDirection = "column"
+	containerMain.style.overflow = "auto"
 
-	// div que vai segurar o espaço para a NavBar
-	// separando o espaço dela e o espaço que segura os outros componentes
-	const divContainerNav = document.createElement("div");
-	divContainerNav.style.display = "flex";
+	// Create main content area
+	const main = document.createElement("main")
+	main.id = "main"
+	main.style.padding = "1.5rem"
+	main.style.flex = "1"
+	main.style.overflow = "auto"
 
-	const containerMain = document.createElement("div");
-	containerMain.style.width = "100%";
-	containerMain.style.border = "1px solid #F5F5F5";
+	// Create header with improved styling
+	const header = document.createElement("header")
+	header.style.width = "100%"
+	header.style.height = "6rem"
+	header.style.background = "white"
+	header.style.padding = "1.5rem"
+	header.style.display = "flex"
+	header.style.justifyContent = "space-between"
+	header.style.alignItems = "center"
+	header.style.boxShadow = "0 2px 4px rgba(0,0,0,0.05)"
 
-	const main = document.createElement("main");
-	// ao trocar o componente, tem q ser colocado aqui dentro
-	main.id = "main";
-	main.innerHTML = "";
+	// Create title container with improved spacing
+	const divTitleHeader = document.createElement("div")
+	divTitleHeader.style.display = "flex"
+	divTitleHeader.style.flexDirection = "column"
+	divTitleHeader.style.gap = ".5rem"
 
-	// componente do header em si
-	const header = document.createElement("header");
-	header.style.width = "100%";
-	header.style.height = "6rem";
-	header.style.background = "white";
-	header.style.padding = "1rem";
-	header.style.display = "flex";
-	header.style.justifyContent = "space-between";
-	header.style.alignItems = "center";
+	const titleHeader = document.createElement("h1")
+	titleHeader.id = "titleHeader"
+	titleHeader.style.fontSize = "1.5rem"
+	titleHeader.style.fontWeight = "600"
+	titleHeader.style.margin = "0"
+	titleHeader.style.color = "#333"
 
-	// título da página
-	const divTitleHeader = document.createElement("div");
-	divTitleHeader.style.display = "flex";
-	divTitleHeader.style.flexDirection = "column";
-	divTitleHeader.style.gap = ".5rem";
+	const subTitleHeader = document.createElement("h2")
+	subTitleHeader.id = "subTitleHeader"
+	subTitleHeader.style.fontSize = "1rem"
+	subTitleHeader.style.fontWeight = "400"
+	subTitleHeader.style.margin = "0"
+	subTitleHeader.style.color = "#666"
 
-	const titleHeader = document.createElement("h1");
-	titleHeader.id = "titleHeader";
-	titleHeader.style.fontSize = "1.5rem";
+	// Create profile section with improved styling
+	const divProfile = document.createElement("div")
+	divProfile.style.display = "flex"
+	divProfile.style.alignItems = "center"
+	divProfile.style.gap = "1rem"
 
-	const subTitleHeader = document.createElement("h2");
-	subTitleHeader.id = "subTitleHeader";
-	subTitleHeader.style.fontSize = "1rem";
+	const divImage = document.createElement("div")
+	divImage.style.height = "48px"
+	divImage.style.width = "48px"
+	divImage.style.borderRadius = "50%"
+	divImage.style.overflow = "hidden"
+	divImage.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)"
 
-	// container do perfil do usuário
-	const divProfile = document.createElement("div");
-	divProfile.style.maxWidth = "186px";
-	divProfile.style.display = "flex";
-	divProfile.style.gap = "1rem";
+	const image = document.createElement("img")
+	image.src = "https://picsum.photos/500"
+	image.style.height = "100%"
+	image.style.width = "100%"
+	image.style.objectFit = "cover"
+	image.alt = "Profile picture"
 
-	const divImage = document.createElement("div");
-	divImage.style.height = "48px";
-	divImage.style.width = "48px";
-	divImage.style.borderRadius = "50%";
-	divImage.style.overflow = "hidden";
+	const contentUser = document.createElement("div")
+	contentUser.style.display = "flex"
+	contentUser.style.flexDirection = "column"
+	contentUser.style.justifyContent = "space-around"
 
-	const image = document.createElement("img");
-	image.src = "https://picsum.photos/500";
-	image.style.height = "100%";
-	image.style.width = "100%";
-	image.style.objectFit = "cover";
+	const nameUser = document.createElement("div")
+	nameUser.innerText = "Usuário"
+	nameUser.style.fontWeight = "600"
+	nameUser.style.color = "#333"
 
-	const contentUser = document.createElement("div");
-	contentUser.style.display = "flex";
-	contentUser.style.flexDirection = "column";
-	contentUser.style.justifyContent = "space-around";
+	const typeUser = document.createElement("div")
+	typeUser.innerText = "Comum"
+	typeUser.style.fontSize = "0.875rem"
+	typeUser.style.color = "#666"
 
-	const nameUser = document.createElement("div");
-	nameUser.innerText = "Usuário";
-	nameUser.style.fontWeight = "900";
+	// Create sidebar with improved styling
+	const navBar = document.createElement("nav")
+	navBar.style.height = "100vh"
+	navBar.style.width = "256px"
+	navBar.style.minWidth = "256px"
+	navBar.style.background = "white"
+	navBar.style.padding = "2rem 1.5rem"
+	navBar.style.boxShadow = "2px 0 4px rgba(0,0,0,0.05)"
+	navBar.style.display = "flex"
+	navBar.style.flexDirection = "column"
+	navBar.style.zIndex = "10"
 
-	const typeUser = document.createElement("div");
-	typeUser.innerText = "Comum";
+	const navgation = document.createElement("div")
+	navgation.style.height = "100%"
+	navgation.style.display = "flex"
+	navgation.style.flexDirection = "column"
+	navgation.style.justifyContent = "space-between"
 
-	contentUser.appendChild(nameUser);
-	contentUser.appendChild(typeUser);
+	const logoImage = document.createElement("div")
+	logoImage.style.width = "100%"
+	logoImage.style.marginBottom = "2.5rem"
 
-	divImage.appendChild(image);
-	divProfile.appendChild(divImage);
-	divProfile.appendChild(contentUser);
+	const imageContent = document.createElement("img")
+	imageContent.src = "../assets/logo-yellow.png"
+	imageContent.style.width = "100%"
+	imageContent.style.maxHeight = "50px"
+	imageContent.style.objectFit = "contain"
+	imageContent.alt = "Logo"
 
-	// componente da navbar em si
-	const navBar = document.createElement("nav");
-	navBar.style.height = "100vh";
-	navBar.style.width = "256px";
-	navBar.style.minWidth = "256px";
-	navBar.style.background = "white";
-	navBar.style.padding = "2rem";
-
-	// div da logo + lista da navbar
-	const navgation = document.createElement("div");
-	navgation.style.height = "100%";
-	navgation.style.display = "flex";
-	navgation.style.flexDirection = "column";
-	navgation.style.justifyContent = "space-between";
-	navgation.style.alignItems = "center";
-
-	const logoImage = document.createElement("div");
-	logoImage.style.width = "100%";
-
-	const imageContent = document.createElement("img");
-	imageContent.src = "../assets/logo-yellow.png";
-	imageContent.style.width = "100%";
-
-	logoImage.appendChild(imageContent);
-
-	// lista da navbar
-	const listBar = document.createElement("ul");
-	listBar.id = "navBarListUl";
-	listBar.style.listStyle = "none";
-	listBar.style.display = "flex";
-	listBar.style.width = "100%";
-	listBar.style.flexDirection = "column";
-	listBar.style.justifyContent = "space-between";
+	// Create navigation menu with improved styling
+	const listBar = document.createElement("ul")
+	listBar.id = "navBarListUl"
+	listBar.style.listStyle = "none"
+	listBar.style.padding = "0"
+	listBar.style.margin = "0"
+	listBar.style.display = "flex"
+	listBar.style.width = "100%"
+	listBar.style.flexDirection = "column"
+	listBar.style.gap = "0.75rem"
 
 	function highlightActiveButton(activeItem) {
-		const titleHeader = document.getElementById("titleHeader");
-		titleHeader.innerText = activeItem.id;
+		const titleHeader = document.getElementById("titleHeader")
+		titleHeader.innerText = activeItem.id
 
-		const subTitleHeader = document.getElementById("subTitleHeader");
-		subTitleHeader.innerText = `Vamos ver sobre - ${activeItem.id}`;
+		const subTitleHeader = document.getElementById("subTitleHeader")
+		subTitleHeader.innerText = `Vamos ver sobre - ${activeItem.id}`
 
-		// Remove a cor de fundo de todos os itens da lista
-		const allItems = document.querySelectorAll("#navBarListUl li");
-		allItems.forEach(item => {
-			item.style.background = "";
-		});
+		// Reset all menu items
+		const allItems = document.querySelectorAll("#navBarListUl li")
+		allItems.forEach((item) => {
+			item.style.background = ""
+			item.style.fontWeight = "normal"
+		})
 
-		// Define a cor de fundo apenas no item clicado
-		activeItem.style.background = "#DEE33E";
+		// Highlight active item
+		activeItem.style.background = "#DEE33E"
+		activeItem.style.fontWeight = "600"
 
-		// arrumando main
-		const main = document.getElementById("main");
-		main.innerHTML = "";
-		main.style.padding = "1rem";
+		// Clear and update main content
+		const main = document.getElementById("main")
+		main.innerHTML = ""
 
 		if (activeItem.id == "Agendamentos") {
-			main.appendChild(InitialSchedulingTimelineSection());
+			main.appendChild(InitialSchedulingTimelineSection())
 		} else if (activeItem.id == "Clientes") {
-			main.innerHTML = "Clientes";
+			main.innerHTML = "Clientes"
 
-			//
-			//
-			//
-			// afim de teste somente
 			const listObj = [
 				{
 					professional: "Fabiano",
@@ -160,7 +171,7 @@ export default function header() {
 					hour: "14:00",
 					description: "Desenvolvimento de site institucional",
 					price: 2500,
-					status: false
+					status: false,
 				},
 				{
 					professional: "Bruno",
@@ -170,7 +181,7 @@ export default function header() {
 					hour: "09:30",
 					description: "Criação de landing page para campanha de marketing",
 					price: 1800,
-					status: false
+					status: false,
 				},
 				{
 					professional: "Lucas",
@@ -180,7 +191,7 @@ export default function header() {
 					hour: "11:00",
 					description: "Sistema de agendamento para barbearia",
 					price: 3200,
-					status: false
+					status: false,
 				},
 				{
 					professional: "Gabriell",
@@ -190,7 +201,7 @@ export default function header() {
 					hour: "16:45",
 					description: "E-commerce para loja de roupas",
 					price: 5400,
-					status: false
+					status: false,
 				},
 				{
 					professional: "Vitor",
@@ -198,121 +209,157 @@ export default function header() {
 					email: "lucas.pereira@email.com",
 					date: "2025-04-22",
 					hour: "10:15",
-					description: "Aplicativo mobile para controle de estoque, Aplicativo mobile para controle de estoque, Aplicativo mobile para controle de estoque, Aplicativo mobile para controle de estoque, Aplicativo mobile para controle de estoque, Aplicativo mobile para controle de estoque, Aplicativo mobile para controle de estoque, Aplicativo mobile para controle de estoque, Aplicativo mobile para controle de estoque, Aplicativo mobile para controle de estoque, ",
+					description: "Aplicativo mobile para controle de estoque",
 					price: 7200,
-					status: true
-				}
-			];
-			main.appendChild(DailyServicesModal(listObj));
-			//
-			//
-			//
+					status: true,
+				},
+			]
+			main.appendChild(DailyServicesModal(listObj))
 		} else if (activeItem.id == "Equipe") {
-			main.innerHTML = "Equipe";
+			main.innerHTML = "Equipe"
 		} else if (activeItem.id == "Serviço") {
-			main.innerHTML = "Serviço";
+			main.innerHTML = "Serviço"
 
 			const serviceDetails = {
-				user: "João Silva",
+				user: "Sem cadastro",
 				service: "Corte com navalha",
 				time: "10h30 - 11h15",
 				employee: "Bruno",
 				price: "40,00",
 				registrationDate: "17/03/2025 - 18h55",
-				notes: "Cliente preferencial",
-			};
+				notes: "",
+			}
 
-			const modal = ServiceDetailsModal(serviceDetails);
-			document.body.appendChild(modal);
+			const modal = ServiceDetailsModal(serviceDetails)
+			document.body.appendChild(modal)
 		}
 	}
 
-	const menuItems = ["Agendamentos", "Clientes", "Equipe", "Serviço"];
+	const menuItems = ["Agendamentos", "Clientes", "Equipe", "Serviço"]
 
-	menuItems.forEach(item => {
-		const li = document.createElement("li");
-		li.classList.add("cursor");
-		li.innerText = item;
-		li.id = item;
-		li.style.width = "100%";
-		li.style.height = "3.5rem";
-		li.style.padding = "1rem";
-		li.style.borderRadius = "10px";
-		li.style.display = "flex";
-		li.style.alignItems = "center";
-		li.style.cursor = "pointer";
-		li.addEventListener("click", function () {
-			highlightActiveButton(li);
-		});
-		listBar.appendChild(li);
-	});
+	menuItems.forEach((item) => {
+		const li = document.createElement("li")
+		li.classList.add("cursor")
+		li.innerText = item
+		li.id = item
+		li.style.width = "100%"
+		li.style.padding = "1rem"
+		li.style.borderRadius = "8px"
+		li.style.display = "flex"
+		li.style.alignItems = "center"
+		li.style.cursor = "pointer"
+		li.style.transition = "all 0.2s ease"
+		li.style.fontSize = "1rem"
 
-	const buttonSair = document.createElement("div");
-	buttonSair.classList = "cursor";
-	buttonSair.innerText = "Sair";
-	buttonSair.id = "Sair";
-	buttonSair.style.width = "100%";
-	buttonSair.style.height = "3rem";
-	buttonSair.style.background = "#EB4335";
-	buttonSair.style.cursor = "pointer";
-	buttonSair.style.borderRadius = "10px";
-	buttonSair.style.display = "flex";
-	buttonSair.style.justifyContent = "center";
-	buttonSair.style.alignItems = "center";
+		// Add hover effect
+		li.addEventListener("mouseover", function () {
+			if (this.style.background !== "rgb(222, 227, 62)") {
+				this.style.background = "#f5f5f5"
+			}
+		})
+
+		li.addEventListener("mouseout", function () {
+			if (this.style.background !== "rgb(222, 227, 62)") {
+				this.style.background = ""
+			}
+		})
+
+		li.addEventListener("click", () => {
+			highlightActiveButton(li)
+		})
+
+		listBar.appendChild(li)
+	})
+
+	// Create logout button with improved styling
+	const buttonSair = document.createElement("div")
+	buttonSair.classList = "cursor"
+	buttonSair.innerText = "Sair"
+	buttonSair.id = "Sair"
+	buttonSair.style.width = "100%"
+	buttonSair.style.padding = "0.875rem"
+	buttonSair.style.background = "#EB4335"
+	buttonSair.style.cursor = "pointer"
+	buttonSair.style.borderRadius = "8px"
+	buttonSair.style.display = "flex"
+	buttonSair.style.justifyContent = "center"
+	buttonSair.style.alignItems = "center"
+	buttonSair.style.color = "white"
+	buttonSair.style.fontWeight = "500"
+	buttonSair.style.transition = "all 0.2s ease"
+
+	// Add hover effect
+	buttonSair.addEventListener("mouseover", function () {
+		this.style.background = "#d63a2d"
+	})
+
+	buttonSair.addEventListener("mouseout", function () {
+		this.style.background = "#EB4335"
+	})
+
 	buttonSair.addEventListener("click", () => {
 		fetch("/api/logout", {
-			method: "POST"
+			method: "POST",
 		})
-			.then(res => {
+			.then((res) => {
 				if (!res.ok) {
-					throw new Error(`Erro: ${res.status} - ${res.statusText}`);
+					throw new Error(`Erro: ${res.status} - ${res.statusText}`)
 				}
-				return res.json(); // Retorna o JSON corretamente
+				return res.json()
 			})
-			.then(res => {
-				console.log(res);
-				// Aqui você pode redirecionar ou fazer alguma outra ação após o logout
-				window.location.href = "/";
+			.then((res) => {
+				console.log(res)
+				window.location.href = "/"
 			})
-			.catch(error => {
-				console.error("Erro ao fazer logout:", error);
-			});
-	});
+			.catch((error) => {
+				console.error("Erro ao fazer logout:", error)
+			})
+	})
 
-	const componentNavBar = document.createElement("div");
-	componentNavBar.style.display = "flex";
-	componentNavBar.style.flexDirection = "column";
-	componentNavBar.style.gap = "1rem";
+	// Assemble the components
+	const componentNavBar = document.createElement("div")
+	componentNavBar.style.display = "flex"
+	componentNavBar.style.flexDirection = "column"
+	componentNavBar.style.gap = "1rem"
+	componentNavBar.style.height = "100%"
+	componentNavBar.style.justifyContent = "space-between"
 
-	componentNavBar.appendChild(logoImage);
-	componentNavBar.appendChild(listBar);
+	logoImage.appendChild(imageContent)
+	componentNavBar.appendChild(logoImage)
+	componentNavBar.appendChild(listBar)
 
-	navgation.appendChild(componentNavBar);
-	navgation.appendChild(buttonSair);
+	navgation.appendChild(componentNavBar)
+	navgation.appendChild(buttonSair)
 
-	divTitleHeader.appendChild(titleHeader);
-	divTitleHeader.appendChild(subTitleHeader);
+	divTitleHeader.appendChild(titleHeader)
+	divTitleHeader.appendChild(subTitleHeader)
 
-	navBar.appendChild(navgation);
-	header.appendChild(divTitleHeader);
-	header.appendChild(divProfile);
+	contentUser.appendChild(nameUser)
+	contentUser.appendChild(typeUser)
 
-	containerMain.appendChild(header);
-	containerMain.appendChild(main);
+	divImage.appendChild(image)
+	divProfile.appendChild(divImage)
+	divProfile.appendChild(contentUser)
 
-	divContainerNav.appendChild(navBar);
-	divContainerNav.appendChild(containerMain);
+	header.appendChild(divTitleHeader)
+	header.appendChild(divProfile)
 
+	navBar.appendChild(navgation)
+
+	containerMain.appendChild(header)
+	containerMain.appendChild(main)
+
+	divContainerNav.appendChild(navBar)
+	divContainerNav.appendChild(containerMain)
+
+	// Initialize with Agendamentos selected
 	setTimeout(() => {
-		const liAgendamentos = document.getElementById("Agendamentos");
+		const liAgendamentos = document.getElementById("Agendamentos")
 		if (liAgendamentos) {
-			highlightActiveButton(liAgendamentos);
+			highlightActiveButton(liAgendamentos)
 		}
-	}, 0);
+	}, 0)
 
-	// root.appendChild(divContainerNav);
-	return divContainerNav;
-
-	// const liAgendamentos = document.getElementById("Agendamentos");
-	// highlightActiveButton(liAgendamentos);
+	return divContainerNav
 }
+
