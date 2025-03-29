@@ -1,7 +1,7 @@
 const customerServices = require("../services/customerServices.js");
 
 const listCompanyId = async (req, res) => {
-	const {company} = req.params;
+	const {company} = req.body;
 	const result = await customerServices.listCompanyByName(company);
 
 	if (!result) {
@@ -11,9 +11,15 @@ const listCompanyId = async (req, res) => {
 };
 
 const listServicesByCompany = async (req, res) => {
-	const {company} = req.params;
+	const {company} = req.body;
 
-	const response = await fetch(`http://localhost:3000/api/customer/${company}`);
+	const response = await fetch("http://localhost:3000/api/customer/company", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({company})
+	});
 
 	if (!response.ok) {
 		// Se não encontrar a empresa, retorna um erro
@@ -37,4 +43,36 @@ const listServicesByCompany = async (req, res) => {
 	res.json({result});
 };
 
-module.exports = {listCompanyId, listServicesByCompany};
+const listStaffByService = async (req, res) => {
+	const {company, service} = req.body;
+
+	const response = await fetch("http://localhost:3000/api/customer/company", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({company})
+	});
+
+	if (!response.ok) {
+		return res.status(404).json({error: "Empresa não encontrada"});
+	}
+
+	const idCompany = await response.json();
+
+	if (idCompany.error) {
+		return res.status(404).json({error: idCompany.error});
+	}
+
+	const result = await customerServices.listStaffByCompanyAndService(
+		idCompany.result,
+		service
+	);
+
+	if (!result) {
+		return res.status(404).json({error: "Serviço não encontrada"});
+	}
+	res.json({result});
+};
+
+module.exports = {listCompanyId, listServicesByCompany, listStaffByService};

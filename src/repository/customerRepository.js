@@ -46,4 +46,35 @@ const getServices = async company => {
 	}
 };
 
-module.exports = {getCompanyId, getServices};
+const getServicesByStaff = async service => {
+	let client;
+	try {
+		client = await pool.connect();
+
+		const query = "SELECT * FROM services_staffs WHERE service_id = $1";
+
+		const result = await client.query(query, [service]);
+
+		if (result.rows.length <= 0) {
+			return null;
+		}
+
+		const resultObj = result.rows;
+
+		const staffObj = [];
+
+		resultObj.forEach(e => {
+			staffObj.push(e.id);
+		});
+		console.log(staffObj);
+		return staffObj;
+	} catch (e) {
+		throw e;
+	} finally {
+		if (client) {
+			client.release();
+		}
+	}
+};
+
+module.exports = {getCompanyId, getServices, getServicesByStaff};
