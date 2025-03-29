@@ -134,7 +134,6 @@ export default function ServiceDetailsModal(serviceDetails) {
   textareaLabel.style.top = "-12px";
 
   const textarea = document.createElement("textarea");
-  textarea.value = serviceDetails.notes || "Cliente preferencial";
   textarea.style.width = "180px";
   textarea.style.minHeight = "30px";
   textarea.style.resize = "vertical";
