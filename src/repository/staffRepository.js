@@ -93,6 +93,9 @@ const associateServicesWithStaff = async (userId, staffId, serviceId) => {
     const isEmployeeOfCompanyQuery =
       "SELECT * FROM staffs WHERE id = $1 AND company_id = $2";
 
+    const isEmployeeAlreadyAssignedToServiceQuery =
+      "SELECT * FROM services_staffs WHERE service_id = $1 AND staff_id = $2";
+
     const addServicesToStaffQuery =
       "INSERT INTO services_staffs (service_id, staff_id) VALUES ($1, $2)";
 
@@ -120,7 +123,7 @@ const associateServicesWithStaff = async (userId, staffId, serviceId) => {
 
     if (!isServiceAvailableInCompany) {
       return {
-        errorCode: 404,
+        errorCode: 409,
         errorMessage: "A empresa não executa o serviço desejado",
       };
     }
@@ -131,8 +134,22 @@ const associateServicesWithStaff = async (userId, staffId, serviceId) => {
 
     if (!isEmployeeOfCompany) {
       return {
-        errorCode: 404,
+        errorCode: 409,
         errorMessage: "O funcionário não faz parte da empresa",
+      };
+    }
+
+    const {
+      rows: [isEmployeeAlreadyAssignedToService],
+    } = await client.query(isEmployeeAlreadyAssignedToServiceQuery, [
+      serviceId,
+      staffId,
+    ]);
+
+    if (isEmployeeAlreadyAssignedToService) {
+      return {
+        errorCode: 409,
+        errorMessage: "O funcionário já está associado ao serviço",
       };
     }
 
@@ -247,6 +264,9 @@ const unlinkServiceFromStaff = async (userId, staffId, serviceId) => {
     const isEmployeeOfCompanyQuery =
       "SELECT * FROM staffs WHERE id = $1 AND company_id = $2";
 
+    const isEmployeeAssignedToServiceQuery =
+      "SELECT * FROM services_staffs WHERE service_id = $1 AND staff_id = $2";
+
     const removeServicesToStaffQuery =
       "DELETE FROM services_staffs WHERE service_id = $1 AND staff_id = $2";
 
@@ -274,7 +294,7 @@ const unlinkServiceFromStaff = async (userId, staffId, serviceId) => {
 
     if (!isServiceAvailableInCompany) {
       return {
-        errorCode: 404,
+        errorCode: 409,
         errorMessage: "A empresa não executa o serviço desejado",
       };
     }
@@ -285,8 +305,22 @@ const unlinkServiceFromStaff = async (userId, staffId, serviceId) => {
 
     if (!isEmployeeOfCompany) {
       return {
-        errorCode: 404,
+        errorCode: 409,
         errorMessage: "O funcionário não faz parte da empresa",
+      };
+    }
+
+    const {
+      rows: [isEmployeeAssignedToService],
+    } = await client.query(isEmployeeAssignedToServiceQuery, [
+      serviceId,
+      staffId,
+    ]);
+
+    if (!isEmployeeAssignedToService) {
+      return {
+        errorCode: 409,
+        errorMessage: "Funcionário não executa o serviço",
       };
     }
 
