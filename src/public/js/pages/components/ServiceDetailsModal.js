@@ -1,5 +1,4 @@
 export default function ServiceDetailsModal(serviceDetails) {
-  // Create modal overlay
   const containerModal = document.createElement("div");
   containerModal.style.zIndex = "100";
   containerModal.style.width = "100%";
@@ -12,18 +11,16 @@ export default function ServiceDetailsModal(serviceDetails) {
   containerModal.style.justifyContent = "center";
   containerModal.style.alignItems = "center";
 
-  // Close modal when clicking outside
   containerModal.addEventListener("click", (event) => {
     if (event.target === containerModal) {
       containerModal.remove();
     }
   });
 
-  // Create modal content container
   const modalContent = document.createElement("div");
-  modalContent.style.width = "500px"; // Reduz ainda mais a largura do modal
-  modalContent.style.height = "auto"; // Ajusta a altura automaticamente
-  modalContent.style.maxWidth = "80%"; // Ajusta a largura máxima para manter equilíbrio
+  modalContent.style.width = "500px";
+  modalContent.style.height = "auto";
+  modalContent.style.maxWidth = "80%";
   modalContent.style.background = "white";
   modalContent.style.borderRadius = "12px";
   modalContent.style.boxShadow = "0 4px 20px rgba(0, 0, 0, 0.15)";
@@ -31,9 +28,8 @@ export default function ServiceDetailsModal(serviceDetails) {
   modalContent.style.flexDirection = "column";
   modalContent.style.position = "relative";
   modalContent.style.overflow = "hidden";
-  modalContent.style.paddingBottom = "40px"; // Adiciona mais espaço na parte inferior
+  modalContent.style.paddingBottom = "40px";
 
-  // Create modal header
   const modalHeader = document.createElement("div");
   modalHeader.style.padding = "15px 0";
   modalHeader.style.borderBottom = "1px solid #e0e0e0";
@@ -41,7 +37,6 @@ export default function ServiceDetailsModal(serviceDetails) {
   modalHeader.style.justifyContent = "center";
   modalHeader.style.position = "relative";
 
-  // Create close button
   const closeButton = document.createElement("div");
   closeButton.style.position = "absolute";
   closeButton.style.top = "10px";
@@ -60,7 +55,6 @@ export default function ServiceDetailsModal(serviceDetails) {
   closeButton.innerHTML = "&#10006;";
   closeButton.addEventListener("click", () => containerModal.remove());
 
-  // Create title
   const title = document.createElement("h2");
   title.innerText = "Detalhes do Serviço";
   title.style.margin = "0";
@@ -68,29 +62,25 @@ export default function ServiceDetailsModal(serviceDetails) {
   title.style.fontWeight = "600";
   title.style.color = "#333";
 
-  // Create modal body with two columns
   const modalBody = document.createElement("div");
   modalBody.style.display = "flex";
 
-  // Create left column for details
   const leftColumn = document.createElement("div");
   leftColumn.style.flex = "1";
   leftColumn.style.display = "flex";
   leftColumn.style.flexDirection = "column";
-  leftColumn.style.alignItems = "flex-start"; // Alinha os itens à esquerda
-  leftColumn.style.textAlign = "left"; // Garante que o texto fique alinhado à esquerda
-  leftColumn.style.paddingRight = "0"; // Remove o espaçamento à direita
-  leftColumn.style.paddingLeft = "15px"; // Adiciona espaçamento interno à esquerda
+  leftColumn.style.alignItems = "flex-start";
+  leftColumn.style.textAlign = "left";
+  leftColumn.style.paddingRight = "0";
+  leftColumn.style.paddingLeft = "15px";
 
-  // Create right column for buttons
   const rightColumn = document.createElement("div");
-  rightColumn.style.width = "200px"; // Ajusta a largura da coluna de botões
+  rightColumn.style.width = "200px";
   rightColumn.style.display = "flex";
   rightColumn.style.flexDirection = "column";
   rightColumn.style.gap = "15px";
   rightColumn.style.padding = "15px";
 
-  // Define fields
   const fields = [
     { label: "Usuário", value: serviceDetails.user || "Sem cadastro", icon: true },
     { label: "Serviço", value: serviceDetails.service },
@@ -100,89 +90,64 @@ export default function ServiceDetailsModal(serviceDetails) {
     { label: "Data de cadastro", value: serviceDetails.registrationDate },
   ];
 
-  // Create fields
   fields.forEach((field) => {
     const row = document.createElement("div");
     row.className = "serviceDetailsModalField";
     row.style.display = "flex";
-    row.style.justifyContent = "flex-start"; // Alinha os campos à esquerda
-    row.style.textAlign = "left"; // Garante alinhamento do texto à esquerda
-    row.style.gap = "8px"; // Adiciona um pequeno espaçamento entre o rótulo e o valor
-    row.style.marginBottom = "2px"; // Reduz o espaçamento vertical entre os campos
+    row.style.justifyContent = "flex-start";
+    row.style.textAlign = "left";
+    row.style.gap = "8px";
+    row.style.marginBottom = "2px";
 
     const label = document.createElement("span");
     label.innerText = `${field.label}:`;
     label.style.fontWeight = "bold";
     label.style.color = "#333";
-    label.style.width = "auto"; // Remove largura fixa para permitir flexibilidade
+    label.style.width = "auto";
 
     const value = document.createElement("span");
     value.innerText = field.value;
     value.style.color = "#555";
-
-    if (field.icon) {
-      const iconContainer = document.createElement("div");
-      iconContainer.style.width = "28px"; // Fundo quadrado
-      iconContainer.style.height = "28px";
-      iconContainer.style.backgroundColor = "#DEE33E"; // Cor do fundo
-      iconContainer.style.display = "flex";
-      iconContainer.style.justifyContent = "center";
-      iconContainer.style.alignItems = "center";
-      iconContainer.style.marginLeft = "80px"; // Empurra o ícone ainda mais para a direita
-
-      const icon = document.createElement("img");
-      icon.src = "/user-plus.png"; // Caminho para o ícone PNG na raiz
-      icon.style.width = "16px"; // Ajusta o tamanho do ícone
-      icon.style.height = "16px";
-
-      iconContainer.appendChild(icon);
-
-      // Adiciona o ícone logo após o valor do campo "Usuário"
-      if (field.label === "Usuário") {
-        value.style.display = "flex"; // Garante que o texto e o ícone fiquem na mesma linha
-        value.style.alignItems = "center"; // Alinha verticalmente
-        value.appendChild(iconContainer);
-      }
-    }
 
     row.appendChild(label);
     row.appendChild(value);
     leftColumn.appendChild(row);
   });
 
-  // Add textarea for "Observações"
   const textareaRow = document.createElement("div");
   textareaRow.style.display = "flex";
-  textareaRow.style.alignItems = "center"; // Alinha verticalmente o rótulo e a textarea
-  textareaRow.style.justifyContent = "flex-start"; // Alinha o campo de observações à esquerda
-  textareaRow.style.textAlign = "left"; // Garante alinhamento do texto à esquerda
-  textareaRow.style.marginTop = "0"; // Remove completamente o espaçamento superior para aproximar "Observações" de "Data de cadastro"
-  textareaRow.style.paddingLeft = "0"; // Remove o espaçamento extra à esquerda
+  textareaRow.style.alignItems = "center";
+  textareaRow.style.justifyContent = "flex-start";
+  textareaRow.style.textAlign = "left";
+  textareaRow.style.marginTop = "-8px";
+  textareaRow.style.paddingLeft = "0";
 
   const textareaLabel = document.createElement("span");
   textareaLabel.innerText = "Observações:";
   textareaLabel.style.fontWeight = "bold";
   textareaLabel.style.color = "#333";
-  textareaLabel.style.width = "100px"; // Reduz a largura do rótulo
-  textareaLabel.style.textAlign = "left"; // Alinha o rótulo "Observações" à esquerda
-  textareaLabel.style.marginRight = "8px"; // Adiciona espaçamento entre o rótulo e a textarea
-  textareaLabel.style.marginBottom = "0"; // Remove qualquer margem inferior do rótulo
+  textareaLabel.style.width = "100px";
+  textareaLabel.style.textAlign = "left";
+  textareaLabel.style.marginRight = "8px";
+  textareaLabel.style.marginBottom = "0";
+  textareaLabel.style.position = "relative";
+  textareaLabel.style.top = "-12px";
 
   const textarea = document.createElement("textarea");
   textarea.value = serviceDetails.notes || "Cliente preferencial";
-  textarea.style.width = "180px"; // Reduz ainda mais a largura da textarea
-  textarea.style.minHeight = "30px"; // Define altura menor
+  textarea.style.width = "180px";
+  textarea.style.minHeight = "30px";
   textarea.style.resize = "vertical";
   textarea.style.padding = "8px";
   textarea.style.border = "1px solid #ccc";
   textarea.style.borderRadius = "4px";
   textarea.style.fontFamily = "inherit";
+  textarea.style.marginTop = "8px";
 
   textareaRow.appendChild(textareaLabel);
   textareaRow.appendChild(textarea);
   leftColumn.appendChild(textareaRow);
 
-  // Create buttons
   const buttons = [
     { text: "Alterar", color: "#DEE33E", hoverColor: "#c9ce35" },
     { text: "Ausência", color: "#EB4335", hoverColor: "#d63a2d", textColor: "white" },
@@ -214,7 +179,6 @@ export default function ServiceDetailsModal(serviceDetails) {
     rightColumn.appendChild(btn);
   });
 
-  // Assemble the modal
   modalHeader.appendChild(title);
   modalHeader.appendChild(closeButton);
 
