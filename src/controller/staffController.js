@@ -3,11 +3,12 @@ const staffServices = require("../services/staffServices");
 const phonePattern = /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/;
 const codePostalPattern = /^\d{5}-?\d{3}$/;
 const cpfPattern = /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/;
+const todayDate = new Date();
 
 const list = async (req, res) => {
   try {
     const userId = req.user.id;
-    console.log(1)
+
     if (!validator.isUUID(userId)) {
       return res.status(400).json({
         error: "ID de usuário inválido",
@@ -43,7 +44,6 @@ const create = async (req, res) => {
       });
     }
 
-
     if (name && !validator.isAlpha(name, "pt-BR")) {
       return res.status(400).json({
         error: "O nome deve conter apenas letras",
@@ -68,7 +68,10 @@ const create = async (req, res) => {
       });
     }
 
-    if (birthdate && (!validator.isDate(birthdate) || new Date(birthdate) >= todayDate)) {
+    if (
+      birthdate &&
+      (!validator.isDate(birthdate) || new Date(birthdate) >= todayDate)
+    ) {
       return res.status(400).json({
         error: "Data de nascimento não pode ser presente ou futura",
       });
@@ -104,6 +107,44 @@ const create = async (req, res) => {
     console.log(error);
 
     res.status(500).json({ error: "Falha ao criar o funcionário" });
+  }
+};
+
+const assignServicesToStaff = async (req, res) => {
+  try {
+    const { staffId, serviceId } = req.body;
+
+    const userId = req.user.id;
+
+    if (!validator.isUUID(staffId)) {
+      return res.status(400).json({ error: "ID de funcionário inválido" });
+    }
+
+    if (!validator.isUUID(serviceId)) {
+      return res.status(400).json({ error: "ID de serviço inválido" });
+    }
+
+    if (!validator.isUUID(userId)) {
+      return res.status(400).json({ error: "ID de usuário inválido" });
+    }
+
+    const result = await staffServices.linkServicesToStaff(
+      userId,
+      staffId,
+      serviceId
+    );
+
+    if (result) {
+      return res.status(result.errorCode).json({ error: result.errorMessage });
+    }
+
+    res.status(201).json({ message: "Associação realizada com sucesso" });
+  } catch (error) {
+    console.log(error);
+
+    res
+      .status(500)
+      .json({ error: "Falha ao associar o funcionário ao serviço" });
   }
 };
 
@@ -164,7 +205,10 @@ const update = async (req, res) => {
       });
     }
 
-    if (birthdate && (!validator.isDate(birthdate) || new Date(birthdate) >= todayDate)) {
+    if (
+      birthdate &&
+      (!validator.isDate(birthdate) || new Date(birthdate) >= todayDate)
+    ) {
       return res.status(400).json({
         error: "Data de nascimento não pode ser presente ou futura",
       });
@@ -196,10 +240,9 @@ const update = async (req, res) => {
 };
 
 const remove = async (req, res) => {
-  const id = req.user.id;
-
+  const { staffId } = req.body;
   try {
-    await staffServices.deleteStaff(id);
+    await staffServices.deleteStaff(staffId);
 
     res.status(200).json({ message: "Funcionário deletado com sucesso" });
   } catch (error) {
@@ -207,4 +250,47 @@ const remove = async (req, res) => {
   }
 };
 
-module.exports = { list, create, update, remove };
+const unassignServiceFromStaff = async (req, res) => {
+  try {
+    const { staffId, serviceId } = req.body;
+
+    const userId = req.user.id;
+
+    if (!validator.isUUID(staffId)) {
+      return res.status(400).json({ error: "ID de funcionário inválido" });
+    }
+
+    if (!validator.isUUID(serviceId)) {
+      return res.status(400).json({ error: "ID de serviço inválido" });
+    }
+
+    if (!validator.isUUID(userId)) {
+      return res.status(400).json({ error: "ID de usuário inválido" });
+    }
+
+    const result = await staffServices.detachServiceFromStaff(
+      userId,
+      staffId,
+      serviceId
+    );
+
+    if (result) {
+      return res.status(result.errorCode).json({ error: result.errorMessage });
+    }
+
+    res.status(200).json({ message: "Desvinculação realizada com sucesso" });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({ error: "Falha no processo de desvinculação" });
+  }
+};
+
+module.exports = {
+  list,
+  create,
+  assignServicesToStaff,
+  update,
+  remove,
+  unassignServiceFromStaff,
+};
