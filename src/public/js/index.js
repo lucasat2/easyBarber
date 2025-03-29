@@ -29,6 +29,13 @@ function changePage() {
 
 async function onPageLoad() {
   const currentPath = window.location.pathname;
+	if (window.location.pathname === "/") {
+		changePage();
+		return;
+	} else if (window.location.pathname === "/signUp") {
+		changePage();
+		return;
+	}
 
   // Se for rota pública (como login ou cadastro), carrega direto
   if (["/", "/signup"].includes(currentPath)) {

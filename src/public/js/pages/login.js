@@ -144,6 +144,7 @@ export default function login() {
 		document.dispatchEvent(event);
 	});
 
+	// adicionar o post pra login aqui
 	div.querySelector("#goToDashboard").addEventListener("click", e => {
 		e.preventDefault();
 		const event = onNavigate("/dashboard");
