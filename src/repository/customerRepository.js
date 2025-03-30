@@ -63,10 +63,25 @@ const getServicesByStaff = async service => {
 
 		const staffObj = [];
 
-		resultObj.forEach(e => {
-			staffObj.push(e.id);
-		});
-		console.log(staffObj);
+		for (const e of resultObj) {
+			const queryGetStaff = "SELECT * FROM staffs WHERE id = $1";
+			const resultGet = await client.query(queryGetStaff, [e.staff_id]);
+
+			if (resultGet.rows.length <= 0) {
+				return null;
+			}
+
+			const resultObj = resultGet.rows;
+      const staffJson = {
+        id: resultObj[0].id,
+        company_id: resultObj[0].company_id,
+        name: resultObj[0].name,
+        surname: resultObj[0].surname,
+        email: resultObj[0].email,
+      }
+			staffObj.push(staffJson);
+		}
+
 		return staffObj;
 	} catch (e) {
 		throw e;
