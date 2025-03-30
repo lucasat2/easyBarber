@@ -54,6 +54,20 @@ const linkServicesToStaff = async (userId, staffId, serviceId) => {
   }
 };
 
+const attachSchedulesToStaff = async (userId, staffId, schedulesData) => {
+  try {
+    const response = await staffRepository.bindSchedulesToStaff(
+      userId,
+      staffId,
+      schedulesData
+    );
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const updateStaff = async (
   name,
   surname,
@@ -106,6 +120,7 @@ module.exports = {
   listAllStaff,
   createStaff,
   linkServicesToStaff,
+  attachSchedulesToStaff,
   updateStaff,
   deleteStaff,
   detachServiceFromStaff,

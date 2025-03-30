@@ -8,6 +8,6 @@ const router = express.Router();
 router.use("/login", loginRoutes);
 router.use("/logout", logoutRoutes);
 router.use("/users", usersRoutes);
-router.use("/staffs", staffRoutes);
+router.use("/staff", staffRoutes);
 
 module.exports = router;

@@ -10,6 +10,11 @@ router.post(
   verifyActiveSession,
   staffController.assignServicesToStaff
 );
+router.post(
+  "/associateShifts",
+  verifyActiveSession,
+  staffController.assignSchedulesToEmployee
+);
 router.put("/", verifyActiveSession, staffController.update);
 router.delete("/", verifyActiveSession, staffController.remove);
 router.delete(
