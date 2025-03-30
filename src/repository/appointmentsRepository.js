@@ -232,84 +232,84 @@ const insertNewAppointment = async (
       const employeeShiftPerDay = employeeSchedules[k];
 
       if (employeeShiftPerDay.week_day === serviceDayName) {
-        if (employeeShiftPerDay.status === false) {
-          return {
-            statusCode: 409,
-            statusMessage: "Funcionário não trabalhará no dia solicitado",
-          };
+        if (employeeShiftPerDay.status_1 !== false) {
+          const firstShiftStartTimeArray =
+            employeeShiftPerDay.start_time_1.split(":");
+
+          const employeeFirstShiftStartTime = new Date(
+            Number(serviceDateArray[0]),
+            Number(serviceDateArray[1]) - 1,
+            Number(serviceDateArray[2])
+          );
+
+          employeeFirstShiftStartTime.setUTCHours(
+            Number(firstShiftStartTimeArray[0]),
+            Number(firstShiftStartTimeArray[1])
+          );
+
+          const firstShiftEndTimeArray =
+            employeeShiftPerDay.end_time_1.split(":");
+
+          const employeeFirstShiftEndTime = new Date(
+            Number(serviceDateArray[0]),
+            Number(serviceDateArray[1]) - 1,
+            Number(serviceDateArray[2])
+          );
+
+          employeeFirstShiftEndTime.setUTCHours(
+            Number(firstShiftEndTimeArray[0]),
+            Number(firstShiftEndTimeArray[1])
+          );
+
+          if (
+            serviceStartTime.getTime() >=
+              employeeFirstShiftStartTime.getTime() &&
+            serviceStartTime.getTime() < employeeFirstShiftEndTime.getTime() &&
+            serviceEndTime.getTime() > employeeFirstShiftStartTime.getTime() &&
+            serviceEndTime.getTime() <= employeeFirstShiftEndTime.getTime()
+          ) {
+            break;
+          }
         }
 
-        const firstShiftStartTimeArray =
-          employeeShiftPerDay.start_time_1.split(":");
+        if (employeeShiftPerDay.status_2 !== false) {
+          const secondShiftStartTimeArray =
+            employeeShiftPerDay.start_time_2.split(":");
 
-        const employeeFirstShiftStartTime = new Date(
-          Number(serviceDateArray[0]),
-          Number(serviceDateArray[1]) - 1,
-          Number(serviceDateArray[2])
-        );
+          const employeeSecondShiftStartTime = new Date(
+            Number(serviceDateArray[0]),
+            Number(serviceDateArray[1]) - 1,
+            Number(serviceDateArray[2])
+          );
 
-        employeeFirstShiftStartTime.setUTCHours(
-          Number(firstShiftStartTimeArray[0]),
-          Number(firstShiftStartTimeArray[1])
-        );
+          employeeSecondShiftStartTime.setUTCHours(
+            Number(secondShiftStartTimeArray[0]),
+            Number(secondShiftStartTimeArray[1])
+          );
 
-        const firstShiftEndTimeArray =
-          employeeShiftPerDay.end_time_1.split(":");
+          const secondShiftEndTimeArray =
+            employeeShiftPerDay.end_time_2.split(":");
 
-        const employeeFirstShiftEndTime = new Date(
-          Number(serviceDateArray[0]),
-          Number(serviceDateArray[1]) - 1,
-          Number(serviceDateArray[2])
-        );
+          const employeeSecondShiftEndTime = new Date(
+            Number(serviceDateArray[0]),
+            Number(serviceDateArray[1]) - 1,
+            Number(serviceDateArray[2])
+          );
 
-        employeeFirstShiftEndTime.setUTCHours(
-          Number(firstShiftEndTimeArray[0]),
-          Number(firstShiftEndTimeArray[1])
-        );
+          employeeSecondShiftEndTime.setUTCHours(
+            Number(secondShiftEndTimeArray[0]),
+            Number(secondShiftEndTimeArray[1])
+          );
 
-        const secondShiftStartTimeArray =
-          employeeShiftPerDay.start_time_2.split(":");
-
-        const employeeSecondShiftStartTime = new Date(
-          Number(serviceDateArray[0]),
-          Number(serviceDateArray[1]) - 1,
-          Number(serviceDateArray[2])
-        );
-
-        employeeSecondShiftStartTime.setUTCHours(
-          Number(secondShiftStartTimeArray[0]),
-          Number(secondShiftStartTimeArray[1])
-        );
-
-        const secondShiftEndTimeArray =
-          employeeShiftPerDay.end_time_2.split(":");
-
-        const employeeSecondShiftEndTime = new Date(
-          Number(serviceDateArray[0]),
-          Number(serviceDateArray[1]) - 1,
-          Number(serviceDateArray[2])
-        );
-
-        employeeSecondShiftEndTime.setUTCHours(
-          Number(secondShiftEndTimeArray[0]),
-          Number(secondShiftEndTimeArray[1])
-        );
-
-        if (
-          serviceStartTime.getTime() >= employeeFirstShiftStartTime.getTime() &&
-          serviceStartTime.getTime() < employeeFirstShiftEndTime.getTime() &&
-          serviceEndTime.getTime() > employeeFirstShiftStartTime.getTime() &&
-          serviceEndTime.getTime() <= employeeFirstShiftEndTime.getTime()
-        ) {
-          break;
-        } else if (
-          serviceStartTime.getTime() >=
-            employeeSecondShiftStartTime.getTime() &&
-          serviceStartTime.getTime() < employeeSecondShiftEndTime.getTime() &&
-          serviceEndTime.getTime() > employeeSecondShiftStartTime.getTime() &&
-          serviceEndTime.getTime() <= employeeSecondShiftEndTime.getTime()
-        ) {
-          break;
+          if (
+            serviceStartTime.getTime() >=
+              employeeSecondShiftStartTime.getTime() &&
+            serviceStartTime.getTime() < employeeSecondShiftEndTime.getTime() &&
+            serviceEndTime.getTime() > employeeSecondShiftStartTime.getTime() &&
+            serviceEndTime.getTime() <= employeeSecondShiftEndTime.getTime()
+          ) {
+            break;
+          }
         }
 
         return {
