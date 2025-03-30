@@ -13,32 +13,18 @@ const listCompanyId = async (req, res) => {
 const listServicesByCompany = async (req, res) => {
 	const {company} = req.body;
 
-	const response = await fetch("http://localhost:3000/api/customer/company", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify({company})
-	});
+	const idCompany = await customerServices.listCompanyByName(company);
 
-	if (!response.ok) {
-		// Se não encontrar a empresa, retorna um erro
+	if (!idCompany) {
 		return res.status(404).json({error: "Empresa não encontrada"});
 	}
 
-	const idCompany = await response.json();
-
-	if (idCompany.error) {
-		// Se a resposta retornar um erro, responde com erro
-		return res.status(404).json({error: idCompany.error});
-	}
-
 	const result = await customerServices.listServicesCompanyByIdCompany(
-		idCompany.result
+		idCompany
 	);
 
 	if (!result) {
-		return res.status(404).json({error: "Serviço não encontrada"});
+		return res.status(404).json({error: "Nenhum serviço encontrado"});
 	}
 	res.json({result});
 };
@@ -46,33 +32,84 @@ const listServicesByCompany = async (req, res) => {
 const listStaffByService = async (req, res) => {
 	const {company, service} = req.body;
 
-	const response = await fetch("http://localhost:3000/api/customer/company", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify({company})
-	});
+	const idCompany = await customerServices.listCompanyByName(company);
 
-	if (!response.ok) {
+	if (!idCompany) {
 		return res.status(404).json({error: "Empresa não encontrada"});
 	}
 
-	const idCompany = await response.json();
-
-	if (idCompany.error) {
-		return res.status(404).json({error: idCompany.error});
-	}
-
 	const result = await customerServices.listStaffByCompanyAndService(
-		idCompany.result,
+		idCompany,
 		service
 	);
 
 	if (!result) {
-		return res.status(404).json({error: "Serviço não encontrada"});
+		return res
+			.status(404)
+			.json({error: "Nenhum funcionário encontrado para o serviço"});
 	}
 	res.json({result});
 };
 
-module.exports = {listCompanyId, listServicesByCompany, listStaffByService};
+const listScheduleByStaff = async (req, res) => {
+	const {company, service, staff, date} = req.body;
+
+	const idCompany = await customerServices.listCompanyByName(company);
+
+	if (!idCompany) {
+		return res.status(404).json({error: "Empresa não encontrada"});
+	}
+
+	const result = await customerServices.listStaffByCompanyAndService(
+		idCompany,
+		service
+	);
+
+	if (!result) {
+		return res
+			.status(404)
+			.json({error: "Nenhum funcionário encontrado para o serviço"});
+	}
+
+	let exists = false;
+	result.forEach(i => {
+		if (i.id == staff) {
+			exists = true;
+			return;
+		}
+	});
+
+	if (!exists) {
+		return res
+			.status(404)
+			.json({error: "Este funcionário não faz esse serviço"});
+	}
+
+	if (!date) {
+		return res.status(404).json({error: "Envie uma data"});
+	}
+
+	const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+
+	if (!dateRegex.test(date)) {
+		return res
+			.status(400)
+			.json({error: "Formato de data inválido. Use YYYY-MM-DD"});
+	}
+
+	const getSchedules = await customerServices.listSchedulesBuStaff(staff, date);
+	if(!getSchedules) {
+		return res
+			.status(400)
+			.json({error: "Funcionário não trabalha nesse dia"});
+	}
+
+	res.json({getSchedules});
+};
+
+module.exports = {
+	listCompanyId,
+	listServicesByCompany,
+	listStaffByService,
+	listScheduleByStaff
+};

@@ -24,17 +24,24 @@ const listStaffByCompanyAndService = async (idCompany, service) => {
 	try {
 		const result = await customerRepository.getServices(idCompany);
 		const serviceObj = result.find(item => item.name == service);
-		// const result = await customerRepository.getServicesByStaff(idCompany, service);
 
 		if (serviceObj) {
-      // 
-			// console.log(serviceObj.id);
-      const resultQuery = await customerRepository.getServicesByStaff(serviceObj.id);
+			const resultQuery = await customerRepository.getServicesByStaff(
+				serviceObj.id
+			);
 
 			return resultQuery;
 		}
-    // 
-    // console.log("erro")
+	} catch (e) {
+		throw e;
+	}
+};
+
+const listSchedulesBuStaff = async (staff, date) => {
+	try {
+		const result = await customerRepository.getSchedules(staff, date);
+
+		return result;
 	} catch (e) {
 		throw e;
 	}
@@ -43,5 +50,6 @@ const listStaffByCompanyAndService = async (idCompany, service) => {
 module.exports = {
 	listCompanyByName,
 	listServicesCompanyByIdCompany,
-	listStaffByCompanyAndService
+	listStaffByCompanyAndService,
+	listSchedulesBuStaff
 };
