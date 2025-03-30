@@ -6,9 +6,7 @@ async function comparePassword(password, hashedPassword) {
 
     return match;
   } catch (error) {
-    console.error("Falha ao comparar as senhas - ", error);
-
-    return false;
+    throw error;
   }
 }
 
