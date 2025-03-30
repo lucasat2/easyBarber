@@ -1,17 +1,7 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <title>Modal Estilizado</title>
-  <link href="./css/modalCss.css" rel="stylesheet">
-</head>
-<body>
 
-  <button onclick="createModal()">Abrir Modal</button>
-<script>
-const title = document.createElement('h2');
-title.classList.add("modalAppointTitle")
 function createModal() {
+  const title = document.createElement('h2');
+  title.classList.add("modalAppointTitle")
   //Cria a estrutura do modal
     const overlay = document.createElement('div');
     overlay.classList.add('appointmentModalOverlay');
@@ -106,34 +96,16 @@ function createModal() {
   
 
   //Função para criar o formulário de agendamento
-  function createApointForm() {
+  async function createApointForm() {
+    const title = document.createElement('h2');
+    title.classList.add("modalAppointTitle")
+    title.textContent = "Agendamento";
+
+    const { selectStaff, selectService } = await populateSelects();
+
     const form = document.createElement('form');
     form.id = 'form-agendamento';
-  
-    title.textContent = "Agendamento";
-  
-    // Precisa de fetch para lista de funcionários
-    const selectStaff = document.createElement('select');
-    selectStaff.classList.add("modalBoxStyles");
-    selectStaff.required = true;
-    ['Selecionar profissional', 'João', 'Maria'].forEach(nome => {
-      const option = document.createElement('option');
-      option.value = nome.toLowerCase();
-      option.textContent = nome;
 
-      selectStaff.appendChild(option);
-    });
-  
-    // Precisa de fetch para lista de serviços do funcionário selecionado
-    const selectService = document.createElement('select');
-    selectService.classList.add("modalBoxStyles");
-    selectService.required = true;
-    ['Selecionar serviço', 'Corte', 'Barba'].forEach(servico => {
-      const option = document.createElement('option');
-      option.value = servico.toLowerCase();
-      option.textContent = servico;
-      selectService.appendChild(option);
-    });
   
     // Data
     const inputData = document.createElement('input');
@@ -202,7 +174,8 @@ function createModal() {
     // Linhas
     const line1 = document.createElement('div');
     line1.classList.add('modalFormRows');
-    line1.appendChild(createField('Profissional', selectStaff));
+    
+    line1.appendChild(createField('Funcionário', selectStaff));
     line1.appendChild(createField('Serviço', selectService));
   
     const line2 = document.createElement('div');
@@ -237,11 +210,13 @@ function createModal() {
   
   //Função para gerar formulário de bloquear horário
   function createBlockForm() {
+    const title = document.createElement('h2');
+    title.classList.add("modalAppointTitle")
+    title.textContent = "Bloqueio";  
+    
     const form = document.createElement('form');
     form.id = 'form-bloqueio';
-  
-    title.textContent = "Bloqueio";
-  
+
     // Select Profissional
     const selectStaff = document.createElement('select');
     selectStaff.classList.add("modalBoxStyles");
@@ -315,6 +290,68 @@ function createModal() {
   
     return form;
   }
-</script>
-</body>
-</html>
+
+// Função para buscar funcionários
+async function fetchStaff() {
+  try {
+      const response = await fetch('/api/staff');
+      if (!response.ok) {
+          const errorMessage = await response.text();
+          throw new Error(`Erro ao buscar funcionários: ${errorMessage}`);
+      }
+      const { response: staff } = await response.json();
+      return staff;
+  } catch (error) {
+      console.error('Erro ao obter a lista de funcionários:', error.message);
+      return [];
+  }
+}
+
+
+
+
+
+// Função para buscar serviços
+async function fetchServices() {
+  try {
+      const response = await fetch('/api/services');
+      if (!response.ok) throw new Error('Erro ao buscar serviços');
+      const services = await response.json();
+      return services;
+  } catch (error) {
+      console.error('Erro ao obter a lista de serviços:', error);
+      return [];
+  }
+}
+
+// Preenchendo os selects no modal
+async function populateSelects() {
+  const selectStaff = document.createElement('select');
+  selectStaff.classList.add("modalBoxStyles");
+  selectStaff.required = true;
+
+  const staffList = await fetchStaff();
+  staffList.forEach(staff => {
+      const option = document.createElement('option');
+      option.value = staff.id;
+      option.textContent = `${staff.name} ${staff.surname}`;
+      selectStaff.appendChild(option);
+  });
+
+  const selectService = document.createElement('select');
+  selectService.classList.add("modalBoxStyles");
+  selectService.required = true;
+
+  const serviceList = await fetchServices();
+  serviceList.forEach(service => {
+      const option = document.createElement('option');
+      option.value = service.id;
+      option.textContent = service.name;
+      selectService.appendChild(option);
+  });
+
+  return { selectStaff, selectService };
+}
+
+
+export {createModal,createField,createApointForm,createBlockForm, fetchStaff, fetchServices, populateSelects}
