@@ -42,14 +42,6 @@ export default function signup() {
     { id: "password", placeholder: "Senha", type: "password" }
   ];
 
-    const clientLinkInput = document.createElement("input");
-  clientLinkInput.type = "text";
-  clientLinkInput.id = "clientLink";
-  clientLinkInput.placeholder = "Link do Cliente";
-  clientLinkInput.required = true;
-  clientLinkInput.classList.add("signupInputStyle", "signupInputFullWidth");
-  form.appendChild(clientLinkInput);
-
   const inputContainer = document.createElement("div");
   inputContainer.classList.add("signupInputContainer");
   
