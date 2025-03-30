@@ -10,7 +10,7 @@ export default function login() {
 	leftSide.classList.add("loginLeftSideStyle");
 
 	const barberPole = document.createElement("img");
-	barberPole.src = "../assets/login/barberPole.jpeg";
+	barberPole.src = "../assets/login/barberPole.jpg";
 	barberPole.alt = "Barber Pole";
 	barberPole.classList.add("loginBarberPoleStyle");
 
