@@ -106,10 +106,37 @@ export default function signup() {
   const sendForm = div.querySelector("#signUpForm");
   sendForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+
     const formData = {};
-    inputFields.forEach(field => {
-      formData[field.id] = div.querySelector(`#${field.id}`).value;
-    });
+    let hasEmptyField = false;
+  
+    // Coletando os campos na ordem correta
+    formData.name = div.querySelector("#companyName").value;
+    formData.cnpj = div.querySelector("#cnpj").value;
+    formData.phoneNumber = div.querySelector("#phoneNumber").value;
+    formData.state = div.querySelector("#state").value;
+    formData.city = div.querySelector("#city").value;
+    formData.street = div.querySelector("#address").value; // Ajuste do campo para "street"
+    formData.number = div.querySelector("#number").value;
+    formData.postalCode = div.querySelector("#postalCode").value;
+    formData.email = div.querySelector("#email").value;
+    formData.password = div.querySelector("#password").value;
+  
+    // Validação dos campos
+    for (const key in formData) {
+      if (!formData[key]) {
+        hasEmptyField = true;
+        console.error(`Field ${key} is empty`);
+      }
+    }
+  
+    if (hasEmptyField) {
+      alert("Please fill out all fields.");
+      return;
+    }
+
+    console.log(formData)
+
     const response = await fetch("/api/users", {
       method: "POST",
       headers: {
