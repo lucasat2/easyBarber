@@ -1,21 +1,53 @@
 import router from "./router.js";
-
-const objectRouter = router();
+import login from "./pages/login.js";
 
 
 const currentPage = document.getElementById("root");
 
-document.addEventListener("onstatechange", function (event) {
-  const pathPage = event.detail.path;
+function changePage() {
+  const objectRouter = router();
 
-  const page = objectRouter.getPage(pathPage)?.();
+  document.addEventListener("onstatechange", function (event) {
+    const pathPage = event.detail.path;
 
-  history.pushState({}, "", pathPage);
+    const page = objectRouter.getPage(pathPage)?.();
+
+    history.pushState({}, "", pathPage);
+
+    currentPage.innerHTML = "";
+    currentPage.appendChild(page);
+  });
+
+  // Carrega a rota atual baseada na URL
+  const currentPath = window.location.pathname;
+  const page = objectRouter.getPage(currentPath)?.();
 
   currentPage.innerHTML = "";
+  if (page) currentPage.appendChild(page);
+  else currentPage.appendChild(login());
+}
 
-  currentPage.appendChild(page);
+async function onPageLoad() {
+  const currentPath = window.location.pathname;
 
-});
+  // Se for rota pública (como login ou cadastro), carrega direto
+  if (["/", "/signup"].includes(currentPath)) {
+    changePage();
+    return;
+  }
 
-currentPage.appendChild(objectRouter.getPage("/")?.());
+  // Verifica autenticação em rotas protegidas
+  const authResponse = await fetch("/api/me");
+  if (authResponse.status === 200) {
+    // Autenticado → continua para a rota atual
+    changePage();
+  } else {
+    // Não autenticado → volta para login
+    currentPage.innerHTML = "";
+    currentPage.appendChild(login());
+    history.pushState(null, null, "/");
+  }
+}
+
+window.addEventListener("load", onPageLoad);
+export {onPageLoad};

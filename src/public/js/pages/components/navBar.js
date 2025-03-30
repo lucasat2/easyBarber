@@ -1,7 +1,8 @@
-function header() {
+import {InitialSchedulingTimelineSection} from "./InitialSchedulingTimelineSection.js";
+
+export default function header() {
 	const root = document.getElementById("root");
 	// Resetando a página
-	root.innerHTML = "";
 	root.style.background = "#F5F5F5";
 
 	// Formatando as medidas
@@ -133,6 +134,21 @@ function header() {
 
 		// Define a cor de fundo apenas no item clicado
 		activeItem.style.background = "#DEE33E";
+
+		// arrumando main
+		const main = document.getElementById("main");
+		main.innerHTML = "";
+		main.style.padding = "1rem";
+
+		if ((activeItem.id == "Agendamentos")) {
+			main.appendChild(InitialSchedulingTimelineSection());
+		} else if((activeItem.id == "Clientes")) {
+			main.innerHTML = "Clientes";
+		} else if((activeItem.id == "Equipe")) {
+			main.innerHTML = "Equipe";
+		} else if((activeItem.id == "Serviço")) {
+			main.innerHTML = "Serviço";
+		}
 	}
 
 	const menuItems = ["Agendamentos", "Clientes", "Equipe", "Serviço"];
@@ -209,10 +225,16 @@ function header() {
 	divContainerNav.appendChild(navBar);
 	divContainerNav.appendChild(containerMain);
 
-	root.appendChild(divContainerNav);
+	setTimeout(() => {
+		const liAgendamentos = document.getElementById("Agendamentos");
+		if (liAgendamentos) {
+			highlightActiveButton(liAgendamentos);
+		}
+	}, 0);
 
-	const liAgendamentos = document.getElementById("Agendamentos");
-	highlightActiveButton(liAgendamentos);
+	// root.appendChild(divContainerNav);
+	return divContainerNav;
+
+	// const liAgendamentos = document.getElementById("Agendamentos");
+	// highlightActiveButton(liAgendamentos);
 }
-
-export default header;

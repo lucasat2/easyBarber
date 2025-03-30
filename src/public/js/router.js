@@ -1,11 +1,12 @@
 import login from "./pages/login.js";
-import signUp from "./pages/signUp.js";
-
+import signup from "./pages/signUp.js";
+import dashboard from "./pages/components/navBar.js";
 
 function router() {
   const routes = {
     "/": login,
-    "/signUp": signUp,
+    "/signup": signup,
+    "/dashboard": dashboard,
 
     getPage: function (path) {
       return routes[path];

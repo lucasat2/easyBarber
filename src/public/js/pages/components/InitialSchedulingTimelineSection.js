@@ -1,19 +1,19 @@
 import { SchedulingTimelineSelectionContainer } from "./SchedulingTimelineSelectionContainer.js";
 
-// const test = [
-//   {
-//     name: "Gabriell",
-//   },
-//   {
-//     name: "Bruno",
-//   },
-//   {
-//     name: "Lucas",
-//   },
-//   {
-//     name: "Fabiano",
-//   },
-// ];
+const test = [
+  {
+    name: "Gabriell",
+  },
+  {
+    name: "Bruno",
+  },
+  {
+    name: "Lucas",
+  },
+  {
+    name: "Fabiano",
+  },
+];
 
 function InitialSchedulingTimelineSection() {
   const schedulingTimelineSection = document.createElement("div");

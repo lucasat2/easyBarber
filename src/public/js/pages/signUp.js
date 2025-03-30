@@ -1,6 +1,6 @@
 import onNavigate from "../event.js";
 
-export default function signUp() {
+export default function signup() {
   
   const div = document.createElement("div");
 

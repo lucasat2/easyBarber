@@ -15,19 +15,13 @@ const login = async (req, res) => {
       return res.status(400).json({ error: "Formato de e-mail inválido" });
     }
 
-    const foundUser = await loginServices.findRegisteredUser(email);
+    const result = await loginServices.authenticateUser(email, password);
 
-    if (!foundUser) {
-      return res.status(404).json({ error: "E-mail não registrado" });
+    if (typeof result !== "string") {
+      return res.status(result.errorCode).json({ error: result.errorMessage });
     }
 
-    const result = await loginServices.authenticateUser(foundUser, password);
-
-    if (!result.auth) {
-      return res.status(404).json({ error: result.error });
-    }
-
-    res.cookie("session_id", result.sessionToken, {
+    res.cookie("session_id", result, {
       httpOnly: true,
       maxAge: 864000000,
     });
