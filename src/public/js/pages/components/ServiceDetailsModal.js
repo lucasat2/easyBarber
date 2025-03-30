@@ -80,6 +80,8 @@ export default function ServiceDetailsModal(serviceDetails) {
   rightColumn.style.flexDirection = "column";
   rightColumn.style.gap = "15px";
   rightColumn.style.padding = "15px";
+  rightColumn.style.flexWrap = "wrap";
+  rightColumn.style.justifyContent = "center";
 
   const fields = [
     { label: "Usuário", value: serviceDetails.user || "Sem cadastro", icon: true },
