@@ -30,12 +30,12 @@ export default function signup() {
   form.id = "signUpForm";
 
   const inputFields = [ 
-    { id: "companyName", placeholder: "Nome da Empresa", type: "text" },
+    { id: "name", placeholder: "Nome da Empresa", type: "text" },
     { id: "cnpj", placeholder: "CNPJ", type: "text" },
     { id: "phoneNumber", placeholder: "Telefone", type: "text" },
     { id: "state", placeholder: "Estado", type: "text" },
     { id: "city", placeholder: "Cidade", type: "text" },
-    { id: "address", placeholder: "Endereço", type: "text" },
+    { id: "street", placeholder: "Endereço", type: "text" },
     { id: "number", placeholder: "Número", type: "text" },
     { id: "postalCode", placeholder: "CEP", type: "text" },
     { id: "email", placeholder: "Email", type: "email" },
@@ -102,6 +102,7 @@ export default function signup() {
     inputFields.forEach(field => {
       formData[field.id] = div.querySelector(`#${field.id}`).value;
     });
+    console.log(formData)
     const response = await fetch("/api/users", {
       method: "POST",
       headers: {

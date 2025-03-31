@@ -115,6 +115,7 @@ function createModal() {
     inputData.type = 'date';
     inputData.required = true;
     inputData.classList.add("modalBoxStyles")
+    inputData.name = "date"
   
     //
     const inputClientName = document.createElement('input');
@@ -122,18 +123,21 @@ function createModal() {
     inputClientName.placeholder = 'Nome do cliente';
     inputClientName.required = true;
     inputClientName.classList.add("modalBoxStyles")
+    inputClientName.name="clientName"
   
     const inputClientPhone = document.createElement('input');
     inputClientPhone.type = 'tel';
     inputClientPhone.placeholder = 'Telefone do cliente';
     inputClientPhone.required = true;
     inputClientPhone.classList.add("modalBoxStyles")
+    inputClientPhone.name = "clientPhone"
   
     const inputClientEmail = document.createElement('input');
     inputClientEmail.type = 'email';
     inputClientEmail.placeholder = 'Email do cliente';
     inputClientEmail.required = true;
     inputClientEmail.classList.add("modalBoxStyles")
+    inputClientEmail.name = "clientEmail"
   
     // Horário inicial
     const selectDateTime = document.createElement('select');
@@ -143,18 +147,20 @@ function createModal() {
       option.value = horario;
       option.textContent = horario;
       selectDateTime.appendChild(option);
+      selectDateTime.name = "startTime"
     });
   
     // Observações
     const textareaObs = document.createElement('textarea');
     textareaObs.placeholder = 'Observações';
     textareaObs.classList.add("modalBoxStyles")
+    textareaObs.name = "observation"
   
     // Botões
     const btnSave = document.createElement('button');
     btnSave.id = 'modalButtonSaveAppointment' 
     btnSave.textContent = 'Salvar';
-    btnSave.type = 'submit'; // importante!
+    btnSave.type = 'submit'; 
   
     const btnCancel = document.createElement('button');
     btnCancel.id = 'modalButtonCancelAppointment'
@@ -165,14 +171,7 @@ function createModal() {
       document.body.removeChild(document.querySelector('.appointmentModalOverlay'));
     });
   
-    // Ao enviar o formulário
-    form.addEventListener('submit', (e) => {
-      e.preventDefault(); // evita recarregar a página
-      alert('Agendamento salvo!');
-  
-      // Aqui você pode usar fetch, FormData, etc.
-      document.body.removeChild(document.querySelector('.appointmentModalOverlay'));
-    });
+
   
     // Linhas
     const line1 = document.createElement('div');
@@ -207,10 +206,23 @@ function createModal() {
     form.appendChild(line3);
     form.appendChild(line4);
     form.appendChild(divButtons);
-  
+
+     // Ao enviar o formulário
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const data = {employeeId: selectStaff.value, serviceId: selectService.value, date: inputData.value, clientName: inputClientName.value, clientEmail: inputClientEmail.value, clientPhoneNumber: inputClientPhone.value, startTime: selectDateTime.value, observation: textareaObs.value}
+      console.log(data)
+      const response = await fetch('/appointments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await response.json();
+      alert(result.message || 'Agendamento criado com sucesso!');
+    });
     return form;
-  }      
-  
+  }
   //Função para gerar formulário de bloquear horário
   async function createBlockForm() {
     const title = document.createElement('h2');
@@ -304,7 +316,7 @@ async function populateSelects() {
   staffList.forEach(staff => {
       const option = document.createElement('option');
       option.value = staff.id;
-      option.textContent = `${staff.name}`;
+      option.textContent = `${staff.name} ${staff.surname}`;
       selectStaff.appendChild(option);
   });
 
