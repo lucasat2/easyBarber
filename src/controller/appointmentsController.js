@@ -38,6 +38,8 @@ const  createAppointment = async (req, res) => {
       observation,
     } = req.body;
 
+    const userId = req.user.id;
+
     if (
       !employeeId ||
       !serviceId ||
@@ -51,6 +53,10 @@ const  createAppointment = async (req, res) => {
       return res
         .status(400)
         .json({ error: "Preenchimento obrigatório de todos os campos" });
+    }
+
+    if (!validator.isUUID(userId)) {
+      return res.status(400).json({ error: "ID inválido de usuário" });
     }
 
     if (!validator.isUUID(employeeId)) {
@@ -92,6 +98,7 @@ const  createAppointment = async (req, res) => {
     }
 
     const result = await appointmentsServices.createAppointment(
+      userId,
       employeeId,
       serviceId,
       date,
@@ -116,7 +123,90 @@ const  createAppointment = async (req, res) => {
   }
 };
 
+const blockTimeForStaff = async (req, res) => {
+  try {
+    const { staffId, startDate, startTime, endDate, endTime, observation } =
+      req.body;
+
+    const userId = req.user.id;
+
+    if (
+      !staffId ||
+      !startDate ||
+      !startTime ||
+      !endDate ||
+      !endTime ||
+      !observation
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Preenchimento obrigatório de todos os campos" });
+    }
+
+    if (!validator.isUUID(userId)) {
+      return res.status(400).json({ error: "ID de usuário inválido" });
+    }
+
+    if (!validator.isUUID(staffId)) {
+      return res.status(400).json({ error: "ID de funcionário inválido" });
+    }
+
+    if (!validator.isDate(startDate)) {
+      return res
+        .status(400)
+        .json({ error: "Formato inválido de data de início" });
+    }
+
+    if (!timePattern.test(startTime)) {
+      return res
+        .status(400)
+        .json({ error: "Formato inválido de horário de início" });
+    }
+
+    if (!validator.isDate(endDate)) {
+      return res.status(400).json({ error: "Formato inválido de data de fim" });
+    }
+
+    if (!timePattern.test(endTime)) {
+      return res
+        .status(400)
+        .json({ error: "Formato inválido de horário de fim" });
+    }
+
+    if (!validator.isAlpha(observation, "pt-BR", { ignore: " " })) {
+      return res
+        .status(400)
+        .json({ error: "Campo de observação deve conter apenas letras" });
+    }
+
+    const result = await appointmentsServices.blockEmployeeSchedule(
+      userId,
+      staffId,
+      startDate,
+      startTime,
+      endDate,
+      endTime,
+      observation
+    );
+
+    if (result.statusCode === 201) {
+      return res
+        .status(result.statusCode)
+        .json({ message: result.statusMessage });
+    }
+
+    res.status(result.statusCode).json({ error: result.statusMessage });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      error: "Falha no servidor ao bloquear o horário do funcionário",
+    });
+  }
+};
+
 module.exports = {
   createAppointment,
   listAllAppointmentsByEmployee,
+  blockTimeForStaff,
 };

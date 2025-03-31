@@ -1,7 +1,6 @@
 import onNavigate from "../event.js";
 
 export default function signup() {
-
   const div = document.createElement("div");
 
   const container = document.createElement("div");
@@ -29,7 +28,7 @@ export default function signup() {
   const form = document.createElement("form");
   form.id = "signUpForm";
 
-  const inputFields = [ 
+  const inputFields = [
     { id: "name", placeholder: "Nome da Empresa", type: "text" },
     { id: "cnpj", placeholder: "CNPJ", type: "text" },
     { id: "phoneNumber", placeholder: "Telefone", type: "text" },
@@ -39,12 +38,12 @@ export default function signup() {
     { id: "number", placeholder: "Número", type: "text" },
     { id: "postalCode", placeholder: "CEP", type: "text" },
     { id: "email", placeholder: "Email", type: "email" },
-    { id: "password", placeholder: "Senha", type: "password" }
+    { id: "password", placeholder: "Senha", type: "password" },
   ];
 
   const inputContainer = document.createElement("div");
   inputContainer.classList.add("signupInputContainer");
-  
+
   inputFields.forEach((field, index) => {
     const input = document.createElement("input");
     input.type = field.type;
@@ -52,7 +51,7 @@ export default function signup() {
     input.placeholder = field.placeholder;
     input.required = true;
     input.classList.add("signupInputStyle");
-    
+
     if (index % 2 === 0) {
       const row = document.createElement("div");
       row.classList.add("signupInputRow");
@@ -63,7 +62,7 @@ export default function signup() {
       lastRow.appendChild(input);
     }
   });
-  
+
   form.appendChild(inputContainer);
 
   const btnSignup = document.createElement("button");
@@ -99,10 +98,10 @@ export default function signup() {
   sendForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = {};
-    inputFields.forEach(field => {
+    inputFields.forEach((field) => {
       formData[field.id] = div.querySelector(`#${field.id}`).value;
     });
-    console.log(formData)
+    console.log(formData);
     const response = await fetch("/api/users", {
       method: "POST",
       headers: {
