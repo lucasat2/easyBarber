@@ -100,7 +100,7 @@ export default function signup() {
     e.preventDefault();
     const formData = {};
     inputFields.forEach(field => {
-      formData[field.id] = div.querySelector(`#${field.id}`).value;
+      formData[field.id] = div.querySelector(#${field.id}).value;
     });
     console.log(formData)
     const response = await fetch("/api/users", {
@@ -126,5 +126,5 @@ export default function signup() {
     document.dispatchEvent(event);
   });
 
-  return div;
+  return div;
 }

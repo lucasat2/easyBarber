@@ -20,6 +20,7 @@ const getAllAppointmentsByEmployee = async (employeeId) => {
 };
 
 const insertNewAppointment = async (
+  userId,
   employeeId,
   serviceId,
   date,
@@ -35,6 +36,14 @@ const insertNewAppointment = async (
     client = await pool.connect();
 
     await client.query("BEGIN");
+
+    const getUserData = "SELECT * FROM users WHERE id = $1";
+
+    const doesCompanyOfferServiceQuery =
+      "SELECT * FROM services WHERE id = $1 AND company_id = $2";
+
+    const isEmployeeBelongsToCompanyQuery =
+      "SELECT * FROM staffs WHERE id = $1 AND company_id = $2";
 
     const getServiceDataQuery = "SELECT * FROM services WHERE id = $1";
 
@@ -54,6 +63,47 @@ const insertNewAppointment = async (
 
     const createAppointmentQuery =
       "INSERT INTO appointments (client_id, staff_id, service_id, date_hour_begin, date_hour_end, status, observation) VALUES ($1, $2, $3, $4, $5, $6, $7)";
+
+    const {
+      rows: [userData],
+    } = await client.query(getUserData, [userId]);
+
+    if (!userData) {
+      return {
+        statusCode: 404,
+        statusMessage: "Falha ao localizar as informações do usuário",
+      };
+    }
+
+    const companyId = userData.company_id;
+
+    const {
+      rows: [doesCompanyOfferService],
+    } = await client.query(doesCompanyOfferServiceQuery, [
+      serviceId,
+      companyId,
+    ]);
+
+    if (!doesCompanyOfferService) {
+      return {
+        statusCode: 404,
+        statusMessage: "A empresa não oferece tal serviço",
+      };
+    }
+
+    const {
+      rows: [isEmployeeBelongsToCompany],
+    } = await client.query(isEmployeeBelongsToCompanyQuery, [
+      employeeId,
+      companyId,
+    ]);
+
+    if (!isEmployeeBelongsToCompany) {
+      return {
+        statusCode: 404,
+        statusMessage: "O funcionário não pertence a empresa",
+      };
+    }
 
     const {
       rows: [serviceData],
@@ -232,84 +282,84 @@ const insertNewAppointment = async (
       const employeeShiftPerDay = employeeSchedules[k];
 
       if (employeeShiftPerDay.week_day === serviceDayName) {
-        if (employeeShiftPerDay.status === false) {
-          return {
-            statusCode: 409,
-            statusMessage: "Funcionário não trabalhará no dia solicitado",
-          };
+        if (employeeShiftPerDay.status_1 !== false) {
+          const firstShiftStartTimeArray =
+            employeeShiftPerDay.start_time_1.split(":");
+
+          const employeeFirstShiftStartTime = new Date(
+            Number(serviceDateArray[0]),
+            Number(serviceDateArray[1]) - 1,
+            Number(serviceDateArray[2])
+          );
+
+          employeeFirstShiftStartTime.setUTCHours(
+            Number(firstShiftStartTimeArray[0]),
+            Number(firstShiftStartTimeArray[1])
+          );
+
+          const firstShiftEndTimeArray =
+            employeeShiftPerDay.end_time_1.split(":");
+
+          const employeeFirstShiftEndTime = new Date(
+            Number(serviceDateArray[0]),
+            Number(serviceDateArray[1]) - 1,
+            Number(serviceDateArray[2])
+          );
+
+          employeeFirstShiftEndTime.setUTCHours(
+            Number(firstShiftEndTimeArray[0]),
+            Number(firstShiftEndTimeArray[1])
+          );
+
+          if (
+            serviceStartTime.getTime() >=
+              employeeFirstShiftStartTime.getTime() &&
+            serviceStartTime.getTime() < employeeFirstShiftEndTime.getTime() &&
+            serviceEndTime.getTime() > employeeFirstShiftStartTime.getTime() &&
+            serviceEndTime.getTime() <= employeeFirstShiftEndTime.getTime()
+          ) {
+            break;
+          }
         }
 
-        const firstShiftStartTimeArray =
-          employeeShiftPerDay.start_time_1.split(":");
+        if (employeeShiftPerDay.status_2 !== false) {
+          const secondShiftStartTimeArray =
+            employeeShiftPerDay.start_time_2.split(":");
 
-        const employeeFirstShiftStartTime = new Date(
-          Number(serviceDateArray[0]),
-          Number(serviceDateArray[1]) - 1,
-          Number(serviceDateArray[2])
-        );
+          const employeeSecondShiftStartTime = new Date(
+            Number(serviceDateArray[0]),
+            Number(serviceDateArray[1]) - 1,
+            Number(serviceDateArray[2])
+          );
 
-        employeeFirstShiftStartTime.setUTCHours(
-          Number(firstShiftStartTimeArray[0]),
-          Number(firstShiftStartTimeArray[1])
-        );
+          employeeSecondShiftStartTime.setUTCHours(
+            Number(secondShiftStartTimeArray[0]),
+            Number(secondShiftStartTimeArray[1])
+          );
 
-        const firstShiftEndTimeArray =
-          employeeShiftPerDay.end_time_1.split(":");
+          const secondShiftEndTimeArray =
+            employeeShiftPerDay.end_time_2.split(":");
 
-        const employeeFirstShiftEndTime = new Date(
-          Number(serviceDateArray[0]),
-          Number(serviceDateArray[1]) - 1,
-          Number(serviceDateArray[2])
-        );
+          const employeeSecondShiftEndTime = new Date(
+            Number(serviceDateArray[0]),
+            Number(serviceDateArray[1]) - 1,
+            Number(serviceDateArray[2])
+          );
 
-        employeeFirstShiftEndTime.setUTCHours(
-          Number(firstShiftEndTimeArray[0]),
-          Number(firstShiftEndTimeArray[1])
-        );
+          employeeSecondShiftEndTime.setUTCHours(
+            Number(secondShiftEndTimeArray[0]),
+            Number(secondShiftEndTimeArray[1])
+          );
 
-        const secondShiftStartTimeArray =
-          employeeShiftPerDay.start_time_2.split(":");
-
-        const employeeSecondShiftStartTime = new Date(
-          Number(serviceDateArray[0]),
-          Number(serviceDateArray[1]) - 1,
-          Number(serviceDateArray[2])
-        );
-
-        employeeSecondShiftStartTime.setUTCHours(
-          Number(secondShiftStartTimeArray[0]),
-          Number(secondShiftStartTimeArray[1])
-        );
-
-        const secondShiftEndTimeArray =
-          employeeShiftPerDay.end_time_2.split(":");
-
-        const employeeSecondShiftEndTime = new Date(
-          Number(serviceDateArray[0]),
-          Number(serviceDateArray[1]) - 1,
-          Number(serviceDateArray[2])
-        );
-
-        employeeSecondShiftEndTime.setUTCHours(
-          Number(secondShiftEndTimeArray[0]),
-          Number(secondShiftEndTimeArray[1])
-        );
-
-        if (
-          serviceStartTime.getTime() >= employeeFirstShiftStartTime.getTime() &&
-          serviceStartTime.getTime() < employeeFirstShiftEndTime.getTime() &&
-          serviceEndTime.getTime() > employeeFirstShiftStartTime.getTime() &&
-          serviceEndTime.getTime() <= employeeFirstShiftEndTime.getTime()
-        ) {
-          break;
-        } else if (
-          serviceStartTime.getTime() >=
-            employeeSecondShiftStartTime.getTime() &&
-          serviceStartTime.getTime() < employeeSecondShiftEndTime.getTime() &&
-          serviceEndTime.getTime() > employeeSecondShiftStartTime.getTime() &&
-          serviceEndTime.getTime() <= employeeSecondShiftEndTime.getTime()
-        ) {
-          break;
+          if (
+            serviceStartTime.getTime() >=
+              employeeSecondShiftStartTime.getTime() &&
+            serviceStartTime.getTime() < employeeSecondShiftEndTime.getTime() &&
+            serviceEndTime.getTime() > employeeSecondShiftStartTime.getTime() &&
+            serviceEndTime.getTime() <= employeeSecondShiftEndTime.getTime()
+          ) {
+            break;
+          }
         }
 
         return {
@@ -323,57 +373,26 @@ const insertNewAppointment = async (
       employeeId
     );
 
-    if (allAppointmentsByEmployee.length === 0) {
-      let clientId;
-
-      const {
-        rows: [clientData],
-      } = await client.query(getClientDataQuery, [
-        clientName,
-        clientEmail,
-        clientPhoneNumber,
-      ]);
-
-      if (clientData) {
-        clientId = clientData.id;
-      } else {
-        await client.query(createClientQuery, [
-          clientName,
-          clientEmail,
-          clientPhoneNumber,
-        ]);
-
-        const {
-          rows: [dataClient],
-        } = await client.query(getClientDataQuery, [
-          clientName,
-          clientEmail,
-          clientPhoneNumber,
-        ]);
-
-        clientId = dataClient.id;
-      }
-
-      await client.query(createAppointmentQuery, [
-        clientId,
-        employeeId,
-        serviceId,
-        serviceStartTime,
-        serviceEndTime,
-        "Agendado",
-        observation,
-      ]);
-
-      await client.query("COMMIT");
-
+    if (!allAppointmentsByEmployee) {
       return {
-        statusCode: 201,
-        statusMessage: "Agendamento realizado com sucesso",
+        statusCode: 404,
+        statusMessage:
+          "Falha ao listar os agendamentos existentes do funcionário",
       };
     }
 
-    for (let l = 0; l < allAppointmentsByEmployee.length; l++) {
-      const appointmentData = allAppointmentsByEmployee[l];
+    const allAppointmentsFilteredByEmployee = allAppointmentsByEmployee.filter(
+      (appointment) => {
+        if (appointment.status !== "CANCELADO") {
+          return true;
+        }
+      }
+    );
+
+    let countAppointments = 0;
+
+    for (let l = 0; l < allAppointmentsFilteredByEmployee.length; l++) {
+      const appointmentData = allAppointmentsFilteredByEmployee[l];
 
       const appointmentStartDateAndTime =
         appointmentData.date_hour_begin.toISOString();
@@ -425,51 +444,57 @@ const insertNewAppointment = async (
         (serviceStartTime.getTime() >= endTimeAppointment.getTime() &&
           serviceEndTime.getTime() > endTimeAppointment.getTime())
       ) {
-        let clientId;
+        countAppointments++;
+      }
+    }
+
+    if (countAppointments === allAppointmentsFilteredByEmployee.length) {
+      let clientId;
+
+      const {
+        rows: [clientData],
+      } = await client.query(getClientDataQuery, [
+        clientName,
+        clientEmail,
+        clientPhoneNumber,
+      ]);
+
+      if (clientData) {
+        clientId = clientData.id;
+      } else {
+        await client.query(createClientQuery, [
+          clientName,
+          clientEmail,
+          clientPhoneNumber,
+        ]);
 
         const {
-          rows: [clientData],
+          rows: [dataClient],
         } = await client.query(getClientDataQuery, [
           clientName,
           clientEmail,
           clientPhoneNumber,
         ]);
 
-        if (clientData) {
-          clientId = clientData.id;
-        } else {
-          await client.query(createClientQuery, [
-            clientName,
-            clientEmail,
-            clientPhoneNumber,
-          ]);
-
-          const {
-            rows: [dataClient],
-          } = await client.query(getClientDataQuery, [
-            clientName,
-            clientEmail,
-            clientPhoneNumber,
-          ]);
-
-          clientId = dataClient.id;
-        }
-
-        await client.query(createAppointmentQuery, [
-          clientId,
-          employeeId,
-          serviceId,
-          serviceStartTime,
-          serviceEndTime,
-          "Agendado",
-          observation,
-        ]);
-
-        return {
-          statusCode: 201,
-          statusMessage: "Agendamento realizado com sucesso",
-        };
+        clientId = dataClient.id;
       }
+
+      await client.query(createAppointmentQuery, [
+        clientId,
+        employeeId,
+        serviceId,
+        serviceStartTime,
+        serviceEndTime,
+        "AGENDADO",
+        observation,
+      ]);
+
+      await client.query("COMMIT");
+
+      return {
+        statusCode: 201,
+        statusMessage: "Agendamento realizado com sucesso",
+      };
     }
 
     await client.query("COMMIT");
@@ -489,4 +514,237 @@ const insertNewAppointment = async (
   }
 };
 
-module.exports = { insertNewAppointment, getAllAppointmentsByEmployee };
+const setEmployeeScheduleAsBlocked = async (
+  userId,
+  staffId,
+  startDate,
+  startTime,
+  endDate,
+  endTime,
+  observation
+) => {
+  let client;
+
+  try {
+    client = await pool.connect();
+
+    const getUserData = "SELECT * FROM users WHERE id = $1";
+
+    const isEmployeeBelongsToCompanyQuery =
+      "SELECT * FROM staffs WHERE id = $1 AND company_id = $2";
+
+    const blockStaffScheduleQuery =
+      "INSERT INTO appointments (client_id, staff_id, service_id, date_hour_begin, date_hour_end, status, observation) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *";
+
+    const {
+      rows: [userData],
+    } = await client.query(getUserData, [userId]);
+
+    if (!userData) {
+      return {
+        statusCode: 404,
+        statusMessage: "Falha ao localizar as informações do usuário",
+      };
+    }
+
+    const companyId = userData.company_id;
+
+    const {
+      rows: [isEmployeeBelongsToCompany],
+    } = await client.query(isEmployeeBelongsToCompanyQuery, [
+      staffId,
+      companyId,
+    ]);
+
+    if (!isEmployeeBelongsToCompany) {
+      return {
+        statusCode: 404,
+        statusMessage: "O funcionário não pertence a empresa",
+      };
+    }
+
+    const startBlockDateArray = startDate.split("-");
+
+    const startBlockTimeArray = startTime.split(":");
+
+    const startBlockSchedule = new Date(
+      Number(startBlockDateArray[0]),
+      Number(startBlockDateArray[1]) - 1,
+      Number(startBlockDateArray[2])
+    );
+
+    startBlockSchedule.setUTCHours(
+      Number(startBlockTimeArray[0]),
+      Number(startBlockTimeArray[1])
+    );
+
+    const endBlockDateArray = endDate.split("-");
+
+    const endBlockTimeArray = endTime.split(":");
+
+    const endBlockSchedule = new Date(
+      Number(endBlockDateArray[0]),
+      Number(endBlockDateArray[1]) - 1,
+      Number(endBlockDateArray[2])
+    );
+
+    endBlockSchedule.setUTCHours(
+      Number(endBlockTimeArray[0]),
+      Number(endBlockTimeArray[1])
+    );
+
+    const todayDate = new Date().toLocaleDateString();
+
+    const todayDateArray = todayDate.split("/");
+
+    const todayTime = new Date().toLocaleTimeString();
+
+    const todayTimeArray = todayTime.split(":");
+
+    const today = new Date(
+      Number(todayDateArray[2]),
+      Number(todayDateArray[1]) - 1,
+      Number(todayDateArray[0])
+    );
+
+    today.setUTCHours(Number(todayTimeArray[0]), Number(todayTimeArray[1]));
+
+    if (startBlockSchedule.getTime() < today.getTime()) {
+      return {
+        statusCode: 409,
+        statusMessage: "A data de início deve ser posterior à data atual",
+      };
+    }
+
+    if (endBlockSchedule.getTime() < today.getTime()) {
+      return {
+        statusCode: 409,
+        statusMessage: "A data de fim deve ser posterior à data atual",
+      };
+    }
+
+    if (endBlockSchedule.getTime() < startBlockSchedule.getTime()) {
+      return {
+        statusCode: 409,
+        statusMessage: "A data de fim deve ser posterior à data de início",
+      };
+    }
+
+    const allAppointmentsByEmployee = await getAllAppointmentsByEmployee(
+      staffId
+    );
+
+    if (!allAppointmentsByEmployee) {
+      return {
+        statusCode: 404,
+        statusMessage:
+          "Falha ao listar os agendamentos existentes do funcionário",
+      };
+    }
+
+    const allAppointmentsFilteredByEmployee = allAppointmentsByEmployee.filter(
+      (appointment) => {
+        if (appointment.status !== "CANCELADO") {
+          return true;
+        }
+      }
+    );
+
+    for (let l = 0; l < allAppointmentsFilteredByEmployee.length; l++) {
+      const appointmentData = allAppointmentsFilteredByEmployee[l];
+
+      const appointmentStartDateAndTime =
+        appointmentData.date_hour_begin.toISOString();
+
+      const appointmentStartDateAndTimeArray =
+        appointmentStartDateAndTime.split("T");
+
+      const appointmentStartDate =
+        appointmentStartDateAndTimeArray[0].split("-");
+
+      const appointmentStartTime =
+        appointmentStartDateAndTimeArray[1].split(":");
+
+      const startTimeAppointment = new Date(
+        Number(appointmentStartDate[0]),
+        Number(appointmentStartDate[1]) - 1,
+        Number(appointmentStartDate[2])
+      );
+
+      startTimeAppointment.setUTCHours(
+        Number(appointmentStartTime[0]),
+        Number(appointmentStartTime[1])
+      );
+
+      const appointmentEndDateAndTime =
+        appointmentData.date_hour_end.toISOString();
+
+      const appointmentEndDateAndTimeArray =
+        appointmentEndDateAndTime.split("T");
+
+      const appointmentEndDate = appointmentEndDateAndTimeArray[0].split("-");
+
+      const appointmentEndTime = appointmentEndDateAndTimeArray[1].split(":");
+
+      const endTimeAppointment = new Date(
+        Number(appointmentEndDate[0]),
+        Number(appointmentEndDate[1]) - 1,
+        Number(appointmentEndDate[2])
+      );
+
+      endTimeAppointment.setUTCHours(
+        Number(appointmentEndTime[0]),
+        Number(appointmentEndTime[1])
+      );
+
+      if (
+        (startTimeAppointment.getTime() >= startBlockSchedule.getTime() &&
+          startTimeAppointment.getTime() < endBlockSchedule.getTime()) ||
+        (endTimeAppointment.getTime() > startBlockSchedule.getTime() &&
+          endTimeAppointment.getTime() <= endBlockSchedule.getTime())
+      ) {
+        return {
+          statusCode: 409,
+          statusMessage:
+            "Falha ao bloquear o horário. Já existe um agendamento ou bloqueio no horário especificado",
+        };
+      }
+    }
+
+    const {
+      rows: [blockStaffSchedule],
+    } = await client.query(blockStaffScheduleQuery, [
+      null,
+      staffId,
+      null,
+      startBlockSchedule,
+      endBlockSchedule,
+      "BLOQUEADO",
+      observation,
+    ]);
+
+    if (!blockStaffSchedule) {
+      return {
+        statusCode: 404,
+        statusMessage: "Falha no processo de bloqueamento do horário",
+      };
+    }
+
+    return {
+      statusCode: 201,
+      statusMessage: "Bloqueio de horário realizado com sucesso",
+    };
+  } catch (error) {
+    throw error;
+  } finally {
+    if (client) {
+      client.release();
+    }
+  }
+};
+
+module.exports = {
+  insertNewAppointment,
+  getAllAppointmentsByEmployee,
+  setEmployeeScheduleAsBlocked,
+};

@@ -9,5 +9,10 @@ router.get(
   appointmentsController.listAllAppointmentsByEmployee
 );
 router.post("/", verifyActiveSession, appointmentsController.createAppointment);
+router.post(
+  "/blockSchedule",
+  verifyActiveSession,
+  appointmentsController.blockTimeForStaff
+);
 
 module.exports = router;
