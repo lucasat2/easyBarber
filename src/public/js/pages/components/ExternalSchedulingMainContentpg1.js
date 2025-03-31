@@ -10,8 +10,7 @@ export default function MainContent() {
       </div>
       
       <div class="external-scheduling-image-container">
-        <img src="https://images.unsplash.com/photo-1622288432450-277d0fef5ed6?q=80&w=2070&auto=format&fit=crop" 
-             alt="Barbeiro profissional cortando cabelo" 
+        <img alt="Barbeiro profissional cortando cabelo" 
              class="external-scheduling-barber-image">
       </div>
     </main>

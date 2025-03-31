@@ -1,0 +1,332 @@
+/* Estilos gerais */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #f5f5f5;
+}
+
+.externalSchedule_Pg3-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.externalSchedule_Pg3-content {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Header */
+.externalSchedule_Pg3__header {
+  background-color: #e0e0e0;
+  padding: 15px 30px;
+  display: flex;
+  align-items: center;
+  width: 100vw;
+  margin: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  left: 0;
+}
+
+.externalSchedule_Pg3__logo {
+  width: 50px;
+  height: 50px;
+  background-image: url('../assets/externalSchedulingPage/—Pngtree—barbershop\ logo_7966220\ 1.png');
+  background-size: cover;
+  background-position: center;
+  margin-left: 2rem;
+  text-indent: -9999px;
+  overflow: hidden;
+  white-space: norap;
+}
+
+.externalSchedule_Pg3-left-panel {
+  width: 220px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-right: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Painel direito */
+.externalSchedule_Pg3-right-panel {
+  flex: 1;
+  padding: 20px;
+}
+
+.externalSchedule_Pg3-header {
+  margin-bottom: 30px;
+}
+
+.externalSchedule_Pg3-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.externalSchedule_Pg3-barbershop-name h1 {
+  font-size: 18px;
+  color: #333;
+}
+
+/* Informações do serviço */
+.externalSchedule_Pg3-service-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.externalSchedule_Pg3-service-image {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.externalSchedule_Pg3-service-image img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.externalSchedule_Pg3-service-details h2 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.externalSchedule_Pg3-service-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 14px;
+  color: #666;
+}
+
+.externalSchedule_Pg3-alter-service-btn {
+  background-color: #b8b800;
+  color: #333;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Seletor de barbeiro */
+.externalSchedule_Pg3-barber-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.externalSchedule_Pg3-barbers-container {
+  display: flex;
+  gap: 15px;
+  overflow: hidden;
+  width: 80%;
+  justify-content: center;
+}
+
+.externalSchedule_Pg3-barber-card {
+  width: 120px;
+  height: 120px;
+  border-radius: 15px;
+  background-color: #eee;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.externalSchedule_Pg3-barber-card img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 8px;
+}
+
+.externalSchedule_Pg3-barber-card p {
+  font-size: 12px;
+  text-align: center;
+}
+
+.externalSchedule_Pg3-barber-card.externalSchedule_Pg3-selected {
+  background-color: #d8d80a;
+}
+
+.externalSchedule_Pg3-nav-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Calendário */
+.externalSchedule_Pg3-calendar {
+  margin-bottom: 30px;
+  width: 320px;
+  /* Define a largura do calendário */
+  padding: 10px;
+  /* Adiciona espaçamento interno */
+  background-color: #fff;
+  /* Fundo branco */
+  border-radius: 10px;
+  /* Bordas arredondadas */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* Adiciona sombra */
+}
+
+.externalSchedule_Pg3-calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  font-size: 18px;
+  /* Ajusta o tamanho da fonte */
+  font-weight: bold;
+  /* Deixa o texto em negrito */
+  color: #333;
+  /* Cor do texto */
+}
+
+.externalSchedule_Pg3-month-nav {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  /* Ajusta o tamanho das setas */
+  color: #d8d80a;
+  /* Cor das setas */
+}
+
+.externalSchedule_Pg3-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 14px;
+  /* Ajusta o tamanho da fonte */
+  color: #666;
+  /* Cor do texto */
+}
+
+.externalSchedule_Pg3-days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.externalSchedule_Pg3-day {
+  height: 40px;
+  /* Ajusta a altura dos dias */
+  width: 40px;
+  /* Ajusta a largura dos dias */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  /* Formato circular */
+  font-size: 14px;
+  /* Ajusta o tamanho da fonte */
+  color: #333;
+  /* Cor do texto */
+  background-color: #f5f5f5;
+  /* Fundo padrão */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.externalSchedule_Pg3-day.externalSchedule_Pg3-prev,
+.externalSchedule_Pg3-day.externalSchedule_Pg3-next {
+  color: #ccc;
+  /* Cor dos dias fora do mês atual */
+}
+
+.externalSchedule_Pg3-day.externalSchedule_Pg3-highlight {
+  background-color: #ff6b6b;
+  /* Fundo vermelho */
+  color: white;
+  /* Texto branco */
+}
+
+.externalSchedule_Pg3-day.externalSchedule_Pg3-selected {
+  background-color: #d8d80a;
+  /* Fundo amarelo */
+  color: white;
+  /* Texto branco */
+  font-weight: bold;
+  /* Texto em negrito */
+}
+
+/* Slots de horário */
+.externalSchedule_Pg3-time-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.externalSchedule_Pg3-time-row {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.externalSchedule_Pg3-time-slot {
+  flex: 1;
+  padding: 10px;
+  background-color: #eee;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+}
+
+.externalSchedule_Pg3-time-slot.externalSchedule_Pg3-selected {
+  background-color: #d8d80a;
+  font-weight: bold;
+}
+
+/* Botão de confirmação */
+.externalSchedule_Pg3-confirm-button {
+  background-color: #d8d80a;
+  color: #333;
+  border: none;
+  padding: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: auto;
+  width: 100%;
+}
+
+.externalSchedule_Pg3-confirm-button:hover {
+  background-color: #c4c409;
+}
