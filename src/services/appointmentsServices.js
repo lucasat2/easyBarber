@@ -42,7 +42,34 @@ const createAppointment = async (
   }
 };
 
+const blockEmployeeSchedule = async (
+  userId,
+  staffId,
+  startDate,
+  startTime,
+  endDate,
+  endTime,
+  observation
+) => {
+  try {
+    const response = await appointmentsRepository.setEmployeeScheduleAsBlocked(
+      userId,
+      staffId,
+      startDate,
+      startTime,
+      endDate,
+      endTime,
+      observation
+    );
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   createAppointment,
   listAllAppointmentsByEmployee,
+  blockEmployeeSchedule,
 };
