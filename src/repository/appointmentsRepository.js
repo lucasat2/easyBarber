@@ -323,7 +323,15 @@ const insertNewAppointment = async (
       employeeId
     );
 
-    if (allAppointmentsByEmployee.length === 0) {
+    const allAppointmentsFilteredByEmployee = allAppointmentsByEmployee.filter(
+      (appointment) => {
+        if (appointment.status !== "CANCELADO") {
+          return true;
+        }
+      }
+    );
+
+    if (allAppointmentsFilteredByEmployee.length === 0) {
       let clientId;
 
       const {
@@ -360,7 +368,7 @@ const insertNewAppointment = async (
         serviceId,
         serviceStartTime,
         serviceEndTime,
-        "Agendado",
+        "AGENDADO",
         observation,
       ]);
 
@@ -372,8 +380,10 @@ const insertNewAppointment = async (
       };
     }
 
-    for (let l = 0; l < allAppointmentsByEmployee.length; l++) {
-      const appointmentData = allAppointmentsByEmployee[l];
+    let countAppointments = 0;
+
+    for (let l = 0; l < allAppointmentsFilteredByEmployee.length; l++) {
+      const appointmentData = allAppointmentsFilteredByEmployee[l];
 
       const appointmentStartDateAndTime =
         appointmentData.date_hour_begin.toISOString();
@@ -425,51 +435,57 @@ const insertNewAppointment = async (
         (serviceStartTime.getTime() >= endTimeAppointment.getTime() &&
           serviceEndTime.getTime() > endTimeAppointment.getTime())
       ) {
-        let clientId;
+        countAppointments++;
+      }
+    }
+
+    if (countAppointments === allAppointmentsFilteredByEmployee.length) {
+      let clientId;
+
+      const {
+        rows: [clientData],
+      } = await client.query(getClientDataQuery, [
+        clientName,
+        clientEmail,
+        clientPhoneNumber,
+      ]);
+
+      if (clientData) {
+        clientId = clientData.id;
+      } else {
+        await client.query(createClientQuery, [
+          clientName,
+          clientEmail,
+          clientPhoneNumber,
+        ]);
 
         const {
-          rows: [clientData],
+          rows: [dataClient],
         } = await client.query(getClientDataQuery, [
           clientName,
           clientEmail,
           clientPhoneNumber,
         ]);
 
-        if (clientData) {
-          clientId = clientData.id;
-        } else {
-          await client.query(createClientQuery, [
-            clientName,
-            clientEmail,
-            clientPhoneNumber,
-          ]);
-
-          const {
-            rows: [dataClient],
-          } = await client.query(getClientDataQuery, [
-            clientName,
-            clientEmail,
-            clientPhoneNumber,
-          ]);
-
-          clientId = dataClient.id;
-        }
-
-        await client.query(createAppointmentQuery, [
-          clientId,
-          employeeId,
-          serviceId,
-          serviceStartTime,
-          serviceEndTime,
-          "Agendado",
-          observation,
-        ]);
-
-        return {
-          statusCode: 201,
-          statusMessage: "Agendamento realizado com sucesso",
-        };
+        clientId = dataClient.id;
       }
+
+      await client.query(createAppointmentQuery, [
+        clientId,
+        employeeId,
+        serviceId,
+        serviceStartTime,
+        serviceEndTime,
+        "AGENDADO",
+        observation,
+      ]);
+
+      await client.query("COMMIT");
+
+      return {
+        statusCode: 201,
+        statusMessage: "Agendamento realizado com sucesso",
+      };
     }
 
     await client.query("COMMIT");
