@@ -25,7 +25,7 @@ const listAllAppointmentsByEmployee = async (req, res) => {
   }
 };
 
-const createAppointment = async (req, res) => {
+const  createAppointment = async (req, res) => {
   try {
     const {
       employeeId,
