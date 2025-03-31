@@ -13,6 +13,7 @@ const listAllAppointmentsByEmployee = async (employeeId) => {
 };
 
 const createAppointment = async (
+  userId,
   employeeId,
   serviceId,
   date,
@@ -24,6 +25,7 @@ const createAppointment = async (
 ) => {
   try {
     const result = await appointmentsRepository.insertNewAppointment(
+      userId,
       employeeId,
       serviceId,
       date,
@@ -40,7 +42,34 @@ const createAppointment = async (
   }
 };
 
+const blockEmployeeSchedule = async (
+  userId,
+  staffId,
+  startDate,
+  startTime,
+  endDate,
+  endTime,
+  observation
+) => {
+  try {
+    const response = await appointmentsRepository.setEmployeeScheduleAsBlocked(
+      userId,
+      staffId,
+      startDate,
+      startTime,
+      endDate,
+      endTime,
+      observation
+    );
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   createAppointment,
   listAllAppointmentsByEmployee,
+  blockEmployeeSchedule,
 };
