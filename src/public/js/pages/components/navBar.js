@@ -119,7 +119,7 @@ export default function header() {
 	listBar.style.flexDirection = "column";
 	listBar.style.justifyContent = "space-between";
 
-	function highlightActiveButton(activeItem) {
+	async function highlightActiveButton(activeItem) {
 		const titleHeader = document.getElementById("titleHeader");
 		titleHeader.innerText = activeItem.id;
 
@@ -140,8 +140,9 @@ export default function header() {
 		main.innerHTML = "";
 		main.style.padding = "1rem";
 
-		if ((activeItem.id == "Agendamentos")) {
-			main.appendChild(InitialSchedulingTimelineSection());
+		if (activeItem.id == "Agendamentos") {
+			const section = await InitialSchedulingTimelineSection();
+			main.appendChild(section);
 		} else if((activeItem.id == "Clientes")) {
 			main.innerHTML = "Clientes";
 		} else if((activeItem.id == "Equipe")) {

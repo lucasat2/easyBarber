@@ -2,6 +2,7 @@ import { SchedulingTimelineSelectionContainer } from "./SchedulingTimelineSelect
 import { SchedulingTimelineEmployeesCard } from "./SchedulingTimelineEmployeesCard.js";
 import { SchedulingTimelineDateCard } from "./SchedulingTimelineDateCard.js";
 import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
+import * as modalAppointment from "./modalAppointmentScheduling.js"
 
 function EmployeeScheduleDashboard(employeeName, staff) {
   const employeeSchedulingTimelineSection = document.createElement("div");
@@ -59,6 +60,10 @@ function EmployeeScheduleDashboard(employeeName, staff) {
     currentYear
   );
   employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline);
+
+  employeeSchedulingTimelineHeaderManagementButton.addEventListener('click', () => {
+    modalAppointment.createModal()
+  });
 
   return employeeSchedulingTimelineSection;
 }

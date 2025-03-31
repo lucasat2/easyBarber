@@ -30,12 +30,12 @@ export default function signup() {
   form.id = "signUpForm";
 
   const inputFields = [ 
-    { id: "companyName", placeholder: "Nome da Empresa", type: "text" },
+    { id: "name", placeholder: "Nome da Empresa", type: "text" },
     { id: "cnpj", placeholder: "CNPJ", type: "text" },
     { id: "phoneNumber", placeholder: "Telefone", type: "text" },
     { id: "state", placeholder: "Estado", type: "text" },
     { id: "city", placeholder: "Cidade", type: "text" },
-    { id: "address", placeholder: "Endereço", type: "text" },
+    { id: "street", placeholder: "Endereço", type: "text" },
     { id: "number", placeholder: "Número", type: "text" },
     { id: "postalCode", placeholder: "CEP", type: "text" },
     { id: "email", placeholder: "Email", type: "email" },
@@ -98,37 +98,11 @@ export default function signup() {
   const sendForm = div.querySelector("#signUpForm");
   sendForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-
     const formData = {};
-    let hasEmptyField = false;
-  
-    // Coletando os campos na ordem correta
-    formData.name = div.querySelector("#companyName").value;
-    formData.cnpj = div.querySelector("#cnpj").value;
-    formData.phoneNumber = div.querySelector("#phoneNumber").value;
-    formData.state = div.querySelector("#state").value;
-    formData.city = div.querySelector("#city").value;
-    formData.street = div.querySelector("#address").value; // Ajuste do campo para "street"
-    formData.number = div.querySelector("#number").value;
-    formData.postalCode = div.querySelector("#postalCode").value;
-    formData.email = div.querySelector("#email").value;
-    formData.password = div.querySelector("#password").value;
-  
-    // Validação dos campos
-    for (const key in formData) {
-      if (!formData[key]) {
-        hasEmptyField = true;
-        console.error(`Field ${key} is empty`);
-      }
-    }
-  
-    if (hasEmptyField) {
-      alert("Please fill out all fields.");
-      return;
-    }
-
+    inputFields.forEach(field => {
+      formData[field.id] = div.querySelector(#${field.id}).value;
+    });
     console.log(formData)
-
     const response = await fetch("/api/users", {
       method: "POST",
       headers: {
@@ -152,5 +126,5 @@ export default function signup() {
     document.dispatchEvent(event);
   });
 
-  return div;
+  return div;
 }
