@@ -20,6 +20,7 @@ const getAllAppointmentsByEmployee = async (employeeId) => {
 };
 
 const insertNewAppointment = async (
+  userId,
   employeeId,
   serviceId,
   date,
@@ -35,6 +36,14 @@ const insertNewAppointment = async (
     client = await pool.connect();
 
     await client.query("BEGIN");
+
+    const getUserData = "SELECT * FROM users WHERE id = $1";
+
+    const doesCompanyOfferServiceQuery =
+      "SELECT * FROM services WHERE id = $1 AND company_id = $2";
+
+    const isEmployeeBelongsToCompanyQuery =
+      "SELECT * FROM staffs WHERE id = $1 AND company_id = $2";
 
     const getServiceDataQuery = "SELECT * FROM services WHERE id = $1";
 
@@ -54,6 +63,47 @@ const insertNewAppointment = async (
 
     const createAppointmentQuery =
       "INSERT INTO appointments (client_id, staff_id, service_id, date_hour_begin, date_hour_end, status, observation) VALUES ($1, $2, $3, $4, $5, $6, $7)";
+
+    const {
+      rows: [userData],
+    } = await client.query(getUserData, [userId]);
+
+    if (!userData) {
+      return {
+        statusCode: 404,
+        statusMessage: "Falha ao localizar as informações do usuário",
+      };
+    }
+
+    const companyId = userData.company_id;
+
+    const {
+      rows: [doesCompanyOfferService],
+    } = await client.query(doesCompanyOfferServiceQuery, [
+      serviceId,
+      companyId,
+    ]);
+
+    if (!doesCompanyOfferService) {
+      return {
+        statusCode: 404,
+        statusMessage: "A empresa não oferece tal serviço",
+      };
+    }
+
+    const {
+      rows: [isEmployeeBelongsToCompany],
+    } = await client.query(isEmployeeBelongsToCompanyQuery, [
+      employeeId,
+      companyId,
+    ]);
+
+    if (!isEmployeeBelongsToCompany) {
+      return {
+        statusCode: 404,
+        statusMessage: "O funcionário não pertence a empresa",
+      };
+    }
 
     const {
       rows: [serviceData],

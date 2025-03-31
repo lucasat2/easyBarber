@@ -13,6 +13,7 @@ const listAllAppointmentsByEmployee = async (employeeId) => {
 };
 
 const createAppointment = async (
+  userId,
   employeeId,
   serviceId,
   date,
@@ -24,6 +25,7 @@ const createAppointment = async (
 ) => {
   try {
     const result = await appointmentsRepository.insertNewAppointment(
+      userId,
       employeeId,
       serviceId,
       date,
