@@ -213,7 +213,7 @@ function createModal() {
       
       const data = {employeeId: selectStaff.value, serviceId: selectService.value, date: inputData.value, clientName: inputClientName.value, clientEmail: inputClientEmail.value, clientPhoneNumber: inputClientPhone.value, startTime: selectDateTime.value, observation: textareaObs.value}
       console.log(data)
-      const response = await fetch('/appointments', {
+      const response = await fetch('/api/appointments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
