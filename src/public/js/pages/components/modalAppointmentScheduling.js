@@ -1,3 +1,4 @@
+import { fetchStaff, fetchServices } from "./fetchData.js ";
 
 function createModal() {
   const title = document.createElement('h2');
@@ -26,12 +27,12 @@ function createModal() {
     const formContainer = document.createElement('div');
   
   // Troca visual e de conteúdo
-    btnAppoint.addEventListener('click', () => {
+    btnAppoint.addEventListener('click', async () => {
       updateToggle('agendar')
       renderForm('agendar');
     });
   
-    btnBlock.addEventListener('click', () => {
+    btnBlock.addEventListener('click', async () => {
       updateToggle('bloquear')
       renderForm('bloquear');
     });
@@ -52,15 +53,17 @@ function createModal() {
   }
   
   //Função para gerar dois formulários diferentes
-    function renderForm(mode) {
-      formContainer.innerHTML = '';
+  async function renderForm(mode) {
+    formContainer.innerHTML = '';
   
-      if (mode === 'agendar') {
-        formContainer.appendChild(createApointForm());
-      } else {
-        formContainer.appendChild(createBlockForm());
-      }
+    if (mode === 'agendar') {
+      const form = await createApointForm();
+      formContainer.appendChild(form);
+    } else {
+      const form = await createBlockForm();
+      formContainer.appendChild(form);
     }
+  }
 
   //Posicionamento dos elementos
     toggleContainer.appendChild(btnAppoint);
@@ -209,7 +212,7 @@ function createModal() {
   }      
   
   //Função para gerar formulário de bloquear horário
-  function createBlockForm() {
+  async function createBlockForm() {
     const title = document.createElement('h2');
     title.classList.add("modalAppointTitle")
     title.textContent = "Bloqueio";  
@@ -291,39 +294,6 @@ function createModal() {
     return form;
   }
 
-// Função para buscar funcionários
-async function fetchStaff() {
-  try {
-      const response = await fetch('/api/staff');
-      if (!response.ok) {
-          const errorMessage = await response.text();
-          throw new Error(`Erro ao buscar funcionários: ${errorMessage}`);
-      }
-      const { response: staff } = await response.json();
-      return staff;
-  } catch (error) {
-      console.error('Erro ao obter a lista de funcionários:', error.message);
-      return [];
-  }
-}
-
-
-
-
-
-// Função para buscar serviços
-async function fetchServices() {
-  try {
-      const response = await fetch('/api/services');
-      if (!response.ok) throw new Error('Erro ao buscar serviços');
-      const services = await response.json();
-      return services;
-  } catch (error) {
-      console.error('Erro ao obter a lista de serviços:', error);
-      return [];
-  }
-}
-
 // Preenchendo os selects no modal
 async function populateSelects() {
   const selectStaff = document.createElement('select');
@@ -334,7 +304,7 @@ async function populateSelects() {
   staffList.forEach(staff => {
       const option = document.createElement('option');
       option.value = staff.id;
-      option.textContent = `${staff.name} ${staff.surname}`;
+      option.textContent = `${staff.name}`;
       selectStaff.appendChild(option);
   });
 
@@ -354,4 +324,4 @@ async function populateSelects() {
 }
 
 
-export {createModal,createField,createApointForm,createBlockForm, fetchStaff, fetchServices, populateSelects}
+export {createModal,createField,createApointForm,createBlockForm, populateSelects}

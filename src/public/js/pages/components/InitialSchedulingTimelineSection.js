@@ -1,29 +1,18 @@
 import { SchedulingTimelineSelectionContainer } from "./SchedulingTimelineSelectionContainer.js";
+import { fetchStaff } from "./fetchData.js";
 
-const test = [
-  {
-    name: "Gabriell",
-  },
-  {
-    name: "Bruno",
-  },
-  {
-    name: "Lucas",
-  },
-  {
-    name: "Fabiano",
-  },
-];
 
-function InitialSchedulingTimelineSection() {
+async function InitialSchedulingTimelineSection() {
   const schedulingTimelineSection = document.createElement("div");
   schedulingTimelineSection.id = "schedulingTimelineSection";
   schedulingTimelineSection.classList.add("initialSchedulingTimelineSection");
+  const staffList = await fetchStaff();
 
   const selectElement = SchedulingTimelineSelectionContainer(
     "Selecione um funcionário",
-    test
+    staffList
   );
+
   schedulingTimelineSection.appendChild(selectElement);
 
   const initialSchedulingTimelineDiv = document.createElement("div");
