@@ -1,22 +1,26 @@
 import { SchedulingTimelineSelectionContainer } from "./SchedulingTimelineSelectionContainer.js";
 import { fetchStaff } from "./fetchData.js";
 
-async function fetchAppointmentsByEmployee(employeeId) {
+async function fetchAppointmentsByEmployee(employeeData) {
   try {
-    const response = await fetch(`/api/appointments/${employeeId.id}`, {
+    const response = await fetch(`/api/appointments/${employeeData.id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-      }
+      },
     });
 
-    if (!response.ok) throw new Error("Erro ao buscar agendamentos");
+    if (!response.ok) {
+      const errorData = await response.json();
 
-    const appointments = await response.json();
-    return appointments;
+      throw new Error(errorData.error || "Falha não identificada");
+    }
+
+    const result = await response.json();
+
+    return result;
   } catch (error) {
-    console.error("Erro ao obter os agendamentos:", error.message);
-    return [];
+    throw error;
   }
 }
 
@@ -24,7 +28,16 @@ async function InitialSchedulingTimelineSection() {
   const schedulingTimelineSection = document.createElement("div");
   schedulingTimelineSection.id = "schedulingTimelineSection";
   schedulingTimelineSection.classList.add("initialSchedulingTimelineSection");
-  const staffList = await fetchStaff();
+
+  let staffList;
+
+  try {
+    staffList = await fetchStaff();
+  } catch (error) {
+    MessageNotification(error.message, "#ff6347");
+
+    staffList = [];
+  }
 
   const selectElement = SchedulingTimelineSelectionContainer(
     "Selecione um funcionário",
@@ -33,6 +46,7 @@ async function InitialSchedulingTimelineSection() {
 
   selectElement.addEventListener("change", async (event) => {
     const employeeId = event.target.value;
+
     if (employeeId) {
       const appointments = await fetchAppointmentsByEmployee(employeeId);
       console.log("Funcionário ID Selecionado:", employeeId);

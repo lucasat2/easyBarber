@@ -1,36 +1,39 @@
 // Função para buscar serviços
 async function fetchServices() {
-    try {
-        const response = await fetch('/api/services');
-        if (!response.ok) throw new Error('Erro ao buscar serviços');
-        const services = await response.json();
-        return services;
-    } catch (error) {
-        console.error('Erro ao obter a lista de serviços:', error);
-        return [];
-    }
-  }
-  
-  // Função para buscar funcionários do servidor
-  async function fetchStaff() {
-    try {
-      const response = await fetch('/api/staff/');
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(`Erro ao buscar funcionários: ${errorMessage}`);
-      }
-      const { response: staff } = await response.json();
-      
-      staff.map(employee => ({
-        id: employee.id,
-        name:employee.name
-      }))
+  try {
+    const response = await fetch("/api/services");
 
-      return staff;
-    } catch (error) {
-      console.error('Erro ao obter a lista de funcionários:', error.message);
-      return [];
-    }
-  }
+    if (!response.ok) {
+      const errorData = await response.json();
 
-  export {fetchStaff, fetchServices}
+      throw new Error(errorData.error || "Falha não identificada");
+    }
+
+    const result = await response.json();
+
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Função para buscar funcionários do servidor
+async function fetchStaff() {
+  try {
+    const response = await fetch("/api/staff");
+
+    if (!response.ok) {
+      const errorData = await response.json();
+
+      throw new Error(errorData.error || "Falha não identificada");
+    }
+
+    const result = await response.json();
+
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export { fetchStaff, fetchServices };
