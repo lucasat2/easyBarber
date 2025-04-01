@@ -14,5 +14,10 @@ router.post(
   verifyActiveSession,
   appointmentsController.blockTimeForStaff
 );
+router.post(
+  "/updateStatus",
+  verifyActiveSession,
+  appointmentsController.updateScheduleStatus
+);
 
 module.exports = router;

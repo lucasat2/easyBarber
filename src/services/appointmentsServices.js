@@ -68,8 +68,24 @@ const blockEmployeeSchedule = async (
   }
 };
 
+const setScheduleStatus = async (userId, appointmentId, staffId, newStatus) => {
+  try {
+    const response = await appointmentsRepository.modifyAppointmentStatus(
+      userId,
+      appointmentId,
+      staffId,
+      newStatus
+    );
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   createAppointment,
   listAllAppointmentsByEmployee,
   blockEmployeeSchedule,
+  setScheduleStatus,
 };
