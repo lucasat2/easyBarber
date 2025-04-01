@@ -3,47 +3,48 @@ import login from "./pages/login.js";
 
 const currentPage = document.getElementById("root");
 
+async function checkSession() {
+  try {
+    
+    const response = await fetch('/api/login/checkLogin');
+    if (!response.ok) throw new Error('Sessão inválida');
+    const data = await response.json();
+    console.log("Sessão ativa:", data.user);
+    return data;
+
+  } catch (error) {
+    if (window.location.pathname !== '/login') {
+      window.location.href = '/login';
+    }
+  }
+}
+
 function changePage() {
-	const objectRouter = router();
+  const objectRouter = router();
 
-	document.addEventListener("onstatechange", function (event) {
-		const pathPage = event.detail.path;
+  document.addEventListener("onstatechange", function (event) {
+    const pathPage = event.detail.path;
 
-		const page = objectRouter.getPage(pathPage)?.();
+    const page = objectRouter.getPage(pathPage)?.();
 
-		history.pushState({}, "", pathPage);
+    history.pushState({}, "", pathPage);
 
-		currentPage.innerHTML = "";
+    currentPage.innerHTML = "";
+    currentPage.appendChild(page);
+  });
 
-		currentPage.appendChild(page);
-	});
-	currentPage.appendChild(objectRouter.getPage("/")?.());
+  // Carrega a rota atual baseada na URL
+  const currentPath = window.location.pathname;
+  const page = objectRouter.getPage(currentPath)?.();
+
+  currentPage.innerHTML = "";
+  if (page) currentPage.appendChild(page);
+  else currentPage.appendChild(login());
 }
 
 async function onPageLoad() {
-	if (window.location.pathname === "/") {
-		changePage();
-		return;
-	} else if (window.location.pathname === "/signup") {
-		changePage();
-		return;
-	}
-
-	// Verifica a autenticação antes de rotear
-	const authResponse = await fetch("/api/me");
-	if (authResponse.status === 200) {
-		// Autenticado, roteia para o dashboard
-		changePage();
-	} else {
-		// Não autenticado, roteia para a página inicial
-		currentPage.innerHTML = "";
-
-		currentPage.appendChild(login());
-
-		history.pushState(null, null, "/");
-		router();
-	}
+  await checkSession();
+  changePage();
 }
 
 window.addEventListener("load", onPageLoad);
-// export {onPageLoad};

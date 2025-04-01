@@ -3,47 +3,37 @@ const { comparePassword } = require("../utils/comparePassword.js");
 const jwt = require("jsonwebtoken");
 const config = require("../config");
 
-const findRegisteredUser = async (email) => {
+const authenticateUser = async (email, password) => {
   try {
-    const user = await loginRepository.getUser(email);
+    const userData = await loginRepository.getUserData(email);
 
-    return user;
-  } catch (error) {
-    throw error;
-  }
-};
-
-const authenticateUser = async (userData, password) => {
-  try {
-    if (userData.deleted) {
-      return { auth: false, error: "E-mail inexistente" };
+    if (!userData) {
+      return {
+        errorCode: 404,
+        errorMessage: "E-mail não cadastrado",
+      };
     }
 
     const isPasswordValid = await comparePassword(password, userData.password);
 
     if (!isPasswordValid) {
-      return { auth: false, error: "Senha inválida" };
+      return { errorCode: 404, errorMessage: "Senha inválida" };
     }
 
     const user = {
       id: userData.id,
-      userStatus: userData.deleted,
     };
 
     const sessionToken = jwt.sign({ user }, config.SECRET_KEY, {
       expiresIn: 864000,
     });
 
-    return {
-      auth: true,
-      sessionToken: sessionToken,
-    };
+    return sessionToken;
   } catch (error) {
     throw error;
   }
 };
 
 module.exports = {
-  findRegisteredUser,
   authenticateUser,
 };

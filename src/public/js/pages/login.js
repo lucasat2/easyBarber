@@ -10,7 +10,7 @@ export default function login() {
 	leftSide.classList.add("loginLeftSideStyle");
 
 	const barberPole = document.createElement("img");
-	barberPole.src = "../assets/login/barberPole.jpeg";
+	barberPole.src = "../assets/login/barberPole.jpg";
 	barberPole.alt = "Barber Pole";
 	barberPole.classList.add("loginBarberPoleStyle");
 
@@ -129,7 +129,7 @@ export default function login() {
 		if (response.ok) {
 			console.log("Login bem-sucedido:", data);
 			//Ao invés de console colocar modal
-			const event = onNavigate("/");
+			const event = onNavigate("/dashboard");
 			document.dispatchEvent(event);
 		} else {
 			console.error("Erro no login:", data);
@@ -140,15 +140,9 @@ export default function login() {
 
 	div.querySelector("#goToSignUp").addEventListener("click", e => {
 		e.preventDefault();
-		const event = onNavigate("/signUp");
+		const event = onNavigate("/signup");
 		document.dispatchEvent(event);
-	});
-
-	div.querySelector("#goToDashboard").addEventListener("click", e => {
-		e.preventDefault();
-		const event = onNavigate("/dashboard");
-		document.dispatchEvent(event);
-	});
+	});;
 
 	return div;
 }
