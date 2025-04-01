@@ -4,7 +4,7 @@ const timePattern = /^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/;
 
 const listAllAppointmentsByEmployee = async (req, res) => {
   try {
-    const { employeeId } = req.body;
+    const { employeeId } = req.params;
 
     if (!validator.isUUID(employeeId)) {
       return res

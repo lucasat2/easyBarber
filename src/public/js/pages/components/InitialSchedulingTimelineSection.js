@@ -1,6 +1,24 @@
 import { SchedulingTimelineSelectionContainer } from "./SchedulingTimelineSelectionContainer.js";
 import { fetchStaff } from "./fetchData.js";
 
+async function fetchAppointmentsByEmployee(employeeId) {
+  try {
+    const response = await fetch(`/api/appointments/${employeeId.id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+
+    if (!response.ok) throw new Error("Erro ao buscar agendamentos");
+
+    const appointments = await response.json();
+    return appointments;
+  } catch (error) {
+    console.error("Erro ao obter os agendamentos:", error.message);
+    return [];
+  }
+}
 
 async function InitialSchedulingTimelineSection() {
   const schedulingTimelineSection = document.createElement("div");
@@ -12,6 +30,15 @@ async function InitialSchedulingTimelineSection() {
     "Selecione um funcionário",
     staffList
   );
+
+  selectElement.addEventListener("change", async (event) => {
+    const employeeId = event.target.value;
+    if (employeeId) {
+      const appointments = await fetchAppointmentsByEmployee(employeeId);
+      console.log("Funcionário ID Selecionado:", employeeId);
+      console.log("Agendamentos do Funcionário:", appointments);
+    }
+  });
 
   schedulingTimelineSection.appendChild(selectElement);
 

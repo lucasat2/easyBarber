@@ -38,10 +38,11 @@ function SchedulingTimelineSelectionContainer(initialOptionText, data) {
 
   for (let i = 0; i < data.length; i++) {
     const name = data[i].name;
+    const id = data[i].id
 
     const selectionOptions = document.createElement("option");
     selectionOptions.innerText = name;
-    selectionOptions.value = name;
+    selectionOptions.value = id;
     selectionContainer.appendChild(selectionOptions);
   }
 

@@ -20,6 +20,12 @@ async function fetchServices() {
         throw new Error(`Erro ao buscar funcionários: ${errorMessage}`);
       }
       const { response: staff } = await response.json();
+      
+      staff.map(employee => ({
+        id: employee.id,
+        name:employee.name
+      }))
+
       return staff;
     } catch (error) {
       console.error('Erro ao obter a lista de funcionários:', error.message);
