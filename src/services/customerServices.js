@@ -1,8 +1,8 @@
 const customerRepository = require("../repository/customerRepository.js");
 
-const listCompanyByName = async company => {
+const listCompanyById = async idCompany => {
 	try {
-		const result = await customerRepository.getCompanyId(company);
+		const result = await customerRepository.getCompanyId(idCompany);
 
 		return result;
 	} catch (e) {
@@ -78,7 +78,7 @@ const insertNewAppointment = async (
 };
 
 module.exports = {
-	listCompanyByName,
+	listCompanyById,
 	listServicesCompanyByIdCompany,
 	listStaffByCompanyAndService,
 	listSchedulesBuStaff,

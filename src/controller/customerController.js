@@ -1,8 +1,8 @@
 const customerServices = require("../services/customerServices.js");
 
 const listCompanyId = async (req, res) => {
-	const {company} = req.body;
-	const result = await customerServices.listCompanyByName(company);
+	const {idCompany} = req.body;
+	const result = await customerServices.listCompanyById(idCompany);
 
 	if (!result) {
 		return res.status(404).json({error: "Empresa não encontrada"});
