@@ -119,7 +119,7 @@ export default function header() {
 	listBar.style.flexDirection = "column";
 	listBar.style.justifyContent = "space-between";
 
-	function highlightActiveButton(activeItem) {
+	async function highlightActiveButton(activeItem) {
 		const titleHeader = document.getElementById("titleHeader");
 		titleHeader.innerText = activeItem.id;
 
@@ -141,12 +141,13 @@ export default function header() {
 		main.style.padding = "1rem";
 
 		if (activeItem.id == "Agendamentos") {
-			main.appendChild(InitialSchedulingTimelineSection());
-		} else if (activeItem.id == "Clientes") {
+			const section = await InitialSchedulingTimelineSection();
+			main.appendChild(section);
+		} else if((activeItem.id == "Clientes")) {
 			main.innerHTML = "Clientes";
-		} else if (activeItem.id == "Equipe") {
+		} else if((activeItem.id == "Equipe")) {
 			main.innerHTML = "Equipe";
-		} else if (activeItem.id == "Serviço") {
+		} else if((activeItem.id == "Serviço")) {
 			main.innerHTML = "Serviço";
 		}
 	}
@@ -155,7 +156,7 @@ export default function header() {
 
 	menuItems.forEach(item => {
 		const li = document.createElement("li");
-		li.style.cursor = "pointer";
+		li.classList.add("cursor");
 		li.innerText = item;
 		li.id = item;
 		li.style.width = "100%";
@@ -171,9 +172,9 @@ export default function header() {
 	});
 
 	const buttonSair = document.createElement("div");
+	buttonSair.classList = "cursor";
 	buttonSair.innerText = "Sair";
 	buttonSair.id = "Sair";
-	buttonSair.style.cursor = "pointer";
 	buttonSair.style.width = "100%";
 	buttonSair.style.height = "3rem";
 	buttonSair.style.background = "#EB4335";

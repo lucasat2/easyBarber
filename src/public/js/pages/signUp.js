@@ -1,7 +1,6 @@
 import onNavigate from "../event.js";
 
 export default function signup() {
-  
   const div = document.createElement("div");
 
   const container = document.createElement("div");
@@ -15,96 +14,76 @@ export default function signup() {
 
   const logoImg = document.createElement("img");
   logoImg.src = "../assets/logo.jpeg";
-  logoImg.alt = "Logo EasyBarber";
+  logoImg.alt = "EasyBarber Logo";
 
   logo.appendChild(logoImg);
 
   const formBox = document.createElement("div");
   formBox.classList.add("signupFormBox");
 
-  const titulo = document.createElement("h2");
-  titulo.textContent = "Faça o seu cadastro";
-  titulo.classList.add("signupTitleStyle")
+  const title = document.createElement("h2");
+  title.textContent = "Cadastre-se";
+  title.classList.add("signupTitleStyle");
 
   const form = document.createElement("form");
   form.id = "signUpForm";
 
-  const inputRow = document.createElement("div");
-  inputRow.classList.add("signupInputRow");
+  const inputFields = [
+    { id: "name", placeholder: "Nome da Empresa", type: "text" },
+    { id: "cnpj", placeholder: "CNPJ", type: "text" },
+    { id: "phoneNumber", placeholder: "Telefone", type: "text" },
+    { id: "state", placeholder: "Estado", type: "text" },
+    { id: "city", placeholder: "Cidade", type: "text" },
+    { id: "street", placeholder: "Endereço", type: "text" },
+    { id: "number", placeholder: "Número", type: "text" },
+    { id: "postalCode", placeholder: "CEP", type: "text" },
+    { id: "email", placeholder: "Email", type: "email" },
+    { id: "password", placeholder: "Senha", type: "password" },
+  ];
 
-  const inputNome = document.createElement("input");
-  inputNome.type = "text";
-  inputNome.id = "nome";
-  inputNome.placeholder = "Nome";
-  inputNome.required = true;
-  inputNome.classList.add("signupInputStyle")
+  const inputContainer = document.createElement("div");
+  inputContainer.classList.add("signupInputContainer");
 
-  const inputSobrenome = document.createElement("input");
-  inputSobrenome.type = "text";
-  inputSobrenome.id = "sobrenome";
-  inputSobrenome.placeholder = "Sobrenome";
-  inputSobrenome.required = true;
-  inputSobrenome.classList.add("signupInputStyle")
+  inputFields.forEach((field, index) => {
+    const input = document.createElement("input");
+    input.type = field.type;
+    input.id = field.id;
+    input.placeholder = field.placeholder;
+    input.required = true;
+    input.classList.add("signupInputStyle");
 
-  inputRow.appendChild(inputNome);
-  inputRow.appendChild(inputSobrenome);
+    if (index % 2 === 0) {
+      const row = document.createElement("div");
+      row.classList.add("signupInputRow");
+      row.appendChild(input);
+      inputContainer.appendChild(row);
+    } else {
+      const lastRow = inputContainer.lastChild;
+      lastRow.appendChild(input);
+    }
+  });
 
-  const inputEmpresa = document.createElement("input");
-  inputEmpresa.type = "text";
-  inputEmpresa.id = "empresa";
-  inputEmpresa.placeholder = "Nome da Empresa";
-  inputEmpresa.required = true;
-  inputEmpresa.classList.add("signupInputStyle")
+  form.appendChild(inputContainer);
 
-  const inputEmail = document.createElement("input");
-  inputEmail.type = "email";
-  inputEmail.id = "email";
-  inputEmail.placeholder = "Email";
-  inputEmail.required = true;
-  inputEmail.classList.add("signupInputStyle")
-
-  const passwordField = document.createElement("div");
-  passwordField.classList.add("signupPasswordField");
-
-  const inputPassword = document.createElement("input");
-  inputPassword.type = "password";
-  inputPassword.id = "password";
-  inputPassword.placeholder = "Senha";
-  inputPassword.required = true;
-  inputPassword.classList.add("signupInputStyle")
-
-  passwordField.appendChild(inputPassword);
-
-  const btnCadastro = document.createElement("button");
-  btnCadastro.type = "submit";
-  btnCadastro.classList.add("signupRegisterButton");
-  btnCadastro.textContent = "Cadastre-se";
+  const btnSignup = document.createElement("button");
+  btnSignup.type = "submit";
+  btnSignup.classList.add("signupRegisterButton");
+  btnSignup.textContent = "Registrar";
+  form.appendChild(btnSignup);
 
   const loginLink = document.createElement("p");
   loginLink.classList.add("signupLoginLink");
-
   const textoLogin = document.createTextNode("Já tem uma conta? ");
-
   const linkLogin = document.createElement("a");
   linkLogin.href = "#";
   linkLogin.id = "goToLogin";
-  linkLogin.textContent = "Entre na sua conta";
-
+  linkLogin.textContent = "Faça o login aqui.";
   loginLink.appendChild(textoLogin);
   loginLink.appendChild(linkLogin);
-
-  // Monta o formulário
-  form.appendChild(inputRow);
-  form.appendChild(inputEmpresa);
-  form.appendChild(inputEmail);
-  form.appendChild(passwordField);
-  form.appendChild(btnCadastro);
   form.appendChild(loginLink);
 
-  // Monta o bloco da direita
-  formBox.appendChild(titulo);
+  formBox.appendChild(title);
   formBox.appendChild(form);
-
   formContainer.appendChild(logo);
   formContainer.appendChild(formBox);
 
@@ -113,36 +92,30 @@ export default function signup() {
 
   container.appendChild(formContainer);
   container.appendChild(imageContainer);
-
   div.appendChild(container);
 
   const sendForm = div.querySelector("#signUpForm");
   sendForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-
-    const name = div.querySelector("#nome").value;
-    const surname = div.querySelector("#sobrenome").value;
-    const companyName = div.querySelector("#empresa").value;
-    const email = div.querySelector("#email").value;
-    const password = div.querySelector("#password").value;
-
+    const formData = {};
+    inputFields.forEach((field) => {
+      formData[field.id] = div.querySelector(`#${field.id}`).value;
+    });
+    console.log(formData);
     const response = await fetch("/api/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, surname, companyName, email, password }),
+      body: JSON.stringify(formData),
     });
-
     const data = await response.json();
-
     if (response.ok) {
-      console.log("Cadastro realizado com sucesso:", data);
-      //Mudar console.log para modal
+      console.log("Registration successful:", data);
+      alert("Registration successful!");
     } else {
-      console.error("Erro no cadastro:", data);
-      //Mudar console.log para modal
-      alert("Erro ao criar conta. Tente novamente.");
+      console.error("Registration error:", data);
+      alert("Error creating account. Please try again.");
     }
   });
 
