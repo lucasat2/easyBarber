@@ -238,10 +238,6 @@ function createModal() {
 
     try {
       const staffList = await fetchStaff();
-      const defaultOption = document.createElement('option');
-      defaultOption.value = "";
-      defaultOption.textContent = "Selecionar profissional";
-      selectStaff.appendChild(defaultOption);
 
       staffList.forEach(staff => {
           const option = document.createElement('option');
