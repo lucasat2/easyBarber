@@ -36,9 +36,7 @@ const createUser = async (
       hashedPassword
     );
 
-    if (result) {
-      return result;
-    }
+    return result;
   } catch (error) {
     throw error;
   }
@@ -85,9 +83,7 @@ const updateUser = async (
       hashedPassword
     );
 
-    if (result) {
-      return result;
-    }
+    return result;
   } catch (error) {
     throw error;
   }
