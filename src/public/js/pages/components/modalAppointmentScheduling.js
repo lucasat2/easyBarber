@@ -212,7 +212,7 @@ function createModal() {
       e.preventDefault();
       
       const data = {employeeId: selectStaff.value, serviceId: selectService.value, date: inputData.value, clientName: inputClientName.value, clientEmail: inputClientEmail.value, clientPhoneNumber: inputClientPhone.value, startTime: selectDateTime.value, observation: textareaObs.value}
-      console.log(data)
+
       const response = await fetch('/api/appointments/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -235,23 +235,45 @@ function createModal() {
     // Select Profissional
     const selectStaff = document.createElement('select');
     selectStaff.classList.add("modalBoxStyles");
-    ['Selecionar profissional', 'João', 'Maria'].forEach(nome => {
-      const option = document.createElement('option');
-      option.value = nome.toLowerCase();
-      option.textContent = nome;
-      selectStaff.appendChild(option);
-    });
+
+    try {
+      const staffList = await fetchStaff();
+      const defaultOption = document.createElement('option');
+      defaultOption.value = "";
+      defaultOption.textContent = "Selecionar profissional";
+      selectStaff.appendChild(defaultOption);
+
+      staffList.forEach(staff => {
+          const option = document.createElement('option');
+          option.value = staff.id;
+          option.textContent = staff.name;
+          selectStaff.appendChild(option);
+      });
+  } catch (error) {
+      console.error("Erro ao buscar profissionais: ", error);
+  }
   
-    // Inputs de data/hora
+    // Inputs de data e hora para início
     const inputStartDate = document.createElement('input');
-    inputStartDate.type = 'datetime-local';
+    inputStartDate.type = 'date';
     inputStartDate.required = true;
     inputStartDate.classList.add("modalBoxStyles");
-  
+
+    const inputStartTime = document.createElement('input');
+    inputStartTime.type = 'time';
+    inputStartTime.required = true;
+    inputStartTime.classList.add("modalBoxStyles");
+
+    // Inputs de data e hora para término
     const inputEndDate = document.createElement('input');
-    inputEndDate.type = 'datetime-local';
+    inputEndDate.type = 'date';
     inputEndDate.required = true;
     inputEndDate.classList.add("modalBoxStyles");
+
+    const inputEndTime = document.createElement('input');
+    inputEndTime.type = 'time';
+    inputEndTime.required = true;
+    inputEndTime.classList.add("modalBoxStyles");
   
     // Observações
     const textareaObs = document.createElement('textarea');
@@ -274,14 +296,6 @@ function createModal() {
       document.body.removeChild(document.querySelector('.appointmentModalOverlay'));
     });
   
-    // Ao enviar o formulário
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      alert('Bloqueio registrado!');
-      // Aqui você poderia enviar para a API
-      document.body.removeChild(document.querySelector('.appointmentModalOverlay'));
-    });
-  
     // Linhas do formulário
     const line1 = document.createElement('div');
     line1.classList.add('modalFormRows');
@@ -289,8 +303,13 @@ function createModal() {
   
     const line2 = document.createElement('div');
     line2.classList.add('modalFormRows');
-    line2.appendChild(createField('Início do bloqueio', inputStartDate));
-    line2.appendChild(createField('Fim do bloqueio', inputEndDate));
+    line2.appendChild(createField('Data inicial do bloqueio', inputStartDate));
+    line2.appendChild(createField('Horário inicial do bloqueio', inputStartTime));
+
+    const line3 = document.createElement('div');
+    line3.classList.add('modalFormRows');
+    line3.appendChild(createField('Data final do bloqueio', inputEndDate));
+    line3.appendChild(createField('Horário final do bloqueio', inputEndTime));
   
     const divButtons = document.createElement('div');
     divButtons.classList.add('appointmentModalButtons');
@@ -300,9 +319,30 @@ function createModal() {
     // Montar form
     form.appendChild(line1);
     form.appendChild(line2);
+    form.appendChild(line3);
     form.appendChild(createField('Observações', textareaObs));
     form.appendChild(divButtons);
-  
+
+     // Ao enviar o formulário
+     form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const data = {
+        staffId: selectStaff.value,
+        startDate: inputStartDate.value,
+        startTime: inputStartTime.value,
+        endDate: inputEndDate.value,
+        endTime: inputEndTime.value,
+        observation: textareaObs.value}
+
+      const response = await fetch('/api/appointments/blockSchedule', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await response.json();
+      alert(result.message || 'Bloqueio criado com sucesso!');
+    });
     return form;
   }
 
