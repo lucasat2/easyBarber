@@ -152,7 +152,7 @@ const createBarberSelector = (barbers) => {
 
   nextButton.addEventListener("click", () => {
     console.log("Seta próxima clicada");
-    // Implementar lógica de navegação para o próximo
+   
   });
 
   // Renderiza os barbeiros
