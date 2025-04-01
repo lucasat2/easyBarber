@@ -11,13 +11,7 @@ const listCompanyId = async (req, res) => {
 };
 
 const listServicesByCompany = async (req, res) => {
-	const {company} = req.body;
-
-	const idCompany = await customerServices.listCompanyByName(company);
-
-	if (!idCompany) {
-		return res.status(404).json({error: "Empresa não encontrada"});
-	}
+	const {idCompany} = req.body;
 
 	const result = await customerServices.listServicesCompanyByIdCompany(
 		idCompany
@@ -30,17 +24,11 @@ const listServicesByCompany = async (req, res) => {
 };
 
 const listStaffByService = async (req, res) => {
-	const {company, service} = req.body;
-
-	const idCompany = await customerServices.listCompanyByName(company);
-
-	if (!idCompany) {
-		return res.status(404).json({error: "Empresa não encontrada"});
-	}
+	const {idCompany, idService} = req.body;
 
 	const result = await customerServices.listStaffByCompanyAndService(
 		idCompany,
-		service
+		idService
 	);
 
 	if (!result) {
@@ -52,38 +40,7 @@ const listStaffByService = async (req, res) => {
 };
 
 const listScheduleByStaff = async (req, res) => {
-	const {company, service, staff, date} = req.body;
-
-	const idCompany = await customerServices.listCompanyByName(company);
-
-	if (!idCompany) {
-		return res.status(404).json({error: "Empresa não encontrada"});
-	}
-
-	const result = await customerServices.listStaffByCompanyAndService(
-		idCompany,
-		service
-	);
-
-	if (!result) {
-		return res
-			.status(404)
-			.json({error: "Nenhum funcionário encontrado para o serviço"});
-	}
-
-	let exists = false;
-	result.forEach(i => {
-		if (i.id == staff) {
-			exists = true;
-			return;
-		}
-	});
-
-	if (!exists) {
-		return res
-			.status(404)
-			.json({error: "Este funcionário não faz esse serviço"});
-	}
+	const {idStaff, date} = req.body;
 
 	if (!date) {
 		return res.status(404).json({error: "Envie uma data"});
@@ -97,19 +54,53 @@ const listScheduleByStaff = async (req, res) => {
 			.json({error: "Formato de data inválido. Use YYYY-MM-DD"});
 	}
 
-	const getSchedules = await customerServices.listSchedulesBuStaff(staff, date);
-	if(!getSchedules) {
-		return res
-			.status(400)
-			.json({error: "Funcionário não trabalha nesse dia"});
+	const getSchedules = await customerServices.listSchedulesBuStaff(
+		idStaff,
+		date
+	);
+	if (!getSchedules) {
+		return res.status(400).json({error: "Funcionário não trabalha nesse dia"});
 	}
 
 	res.json({getSchedules});
+};
+
+const createAppointments = async (req, res) => {
+	const {
+		idCompany,
+		idStaff,
+		idService,
+		date,
+		clientName,
+		clientEmail,
+		clientPhoneNumber,
+		startTime,
+		observation
+	} = req.body;
+	const result = await customerServices.insertNewAppointment(
+		idCompany,
+		idStaff,
+		idService,
+		date,
+		clientName,
+		clientEmail,
+		clientPhoneNumber,
+		startTime,
+		observation
+	);
+
+	if (!result) {
+		return res
+			.status(404)
+			.json({error: "Não foi possível salvar o agendamento"});
+	}
+	res.json({result});
 };
 
 module.exports = {
 	listCompanyId,
 	listServicesByCompany,
 	listStaffByService,
-	listScheduleByStaff
+	listScheduleByStaff,
+	createAppointments
 };

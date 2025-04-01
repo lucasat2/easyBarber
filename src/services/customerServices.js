@@ -20,14 +20,14 @@ const listServicesCompanyByIdCompany = async idCompany => {
 	}
 };
 
-const listStaffByCompanyAndService = async (idCompany, service) => {
+const listStaffByCompanyAndService = async (idCompany, idService) => {
 	try {
 		const result = await customerRepository.getServices(idCompany);
-		const serviceObj = result.find(item => item.name == service);
+		const serviceObj = result.find(item => item.id == idService);
 
 		if (serviceObj) {
 			const resultQuery = await customerRepository.getServicesByStaff(
-				serviceObj.id
+				idService
 			);
 
 			return resultQuery;
@@ -47,9 +47,40 @@ const listSchedulesBuStaff = async (staff, date) => {
 	}
 };
 
+const insertNewAppointment = async (
+	idCompany,
+	idStaff,
+	idService,
+	date,
+	clientName,
+	clientEmail,
+	clientPhoneNumber,
+	startTime,
+	observation
+) => {
+	try {
+		const result = await customerRepository.insertNewAppointment(
+			idCompany,
+			idStaff,
+			idService,
+			date,
+			clientName,
+			clientEmail,
+			clientPhoneNumber,
+			startTime,
+			observation
+		);
+
+		return result;
+	} catch (e) {
+		throw e;
+	}
+};
+
 module.exports = {
 	listCompanyByName,
 	listServicesCompanyByIdCompany,
 	listStaffByCompanyAndService,
-	listSchedulesBuStaff
+	listSchedulesBuStaff,
+	insertNewAppointment
 };
