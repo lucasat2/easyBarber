@@ -33,7 +33,7 @@ const list = async (req, res) => {
 
 const getStaffData = async (req, res) => {
   try {
-    const employeeId = req.params;
+    const employeeId = req.params.id;
 
     const userId = req.user.id;
 
@@ -57,7 +57,7 @@ const getStaffData = async (req, res) => {
 
     res
       .status(500)
-      .json({ error: "Falha no servido ao buscar os dados do funcionário" });
+      .json({ error: "Falha no servidor ao buscar os dados do funcionário" });
   }
 };
 
