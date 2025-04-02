@@ -31,6 +31,36 @@ const list = async (req, res) => {
   }
 };
 
+const getStaffData = async (req, res) => {
+  try {
+    const employeeId = req.params;
+
+    const userId = req.user.id;
+
+    if (!validator.isUUID(employeeId)) {
+      return res.status(400).json({ error: "ID inválido de funcionário" });
+    }
+
+    if (!validator.isUUID(userId)) {
+      return res.status(400).json({ error: "ID inválido de usuário" });
+    }
+
+    const result = await staffServices.getEmployeeDetails(employeeId, userId);
+
+    if (!result.errorStatus) {
+      return res.status(200).json(result);
+    }
+
+    res.status(result.errorStatus).json({ error: result.errorMessage });
+  } catch (error) {
+    console.log(error);
+
+    res
+      .status(500)
+      .json({ error: "Falha no servido ao buscar os dados do funcionário" });
+  }
+};
+
 const create = async (req, res) => {
   try {
     const { name, surname, cpf, email, phoneNumber, birthdate, postalCode } =
@@ -437,12 +467,10 @@ const assignSchedulesToEmployee = async (req, res) => {
   } catch (error) {
     console.log(error);
 
-    res
-      .status(500)
-      .json({
-        error:
-          "Falha no servidor durante o processo de vinculação de horário do funcionário",
-      });
+    res.status(500).json({
+      error:
+        "Falha no servidor durante o processo de vinculação de horário do funcionário",
+    });
   }
 };
 
@@ -586,6 +614,7 @@ const unassignServiceFromStaff = async (req, res) => {
 
 module.exports = {
   list,
+  getStaffData,
   create,
   assignServicesToStaff,
   assignSchedulesToEmployee,

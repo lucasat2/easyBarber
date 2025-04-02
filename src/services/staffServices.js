@@ -10,6 +10,16 @@ const listAllStaff = async (userId) => {
   }
 };
 
+const getEmployeeDetails = async (employeeId, userId) => {
+  try {
+    const response = await staffRepository.findStaffInfo(employeeId, userId);
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const createStaff = async (
   name,
   surname,
@@ -118,6 +128,7 @@ const detachServiceFromStaff = async (userId, staffId, serviceId) => {
 
 module.exports = {
   listAllStaff,
+  getEmployeeDetails,
   createStaff,
   linkServicesToStaff,
   attachSchedulesToStaff,
