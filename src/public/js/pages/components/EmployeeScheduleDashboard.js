@@ -2,7 +2,10 @@ import { SchedulingTimelineSelectionContainer } from "./SchedulingTimelineSelect
 import { SchedulingTimelineEmployeesCard } from "./SchedulingTimelineEmployeesCard.js";
 import { SchedulingTimelineDateCard } from "./SchedulingTimelineDateCard.js";
 import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
-import * as modalAppointment from "./modalAppointmentScheduling.js"
+import { fetchAppointmentsByEmployee } from "./fetchData.js";
+import * as modalAppointment from "./modalAppointmentScheduling.js";
+
+let selectElement = null;
 
 function EmployeeScheduleDashboard(employeeName, staff) {
   const employeeSchedulingTimelineSection = document.createElement("div");
@@ -18,10 +21,34 @@ function EmployeeScheduleDashboard(employeeName, staff) {
     employeeSchedulingTimelineHeader
   );
 
-  const selectElement = SchedulingTimelineSelectionContainer(
-    "Selecione um funcionário",
-    staff
-  );
+  // Verificar se o select já existe para não recriá-lo
+  if (!selectElement) {
+    selectElement = SchedulingTimelineSelectionContainer(
+      "Selecione um funcionário",
+      staff
+    );
+
+    // Adicionar o evento apenas uma vez
+    selectElement.addEventListener("change", async function (event) {
+      const selectedIndex = event.target.selectedIndex;
+      const selectedOptions = event.target.options[selectedIndex];
+      const employeeId = selectedOptions.value;
+      document.querySelector(".schedulingTimelineHeaderSelectionContainer").value = ''
+
+      if (employeeId) {
+        try {
+          const appointments = await fetchAppointmentsByEmployee({
+            id: employeeId,
+          });
+          console.log("Funcionário ID Selecionado:", employeeId);
+          console.log("Agendamentos do Funcionário:", appointments);
+        } catch (error) {
+          console.error("Erro ao buscar agendamentos:", error.message);
+        }
+      }
+    });
+  }
+
   employeeSchedulingTimelineHeader.appendChild(selectElement);
 
   const employeeCard = SchedulingTimelineEmployeesCard(
@@ -61,9 +88,12 @@ function EmployeeScheduleDashboard(employeeName, staff) {
   );
   employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline);
 
-  employeeSchedulingTimelineHeaderManagementButton.addEventListener('click', () => {
-    modalAppointment.createModal()
-  });
+  employeeSchedulingTimelineHeaderManagementButton.addEventListener(
+    "click",
+    () => {
+      modalAppointment.createModal();
+    }
+  );
 
   return employeeSchedulingTimelineSection;
 }

@@ -11,10 +11,10 @@ function SchedulingTimelineSelectionContainer(initialOptionText, data) {
   selectionSection.appendChild(selectionContainer);
 
   selectionContainer.addEventListener("change", function () {
-    const selectValue = this.value;
+    const selectName = this.options[this.selectedIndex].text;
 
     const employeeScheduleTimeline = EmployeeScheduleDashboard(
-      selectValue,
+      selectName,
       data
     );
 
@@ -31,14 +31,14 @@ function SchedulingTimelineSelectionContainer(initialOptionText, data) {
 
   const initialOption = document.createElement("option");
   initialOption.innerText = initialOptionText;
-  initialOption.value = initialOptionText;
+  initialOption.value = '';
   initialOption.disabled = "true";
   initialOption.selected = "true";
   selectionContainer.appendChild(initialOption);
 
   for (let i = 0; i < data.length; i++) {
     const name = data[i].name;
-    const id = data[i].id
+    const id = data[i].id;
 
     const selectionOptions = document.createElement("option");
     selectionOptions.innerText = name;

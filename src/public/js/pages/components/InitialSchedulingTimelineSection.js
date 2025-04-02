@@ -1,59 +1,48 @@
 import { SchedulingTimelineSelectionContainer } from "./SchedulingTimelineSelectionContainer.js";
-import { fetchStaff } from "./fetchData.js";
+import { fetchStaff, fetchAppointmentsByEmployee } from "./fetchData.js";
 
-async function fetchAppointmentsByEmployee(employeeData) {
-  try {
-    const response = await fetch(`/api/appointments/${employeeData.id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-
-      throw new Error(errorData.error || "Falha não identificada");
-    }
-
-    const result = await response.json();
-
-    return result;
-  } catch (error) {
-    throw error;
-  }
-}
+let selectElement = null;
 
 async function InitialSchedulingTimelineSection() {
   const schedulingTimelineSection = document.createElement("div");
   schedulingTimelineSection.id = "schedulingTimelineSection";
   schedulingTimelineSection.classList.add("initialSchedulingTimelineSection");
 
-  let staffList;
+  let staff;
 
   try {
-    staffList = await fetchStaff();
+    staff = await fetchStaff();
   } catch (error) {
     MessageNotification(error.message, "#ff6347");
 
-    staffList = [];
+    staff = [];
   }
+  console.log(staff)
+  
+  // Verificar se o select já existe para não recriá-lo
+  if (!selectElement) {
+    selectElement = SchedulingTimelineSelectionContainer(
+      "Selecione um funcionário",
+      staff
+    );
 
-  const selectElement = SchedulingTimelineSelectionContainer(
-    "Selecione um funcionário",
-    staffList
-  );
+    // Adicionar o evento apenas uma vez
+    selectElement.addEventListener("change", async (event) => {
+      const selectedIndex = event.target.selectedIndex;
+      const selectedOptions = event.target.options[selectedIndex];
+      const employeeId = selectedOptions.value;
 
-  selectElement.addEventListener("change", async (event) => {
-    const employeeId = event.target.value;
-
-    if (employeeId) {
-      const appointments = await fetchAppointmentsByEmployee(employeeId);
-      console.log("Funcionário ID Selecionado:", employeeId);
-      console.log("Agendamentos do Funcionário:", appointments);
-    }
-  });
-
+      if (employeeId) {
+        try {
+          const appointments = await fetchAppointmentsByEmployee({ id: employeeId });
+          console.log("Funcionário ID Selecionado:", employeeId);
+          console.log("Agendamentos do Funcionário:", appointments);
+        } catch (error) {
+          console.error("Erro ao buscar agendamentos:", error.message);
+        }
+      }
+    });
+  }
   schedulingTimelineSection.appendChild(selectElement);
 
   const initialSchedulingTimelineDiv = document.createElement("div");
