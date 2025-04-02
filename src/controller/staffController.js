@@ -33,7 +33,7 @@ const list = async (req, res) => {
 
 const getStaffData = async (req, res) => {
   try {
-    const employeeId = req.params;
+    const employeeId = req.params.id;
 
     const userId = req.user.id;
 
