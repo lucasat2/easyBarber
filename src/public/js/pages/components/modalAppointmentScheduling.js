@@ -1,5 +1,5 @@
 import { fetchStaff, fetchServices } from "./fetchData.js";
-import { MessageNotification } from "./components/MessageNotification.js";
+import { MessageNotification } from "./MessageNotification.js";
 
 function createModal() {
   const title = document.createElement("h2");
