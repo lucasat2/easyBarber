@@ -4,17 +4,15 @@ const timePattern = /^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/;
 
 const listAllAppointmentsByEmployee = async (req, res) => {
   try {
-    const { employeeId } = req.body;
+    const { id } = req.params;
 
-    if (!validator.isUUID(employeeId)) {
+    if (!validator.isUUID(id)) {
       return res
         .status(400)
         .json({ error: "Formato de ID do funcionário inválido" });
     }
 
-    const result = await appointmentsServices.listAllAppointmentsByEmployee(
-      employeeId
-    );
+    const result = await appointmentsServices.listAllAppointmentsByEmployee(id);
 
     res.status(200).json(result);
   } catch (e) {
@@ -22,6 +20,46 @@ const listAllAppointmentsByEmployee = async (req, res) => {
     res
       .status(500)
       .json({ error: "Falha ao listar os agendamentos do funcionário" });
+  }
+};
+
+const getServiceClientData = async (req, res) => {
+  try {
+    const clientId = req.query.client_id;
+
+    const serviceId = req.query.service_id;
+
+    const userId = req.user.id;
+
+    if (!validator.isUUID(clientId)) {
+      return res.status(400).json({ error: "ID inválido de cliente" });
+    }
+
+    if (!validator.isUUID(serviceId)) {
+      return res.status(400).json({ error: "ID inválido de serviço" });
+    }
+
+    if (!validator.isUUID(userId)) {
+      return res.status(400).json({ error: "ID inválido de usuário" });
+    }
+
+    const result = await appointmentsServices.getClientInfoByService(
+      clientId,
+      serviceId,
+      userId
+    );
+
+    if (!result.statusCode) {
+      return res.status(200).json(result);
+    }
+
+    res.status(result.statusCode).json({ error: result.statusMessage });
+  } catch (error) {
+    console.log(error);
+
+    res
+      .status(500)
+      .json({ error: "Falha no servidor ao buscar os dados do cliente" });
   }
 };
 
@@ -260,6 +298,7 @@ const updateScheduleStatus = async (req, res) => {
 
 module.exports = {
   createAppointment,
+  getServiceClientData,
   listAllAppointmentsByEmployee,
   blockTimeForStaff,
   updateScheduleStatus,

@@ -19,6 +19,64 @@ const getAllAppointmentsByEmployee = async (employeeId) => {
   }
 };
 
+const retrieveClientInfo = async (clientId, serviceId, userId) => {
+  let client;
+
+  try {
+    const getUserDataQuery = "SELECT * FROM users WHERE id = $1";
+
+    const isCompanyAppointmentQuery =
+      "SELECT * FROM services WHERE id = $1 AND company_id = $2";
+
+    const getClientData = "SELECT * FROM clients WHERE id = $1";
+
+    client = await pool.connect();
+
+    const {
+      rows: [userData],
+    } = await client.query(getUserDataQuery, [userId]);
+
+    if (!userData) {
+      return {
+        statusCode: 404,
+        statusMessage: "Falha ao localizar as informações do usuário",
+      };
+    }
+
+    const companyId = userData.company_id;
+
+    const {
+      rows: [isCompanyAppointment],
+    } = await client.query(isCompanyAppointmentQuery, [serviceId, companyId]);
+
+    if (!isCompanyAppointment) {
+      return {
+        statusCode: 403,
+        statusMessage: "Agendamento não pertence a empresa",
+      };
+    }
+
+    const {
+      rows: [clientData],
+    } = await client.query(getClientData, [clientId]);
+
+    if (!clientData) {
+      return {
+        statusCode: 404,
+        statusMessage: "Falha ao localizar as informações do cliente",
+      };
+    }
+
+    return clientData;
+  } catch (error) {
+    throw error;
+  } finally {
+    if (client) {
+      client.release();
+    }
+  }
+};
+
 const insertNewAppointment = async (
   userId,
   employeeId,
@@ -811,6 +869,7 @@ const modifyAppointmentStatus = async (
 
 module.exports = {
   insertNewAppointment,
+  retrieveClientInfo,
   getAllAppointmentsByEmployee,
   setEmployeeScheduleAsBlocked,
   modifyAppointmentStatus,

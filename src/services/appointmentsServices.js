@@ -12,6 +12,20 @@ const listAllAppointmentsByEmployee = async (employeeId) => {
   }
 };
 
+const getClientInfoByService = async (clientId, serviceId, userId) => {
+  try {
+    const response = await appointmentsRepository.retrieveClientInfo(
+      clientId,
+      serviceId,
+      userId
+    );
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const createAppointment = async (
   userId,
   employeeId,
@@ -84,8 +98,9 @@ const setScheduleStatus = async (userId, appointmentId, staffId, newStatus) => {
 };
 
 module.exports = {
-  createAppointment,
   listAllAppointmentsByEmployee,
+  getClientInfoByService,
+  createAppointment,
   blockEmployeeSchedule,
   setScheduleStatus,
 };
