@@ -1,7 +1,7 @@
 import login from "./pages/login.js";
 import signup from "./pages/signUp.js";
 import dashboard from "./pages/components/navBar.js";
-import client from "./pages/components/clientPages/StratYoutBooking.js";
+import client from "./pages/components/clientPages/StartYoutBooking.js";
 
 function router() {
   const routes = {

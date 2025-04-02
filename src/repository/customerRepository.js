@@ -15,7 +15,7 @@ const getCompanyId = async company => {
 			return null;
 		}
 	} catch (e) {
-		throw e;
+		return null;
 	} finally {
 		if (client) {
 			client.release();
@@ -41,7 +41,7 @@ const getServices = async company => {
 
 		return filteredRows;
 	} catch (e) {
-		throw e;
+		return null;
 	} finally {
 		if (client) {
 			client.release();
@@ -87,7 +87,7 @@ const getServicesByStaff = async idService => {
 
 		return staffObj;
 	} catch (e) {
-		throw e;
+		return null;
 	} finally {
 		if (client) {
 			client.release();
@@ -292,7 +292,7 @@ const getSchedules = async (staff, date) => {
 
 		// horários do funcionário
 	} catch (e) {
-		throw e;
+		return null;
 	} finally {
 		if (client) {
 			client.release();
@@ -312,7 +312,7 @@ const getAllAppointmentsByEmployee = async idStaff => {
 
 		return result.rows;
 	} catch (e) {
-		throw e;
+		return null;
 	} finally {
 		if (client) {
 			client.release();
@@ -792,7 +792,7 @@ const insertNewAppointment = async (
 	} catch (error) {
 		await client.query("ROLLBACK");
 
-		throw error;
+		return null;
 	} finally {
 		if (client) {
 			client.release();
