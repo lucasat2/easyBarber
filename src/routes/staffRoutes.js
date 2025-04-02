@@ -23,4 +23,17 @@ router.delete(
   staffController.unassignServiceFromStaff
 );
 
+router.get(
+  "/:employeeId",
+  verifyActiveSession,
+  staffController.listAllServicesByEmployee
+);
+
+
+
+
+
+
+
+
 module.exports = router;

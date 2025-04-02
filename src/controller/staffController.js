@@ -5,6 +5,29 @@ const codePostalPattern = /^\d{5}-?\d{3}$/;
 const cpfPattern = /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/;
 const todayDate = new Date();
 
+
+const listAllServicesByEmployee = async (req, res) => {
+  try {
+    const {employeeId } = req.params;
+
+    if (!validator.isUUID(employeeId)) {
+      return res
+        .status(400)
+        .json({ error: "Formato de ID do funcionário inválido" });
+    }
+
+    const result = await staffServices.listAllServicesByEmployee(
+      employeeId);
+
+    res.status(200).json(result);
+  } catch (e) {
+    console.log(e);
+    res
+      .status(500)
+      .json({ error: "Falha ao listar os servicos do funcionário" });
+  }
+};
+
 const list = async (req, res) => {
   try {
     const userId = req.user.id;
