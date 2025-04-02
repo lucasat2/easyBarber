@@ -62,7 +62,7 @@ const createService = async (req, res) => {
 
 const getServiceData = async (req, res) => {
   try {
-    const serviceId = req.params;
+    const serviceId = req.params.id;
 
     const userId = req.user.id;
 
