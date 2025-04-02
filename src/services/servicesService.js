@@ -23,6 +23,19 @@ const createService = async (
   }
 };
 
+const findServiceById = async (serviceId, userId) => {
+  try {
+    const response = await servicesRepository.getServiceDetails(
+      serviceId,
+      userId
+    );
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const listAllCompanyServices = async (userId) => {
   try {
     const result = await servicesRepository.listAllCompanyServices(userId);
@@ -69,6 +82,7 @@ const deleteService = async (serviceID) => {
 
 module.exports = {
   createService,
+  findServiceById,
   listAllCompanyServices,
   updateService,
   deleteService,
