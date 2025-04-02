@@ -4,7 +4,7 @@ const { verifyActiveSession } = require("../middleware");
 const router = express.Router();
 
 router.get("/", verifyActiveSession, staffController.list);
-router.get("/:id", verifyActiveSession, staffController.getStaffData)
+router.get("/:id", verifyActiveSession, staffController.getStaffData);
 router.post("/", verifyActiveSession, staffController.create);
 router.post(
   "/associateServices",
@@ -23,18 +23,5 @@ router.delete(
   verifyActiveSession,
   staffController.unassignServiceFromStaff
 );
-
-router.get(
-  "/:employeeId",
-  verifyActiveSession,
-  staffController.listAllServicesByEmployee
-);
-
-
-
-
-
-
-
 
 module.exports = router;

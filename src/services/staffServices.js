@@ -1,18 +1,5 @@
 const staffRepository = require("../repository/staffRepository.js");
 
-
-const listAllServicesByEmployee = async (employeeId) => {
-  try {
-    const result = await staffRepository.getAllServicesByEmployee(
-      employeeId
-    );
-
-    return result;
-  } catch (e) {
-    throw e;
-  }
-};
-
 const listAllStaff = async (userId) => {
   try {
     const result = await staffRepository.getAllStaff(userId);
