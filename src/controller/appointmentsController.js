@@ -23,29 +23,22 @@ const listAllAppointmentsByEmployee = async (req, res) => {
   }
 };
 
-const getServiceClientData = async (req, res) => {
+const getAppointmentFullData = async (req, res) => {
   try {
-    const clientId = req.query.client_id;
-
-    const serviceId = req.query.service_id;
+    const appointmentId = req.query.id;
 
     const userId = req.user.id;
 
-    if (!validator.isUUID(clientId)) {
-      return res.status(400).json({ error: "ID inválido de cliente" });
-    }
-
-    if (!validator.isUUID(serviceId)) {
-      return res.status(400).json({ error: "ID inválido de serviço" });
+    if (!validator.isUUID(appointmentId)) {
+      return res.status(400).json({ error: "ID inválido de agendamento" });
     }
 
     if (!validator.isUUID(userId)) {
       return res.status(400).json({ error: "ID inválido de usuário" });
     }
 
-    const result = await appointmentsServices.getClientInfoByService(
-      clientId,
-      serviceId,
+    const result = await appointmentsServices.getAppointmentFullInfo(
+      appointmentId,
       userId
     );
 
@@ -59,7 +52,7 @@ const getServiceClientData = async (req, res) => {
 
     res
       .status(500)
-      .json({ error: "Falha no servidor ao buscar os dados do cliente" });
+      .json({ error: "Falha no servidor ao buscar os dados do agendamento" });
   }
 };
 
@@ -298,7 +291,7 @@ const updateScheduleStatus = async (req, res) => {
 
 module.exports = {
   createAppointment,
-  getServiceClientData,
+  getAppointmentFullData,
   listAllAppointmentsByEmployee,
   blockTimeForStaff,
   updateScheduleStatus,

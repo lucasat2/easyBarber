@@ -19,16 +19,18 @@ const getAllAppointmentsByEmployee = async (employeeId) => {
   }
 };
 
-const retrieveClientInfo = async (clientId, serviceId, userId) => {
+const retrieveAppointmentFullData = async (appointmentId, userId) => {
   let client;
 
   try {
     const getUserDataQuery = "SELECT * FROM users WHERE id = $1";
 
+    const getAppointmentDataQuery = "SELECT * FROM appointments WHERE id = $1";
+
     const isCompanyAppointmentQuery =
       "SELECT * FROM services WHERE id = $1 AND company_id = $2";
 
-    const getClientData = "SELECT * FROM clients WHERE id = $1";
+    const getAppointmentFullDataQuery = `SELECT a.date_hour_begin, a.observation, c.name AS client_name, phone_number AS client_phone, s.name AS service_name, s.price AS service_price FROM appointments a JOIN clients c ON a.client_id = c.id JOIN services s ON a.service_id = s.id WHERE a.id = $1;`;
 
     client = await pool.connect();
 
@@ -46,6 +48,19 @@ const retrieveClientInfo = async (clientId, serviceId, userId) => {
     const companyId = userData.company_id;
 
     const {
+      rows: [appointmentData],
+    } = await client.query(getAppointmentDataQuery, [appointmentId]);
+
+    if (!appointmentData) {
+      return {
+        statusCode: 404,
+        statusMessage: "Falha ao localizar as informações do agendamento",
+      };
+    }
+
+    const serviceId = appointmentData.service_id;
+
+    const {
       rows: [isCompanyAppointment],
     } = await client.query(isCompanyAppointmentQuery, [serviceId, companyId]);
 
@@ -57,17 +72,18 @@ const retrieveClientInfo = async (clientId, serviceId, userId) => {
     }
 
     const {
-      rows: [clientData],
-    } = await client.query(getClientData, [clientId]);
+      rows: [appointmentFullData],
+    } = await client.query(getAppointmentFullDataQuery, [appointmentId]);
 
-    if (!clientData) {
+    if (!appointmentFullData) {
       return {
         statusCode: 404,
-        statusMessage: "Falha ao localizar as informações do cliente",
+        statusMessage:
+          "Falha ao localizar as informações necessárias do agendamento",
       };
     }
 
-    return clientData;
+    return appointmentFullData;
   } catch (error) {
     throw error;
   } finally {
@@ -869,7 +885,7 @@ const modifyAppointmentStatus = async (
 
 module.exports = {
   insertNewAppointment,
-  retrieveClientInfo,
+  retrieveAppointmentFullData,
   getAllAppointmentsByEmployee,
   setEmployeeScheduleAsBlocked,
   modifyAppointmentStatus,

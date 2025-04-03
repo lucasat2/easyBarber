@@ -9,9 +9,9 @@ router.get(
   appointmentsController.listAllAppointmentsByEmployee
 );
 router.get(
-  "/client",
+  "/:id",
   verifyActiveSession,
-  appointmentsController.getServiceClientData
+  appointmentsController.getAppointmentFullData
 );
 router.post("/", verifyActiveSession, appointmentsController.createAppointment);
 router.post(
