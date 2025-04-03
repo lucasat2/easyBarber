@@ -13,7 +13,7 @@ async function checkSession() {
     return data;
 
   } catch (error) {
-    if (window.location.pathname !== '/login' & window.location.pathname !== '/client') {
+    if (window.location.pathname !== '/login' && window.location.pathname !== '/client') {
       window.location.href = '/login';
     }
   }
