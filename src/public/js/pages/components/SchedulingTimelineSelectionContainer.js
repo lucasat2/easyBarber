@@ -1,4 +1,7 @@
 import { EmployeeScheduleDashboard } from "./EmployeeScheduleDashboard.js";
+import { fetchAppointmentsByEmployee } from "./fetchData.js";
+import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
+import { setGlobalAppointments } from "./setAndGetGlobalVariables.js";
 
 function SchedulingTimelineSelectionContainer(initialOptionText, data) {
   const selectionSection = document.createElement("div");
@@ -10,13 +13,27 @@ function SchedulingTimelineSelectionContainer(initialOptionText, data) {
   );
   selectionSection.appendChild(selectionContainer);
 
-  selectionContainer.addEventListener("change", function () {
+  selectionContainer.addEventListener("change", async function () {
     const selectName = this.options[this.selectedIndex].text;
+    const employeeId = this.options[this.selectedIndex].value
+    console.log("Nome", selectName, "Id", employeeId)
 
     const employeeScheduleTimeline = EmployeeScheduleDashboard(
       selectName,
       data
     );
+
+    if (employeeId) {
+      try {
+        const appointments = await fetchAppointmentsByEmployee({
+          id: employeeId,
+        });
+        setGlobalAppointments(appointments);
+        SchedulingTimelineDiv(new Date().getMonth(), new Date().getFullYear());
+      } catch (error) {
+        console.error("Erro ao buscar agendamentos:", error.message);
+      }
+    }
 
     const schedulingTimelineSection = document.getElementById(
       "schedulingTimelineSection"

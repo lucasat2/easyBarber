@@ -1,5 +1,7 @@
 import { SchedulingTimelineSelectionContainer } from "./SchedulingTimelineSelectionContainer.js";
 import { fetchStaff, fetchAppointmentsByEmployee } from "./fetchData.js";
+import { setGlobalAppointments } from "./setAndGetGlobalVariables.js";
+import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
 
 let selectElement = null;
 
@@ -17,7 +19,6 @@ async function InitialSchedulingTimelineSection() {
 
     staff = [];
   }
-  console.log(staff)
   
   // Verificar se o select já existe para não recriá-lo
   if (!selectElement) {
@@ -26,22 +27,6 @@ async function InitialSchedulingTimelineSection() {
       staff
     );
 
-    // Adicionar o evento apenas uma vez
-    selectElement.addEventListener("change", async (event) => {
-      const selectedIndex = event.target.selectedIndex;
-      const selectedOptions = event.target.options[selectedIndex];
-      const employeeId = selectedOptions.value;
-
-      if (employeeId) {
-        try {
-          const appointments = await fetchAppointmentsByEmployee({ id: employeeId });
-          console.log("Funcionário ID Selecionado:", employeeId);
-          console.log("Agendamentos do Funcionário:", appointments);
-        } catch (error) {
-          console.error("Erro ao buscar agendamentos:", error.message);
-        }
-      }
-    });
   }
   schedulingTimelineSection.appendChild(selectElement);
 
