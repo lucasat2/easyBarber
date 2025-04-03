@@ -125,7 +125,7 @@ export default function header() {
     titleHeader.innerText = activeItem.id;
 
     const subTitleHeader = document.getElementById("subTitleHeader");
-    subTitleHeader.innerText = Vamos ver sobre - ${activeItem.id};
+    subTitleHeader.innerText = `Vamos ver sobre - ${activeItem.id}`;
 
     // Remove a cor de fundo de todos os itens da lista
     const allItems = document.querySelectorAll("#navBarListUl li");
