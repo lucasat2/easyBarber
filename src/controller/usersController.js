@@ -92,7 +92,7 @@ const createUser = async (req, res) => {
       });
     }
 
-    const result = await usersServices.createUser(
+    const response = await usersServices.createUser(
       name,
       cnpj,
       phoneNumber,
@@ -105,15 +105,17 @@ const createUser = async (req, res) => {
       password
     );
 
-    if (result) {
-      return res.status(result.errorCode).json({ error: result.errorMessage });
+    if (response) {
+      return res
+        .status(response.errorCode)
+        .json({ error: response.errorMessage });
     }
 
     res.status(201).json({ message: "Usuário criado com sucesso" });
   } catch (error) {
     console.log(error);
 
-    res.status(500).json({ error: "Falha ao criar o usuário" });
+    res.status(500).json({ error: "Falha no servidor ao criar o usuário" });
   }
 };
 

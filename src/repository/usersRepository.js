@@ -18,18 +18,16 @@ const insertNewUser = async (
     const isEmailRegisteredQuery = "SELECT * FROM users WHERE email = $1";
 
     const insertNewAddressQuery =
-      "INSERT INTO companies_address (state, city, street, number, postal_code) VALUES ($1, $2, $3, $4, $5)";
-
-    const findAddressDataQuery =
-      "SELECT * FROM companies_address WHERE number = $1 AND postal_code = $2";
+      "INSERT INTO companies_address (state, city, street, number, postal_code) VALUES ($1, $2, $3, $4, $5) RETURNING *";
 
     const insertNewCompanyQuery =
-      "INSERT INTO companies (company_address_id, name, cnpj, phone_number, link_client) VALUES ($1, $2, $3, $4, $5)";
+      "INSERT INTO companies (company_address_id, name, cnpj, phone_number, link_client) VALUES ($1, $2, $3, $4, $5) RETURNING *";
 
-    const findCompanyDataQuery = "SELECT * FROM companies WHERE cnpj = $1";
+    const updateCompanyDataQuery =
+      "UPDATE companies SET link_client = $1 WHERE id = $2 RETURNING *";
 
     const insertNewUserQuery =
-      "INSERT INTO users (company_id, email, password) VALUES ($1, $2, $3)";
+      "INSERT INTO users (company_id, email, password) VALUES ($1, $2, $3) RETURNING *";
 
     client = await pool.connect();
 
@@ -43,7 +41,9 @@ const insertNewUser = async (
       return { errorCode: 409, errorMessage: "E-mail já cadastrado" };
     }
 
-    await client.query(insertNewAddressQuery, [
+    const {
+      rows: [companyAddressData],
+    } = await client.query(insertNewAddressQuery, [
       state,
       city,
       street,
@@ -51,43 +51,64 @@ const insertNewUser = async (
       postalCode,
     ]);
 
-    const {
-      rows: [companyAddressData],
-    } = await client.query(findAddressDataQuery, [number, postalCode]);
-
     if (!companyAddressData) {
       return {
         errorCode: 404,
-        errorMessage: "Falha ao encontrar o ID do endereço",
+        errorMessage: "Falha ao adicionar os dados do endereço",
       };
     }
 
     const companyAddressId = companyAddressData.id;
 
-    const companyLinkPage = `http://localhost/${name}`;
-
-    await client.query(insertNewCompanyQuery, [
+    const {
+      rows: [companyData],
+    } = await client.query(insertNewCompanyQuery, [
       companyAddressId,
       name,
       cnpj,
       phoneNumber,
-      companyLinkPage,
+      "default",
     ]);
-
-    const {
-      rows: [companyData],
-    } = await client.query(findCompanyDataQuery, [cnpj]);
 
     if (!companyData) {
       return {
         errorCode: 404,
-        errorMessage: "Falha ao encontrar o ID da empresa",
+        errorMessage: "Falha ao adicionar os dados da empresa",
       };
     }
 
     const companyId = companyData.id;
 
-    await client.query(insertNewUserQuery, [companyId, email, hashedPassword]);
+    const companyLinkPage = `http://localhost/${companyId}`;
+
+    const {
+      rows: [updatedCompanyData],
+    } = await client.query(updateCompanyDataQuery, [
+      companyLinkPage,
+      companyId,
+    ]);
+
+    if (!updatedCompanyData) {
+      return {
+        errorCode: 404,
+        errorMessage: "Falha ao atualizar os dados da empresa",
+      };
+    }
+
+    const {
+      rows: [newUser],
+    } = await client.query(insertNewUserQuery, [
+      companyId,
+      email,
+      hashedPassword,
+    ]);
+
+    if (!newUser) {
+      return {
+        errorCode: 404,
+        errorMessage: "Falha ao adicionar os dados do usuário",
+      };
+    }
 
     await client.query("COMMIT");
   } catch (error) {
@@ -153,11 +174,9 @@ const updateUser = async (
 
     if (name) {
       const updateCompanyName =
-        "UPDATE companies SET name = $1, link_client = $2, updated_at = NOW() WHERE id = $2";
+        "UPDATE companies SET name = $1, updated_at = NOW() WHERE id = $2";
 
-      const newLinkPage = `http://localhost/${name}`;
-
-      await client.query(updateCompanyName, [name, newLinkPage, companyId]);
+      await client.query(updateCompanyName, [name, companyId]);
     }
 
     if (cnpj) {
