@@ -660,3 +660,18 @@ textarea.modalBoxStyles {
   background-color: #f0f0f0;
   color: #444;
 }
+
+.SchedulingTimelineCardDefault{
+  background-color: #D9D9D9;
+}
+
+.SchedulingTimelineCardBlocked{
+  background-color: rgb(255,0,0);
+}
+
+.SchedulingTimelineCardPending{
+  background-color: #e2e200;
+}
+
+.invisible{
+  background-color: #f5f5f5;}
