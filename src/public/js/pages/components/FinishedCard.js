@@ -65,7 +65,7 @@ function FinishedCard(appointmentData) {
 
         clientPhoneNumberArea.textContent = `Telefone: ${data.client_phone}`;
 
-        const appointmentDateAndTime = data.date_hour_begin.toISOString();
+        const appointmentDateAndTime = data.date_hour_begin;
 
         const appointmentDateAndTimeArray = appointmentDateAndTime.split("T");
 

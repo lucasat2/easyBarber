@@ -81,7 +81,7 @@ function BlockedCard(date, appointmentData) {
 }
 
 function formatDateAndTime(dateTime) {
-  const appointmentDateAndTime = dateTime.toISOString();
+  const appointmentDateAndTime = dateTime;
 
   const appointmentDateAndTimeArray = appointmentDateAndTime.split("T");
 
@@ -103,6 +103,9 @@ async function unlockSchedule(date, appointmentData) {
   try {
     const response = await fetch("/api/appointments/updateStatus", {
       method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         appointmentId: appointmentData.id,
         staffId: appointmentData.staff_id,
@@ -139,8 +142,7 @@ async function unlockSchedule(date, appointmentData) {
     );
 
     const dataFiltered = data.filter((appointment) => {
-      const appointmentStartDateAndTime =
-        appointment.date_hour_begin.toISOString();
+      const appointmentStartDateAndTime = appointment.date_hour_begin;
 
       const appointmentStartDateAndTimeArray =
         appointmentStartDateAndTime.split("T");
@@ -154,7 +156,7 @@ async function unlockSchedule(date, appointmentData) {
         Number(appointmentStartDate[2])
       );
 
-      const appointmentEndDateAndTime = appointment.date_hour_end.toISOString();
+      const appointmentEndDateAndTime = appointment.date_hour_end;
 
       const appointmentEndDateAndTimeArray =
         appointmentEndDateAndTime.split("T");
@@ -176,8 +178,7 @@ async function unlockSchedule(date, appointmentData) {
     });
 
     dataFiltered.sort((firstAppointment, secondAppointment) => {
-      const firstAppointmentStartDateAndTime =
-        firstAppointment.date_hour_begin.toISOString();
+      const firstAppointmentStartDateAndTime = firstAppointment.date_hour_begin;
 
       const firstAppointmentStartDateAndTimeArray =
         firstAppointmentStartDateAndTime.split("T");
@@ -200,7 +201,7 @@ async function unlockSchedule(date, appointmentData) {
       );
 
       const secondAppointmentStartDateAndTime =
-        secondAppointment.date_hour_begin.toISOString();
+        secondAppointment.date_hour_begin;
 
       const secondAppointmentStartDateAndTimeArray =
         secondAppointmentStartDateAndTime.split("T");
