@@ -1,74 +1,207 @@
-function BlockedCard() {
+import { MessageNotification } from "./MessageNotification.js";
+import { DailyAppointmentsModal } from "./DailyAppointmentsModal.js";
+
+function BlockedCard(appointmentsData, appointmentData) {
   const cardContainer = document.createElement("div");
-
-  const infoContainer = document.createElement("div");
-  cardContainer.appendChild(infoContainer);
-
-  const titleArea = document.createElement("h3");
-  titleArea.textContent = "Horário Bloqueado";
-  infoContainer.appendChild(titleArea);
-
-  const startDateArea = document.createElement("p");
-  startDateArea.textContent = "Data de Ínico: 12/03/2025";
-  infoContainer.appendChild(startDateArea);
-
-  const startTimeArea = document.createElement("p");
-  startTimeArea.textContent = "Horário de Ínicio: 09:00";
-  infoContainer.appendChild(startTimeArea);
-
-  const endDateArea = document.createElement("p");
-  endDateArea.textContent = `Data de Fim: 12/03/2025`;
-  infoContainer.appendChild(endDateArea);
-
-  const endTimeArea = document.createElement("p");
-  endTimeArea.textContent = `Horário de Fim: 09:00`;
-  infoContainer.appendChild(endTimeArea);
-
-  const observationArea = document.createElement("p");
-  observationArea.textContent = `Obervação: Tava com sono`;
-  infoContainer.appendChild(observationArea);
-
-  const buttonContainer = document.createElement("div");
-  cardContainer.appendChild(buttonContainer);
-
-  const cancelButton = document.createElement("button");
-  cancelButton.textContent = "Desbloquear";
-  buttonContainer.appendChild(cancelButton);
-
   cardContainer.style.display = "flex";
   cardContainer.style.justifyContent = "space-between";
   cardContainer.style.padding = "20px";
   cardContainer.style.marginBottom = "15px";
-  cardContainer.style.backgroundColor = "#fff";
+  cardContainer.style.color = "#FFF";
+  cardContainer.style.backgroundColor = "#dc3545";
   cardContainer.style.boxShadow = "0 2px 10px rgba(0, 0, 0, 0.1)";
   cardContainer.style.borderRadius = "8px";
   cardContainer.style.alignItems = "center";
   cardContainer.style.flexWrap = "wrap";
   cardContainer.style.width = "60vw";
 
+  const infoContainer = document.createElement("div");
   infoContainer.style.flex = "1";
   infoContainer.style.marginRight = "20px";
+  cardContainer.appendChild(infoContainer);
 
+  const titleArea = document.createElement("h3");
+  titleArea.textContent = "Horário Bloqueado";
+  infoContainer.appendChild(titleArea);
+
+  const startFormattedDate = formatDateAndTime(appointmentData.date_hour_begin);
+
+  const startDateArea = document.createElement("p");
+  startDateArea.textContent = `Data de Ínico: ${startFormattedDate.date}`;
+  infoContainer.appendChild(startDateArea);
+
+  const startTimeArea = document.createElement("p");
+  startTimeArea.textContent = `Horário de Ínicio: ${startFormattedDate.time}`;
+  infoContainer.appendChild(startTimeArea);
+
+  const endFormattedDate = formatDateAndTime(appointmentData.date_hour_end);
+
+  const endDateArea = document.createElement("p");
+  endDateArea.textContent = `Data de Término: ${endFormattedDate.date}`;
+  infoContainer.appendChild(endDateArea);
+
+  const endTimeArea = document.createElement("p");
+  endTimeArea.textContent = `Horário de Término: ${endFormattedDate.time}`;
+  infoContainer.appendChild(endTimeArea);
+
+  const observationArea = document.createElement("p");
+  observationArea.textContent = `Obervação: ${appointmentData.observation}`;
+  infoContainer.appendChild(observationArea);
+
+  const buttonContainer = document.createElement("div");
   buttonContainer.style.display = "flex";
   buttonContainer.style.flexDirection = "column";
 
+  cardContainer.appendChild(buttonContainer);
+
+  const cancelButton = document.createElement("button");
+  cancelButton.textContent = "Desbloquear";
   cancelButton.style.padding = "10px 0px";
   cancelButton.style.width = "150px";
-  cancelButton.style.backgroundColor = "#dc3545";
-  cancelButton.style.color = "#fff";
+  cancelButton.style.backgroundColor = "#fff";
+  cancelButton.style.color = "#dc3545";
   cancelButton.style.border = "none";
   cancelButton.style.cursor = "pointer";
   cancelButton.style.borderRadius = "5px";
   cancelButton.style.fontSize = "16px";
+  buttonContainer.appendChild(cancelButton);
 
   cancelButton.addEventListener("mouseover", function () {
-    cancelButton.style.backgroundColor = "#c82333";
+    cancelButton.style.backgroundColor = "#f0f0f0";
   });
   cancelButton.addEventListener("mouseout", function () {
-    cancelButton.style.backgroundColor = "#dc3545";
+    cancelButton.style.backgroundColor = "#fff";
+  });
+
+  cancelButton.addEventListener("click", () => {
+    unlockSchedule(appointmentsData, appointmentData);
   });
 
   return cardContainer;
 }
 
+function formatDateAndTime(dateTime) {
+  const appointmentDateAndTime = dateTime.toISOString();
+
+  const appointmentDateAndTimeArray = appointmentDateAndTime.split("T");
+
+  const appointmentDate = appointmentDateAndTimeArray[0].split("-");
+
+  const appointmenttTime = appointmentDateAndTimeArray[1].split(":");
+
+  const date = `${appointmentDate[2]}/${appointmentDate[1]}/${appointmentDate[0]}`;
+
+  const time = `${appointmenttTime[0]}:${appointmenttTime[1]}`;
+
+  return {
+    date: date,
+    time: time,
+  };
+}
+
+function unlockSchedule(appointmentsData, appointmentData) {
+  fetch("/api/appointments/updateStatus", {
+    method: "PUT",
+    body: JSON.stringify({
+      appointmentId: appointmentData.id,
+      staffId: appointmentData.staff_id,
+      newStatus: "CANCELADO",
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((errorData) => {
+          throw new Error(errorData.error || "Falha desconhecida");
+        });
+      }
+
+      return response.json();
+    })
+    .then((data) => {
+      if (document.getElementById("dailyAppointmentsModal")) {
+        document.getElementById("dailyAppointmentsModal").remove();
+      }
+
+      const dailyAppointmentsModal = DailyAppointmentsModal(appointmentsData);
+
+      document.body.appendChild(dailyAppointmentsModal);
+
+      MessageNotification("Horário desbloqueado com sucesso", " #28a745");
+    })
+    .catch((error) => {
+      MessageNotification(error.message, "#ff6347");
+    });
+}
+
 export { BlockedCard };
+
+// const test = {
+//   observation: "TESTE PARA VER SE TUDO ESTÁ CONFORME O DESEJADO",
+//   date_hour_begin: new Date("2025-04-02T12:34:56.789Z"),
+//   date_hour_end: new Date("2025-04-02T15:20:56.789Z"),
+// };
+
+// const test2 = [
+//   {
+//     id: "11111111-1111-1111-1111-111111111111",
+//     client: "João Silva",
+//     staff: "Carlos Mendes",
+//     service: "Corte Masculino",
+//     date_hour_begin: "2025-04-10T10:00:00",
+//     date_hour_end: "2025-04-10T11:00:00",
+//     status: "BLOQUEADO",
+//     observation: "Horário reservado para manutenção",
+//     created_at: "2025-04-01T08:00:00",
+//     updated_at: "2025-04-01T08:00:00",
+//   },
+//   {
+//     id: "55555555-5555-5555-5555-555555555555",
+//     client: "Roberto Oliveira",
+//     staff: "Fernanda Souza",
+//     service: "Barba Completa",
+//     date_hour_begin: "2025-04-12T14:00:00",
+//     date_hour_end: "2025-04-12T15:00:00",
+//     status: "BLOQUEADO",
+//     observation: "Funcionário indisponível nesse horário",
+//     created_at: "2025-04-01T08:30:00",
+//     updated_at: "2025-04-01T08:30:00",
+//   },
+//   {
+//     id: "99999999-9999-9999-9999-999999999999",
+//     client: "Carlos Pereira",
+//     staff: "Ana Martins",
+//     service: "Corte + Barba",
+//     date_hour_begin: "2025-04-15T09:00:00",
+//     date_hour_end: "2025-04-15T10:00:00",
+//     status: "CONCLUÍDO",
+//     observation: "Cliente pediu estilo degradê",
+//     created_at: "2025-04-01T09:00:00",
+//     updated_at: "2025-04-01T09:00:00",
+//   },
+//   {
+//     id: "13131313-1313-1313-1313-131313131313",
+//     client: "Lucas Almeida",
+//     staff: "Ricardo Lima",
+//     service: "Hidratação Capilar",
+//     date_hour_begin: "2025-04-18T16:00:00",
+//     date_hour_end: "2025-04-18T17:00:00",
+//     status: "CANCELADO",
+//     observation: "Cancelado pelo cliente",
+//     created_at: "2025-04-01T09:30:00",
+//     updated_at: "2025-04-01T09:30:00",
+//   },
+//   {
+//     id: "17171717-1717-1717-1717-171717171717",
+//     client: "Fernando Souza",
+//     staff: "Beatriz Rocha",
+//     service: "Corte Infantil",
+//     date_hour_begin: "2025-04-20T11:00:00",
+//     date_hour_end: "2025-04-20T12:00:00",
+//     status: "AGENDADO",
+//     observation: "Aguardando confirmação do funcionário",
+//     created_at: "2025-04-01T10:00:00",
+//     updated_at: "2025-04-01T10:00:00",
+//   },
+// ];
+
+// document.body.appendChild(BlockedCard(test2, test));
