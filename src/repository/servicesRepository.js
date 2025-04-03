@@ -44,10 +44,52 @@ const createService = async (
   }
 };
 
+const getServiceDetails = async (serviceId, userId) => {
+  let client;
+
+  try {
+    const findUserDataQuery = "SELECT * FROM users WHERE id = $1";
+
+    const findServiceDataQuery =
+      "SELECT * FROM services WHERE id = $1 AND company_id = $2";
+
+    client = await pool.connect();
+
+    const {
+      rows: [userData],
+    } = await client.query(findUserDataQuery, [userId]);
+
+    if (!userData) {
+      return { errorCode: 404, errorMessage: "Usuário não encontrado" };
+    }
+
+    const companyId = userData.company_id;
+
+    const {
+      rows: [serviceData],
+    } = await client.query(findServiceDataQuery, [serviceId, companyId]);
+
+    if (!serviceData) {
+      return {
+        errorCode: 403,
+        errorMessage: "Serviço não executado pela empresa",
+      };
+    }
+
+    return serviceData;
+  } catch (error) {
+    throw error;
+  } finally {
+    if (client) {
+      client.release();
+    }
+  }
+};
+
 const listAllCompanyServices = async (userId) => {
   let client;
   try {
-    const findUserDataQuery = `SELECT * FROM users WHERE id = $1;`;
+    const findUserDataQuery = `SELECT * FROM users WHERE id = $1`;
 
     const listAllCompanyServicesQuery = `
       SELECT * FROM services WHERE company_id = $1;
@@ -153,6 +195,7 @@ const deleteService = async (serviceID) => {
 
 module.exports = {
   createService,
+  getServiceDetails,
   listAllCompanyServices,
   updateService,
   deleteService,
