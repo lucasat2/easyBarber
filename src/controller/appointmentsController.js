@@ -4,17 +4,15 @@ const timePattern = /^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/;
 
 const listAllAppointmentsByEmployee = async (req, res) => {
   try {
-    const { employeeId } = req.params;
+    const { id } = req.params;
 
-    if (!validator.isUUID(employeeId)) {
+    if (!validator.isUUID(id)) {
       return res
         .status(400)
         .json({ error: "Formato de ID do funcionário inválido" });
     }
 
-    const result = await appointmentsServices.listAllAppointmentsByEmployee(
-      employeeId
-    );
+    const result = await appointmentsServices.listAllAppointmentsByEmployee(id);
 
     res.status(200).json(result);
   } catch (e) {
@@ -25,7 +23,40 @@ const listAllAppointmentsByEmployee = async (req, res) => {
   }
 };
 
-const  createAppointment = async (req, res) => {
+const getAppointmentFullData = async (req, res) => {
+  try {
+    const appointmentId = req.query.id;
+
+    const userId = req.user.id;
+
+    if (!validator.isUUID(appointmentId)) {
+      return res.status(400).json({ error: "ID inválido de agendamento" });
+    }
+
+    if (!validator.isUUID(userId)) {
+      return res.status(400).json({ error: "ID inválido de usuário" });
+    }
+
+    const result = await appointmentsServices.getAppointmentFullInfo(
+      appointmentId,
+      userId
+    );
+
+    if (!result.statusCode) {
+      return res.status(200).json(result);
+    }
+
+    res.status(result.statusCode).json({ error: result.statusMessage });
+  } catch (error) {
+    console.log(error);
+
+    res
+      .status(500)
+      .json({ error: "Falha no servidor ao buscar os dados do agendamento" });
+  }
+};
+
+const createAppointment = async (req, res) => {
   try {
     const {
       employeeId,
@@ -205,8 +236,63 @@ const blockTimeForStaff = async (req, res) => {
   }
 };
 
+const updateScheduleStatus = async (req, res) => {
+  try {
+    const { appointmentId, staffId, newStatus } = req.body;
+
+    const userId = req.user.id;
+
+    if (!validator.isUUID(appointmentId)) {
+      return res.status(400).json({ error: "ID inválido de agendamento" });
+    }
+
+    if (!validator.isUUID(staffId)) {
+      return res.status(400).json({ error: "ID inválido de funcionário" });
+    }
+
+    if (!validator.isUUID(userId)) {
+      return res.status(400).json({ error: "ID inválido de usuário" });
+    }
+
+    const validStatus = ["AGENDADO", "CONCLUÍDO", "CANCELADO", "BLOQUEADO"];
+
+    if (typeof newStatus !== "string") {
+      return res.status(400).json({ error: "Formato inválido de status" });
+    }
+
+    if (!validStatus.includes(newStatus)) {
+      return res.status(400).json({ error: "Status inválido" });
+    }
+
+    const result = await appointmentsServices.setScheduleStatus(
+      userId,
+      appointmentId,
+      staffId,
+      newStatus
+    );
+
+    if (result) {
+      return res
+        .status(result.statusCode)
+        .json({ error: result.statusMessage });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Status de agendamento alterado com sucesso" });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      error: "Falha no servidor durante o processo de alteração do status",
+    });
+  }
+};
+
 module.exports = {
   createAppointment,
+  getAppointmentFullData,
   listAllAppointmentsByEmployee,
   blockTimeForStaff,
+  updateScheduleStatus,
 };

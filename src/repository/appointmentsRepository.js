@@ -19,6 +19,80 @@ const getAllAppointmentsByEmployee = async (employeeId) => {
   }
 };
 
+const retrieveAppointmentFullData = async (appointmentId, userId) => {
+  let client;
+
+  try {
+    const getUserDataQuery = "SELECT * FROM users WHERE id = $1";
+
+    const getAppointmentDataQuery = "SELECT * FROM appointments WHERE id = $1";
+
+    const isCompanyAppointmentQuery =
+      "SELECT * FROM services WHERE id = $1 AND company_id = $2";
+
+    const getAppointmentFullDataQuery = `SELECT a.date_hour_begin, a.observation, c.name AS client_name, phone_number AS client_phone, s.name AS service_name, s.price AS service_price FROM appointments a JOIN clients c ON a.client_id = c.id JOIN services s ON a.service_id = s.id WHERE a.id = $1;`;
+
+    client = await pool.connect();
+
+    const {
+      rows: [userData],
+    } = await client.query(getUserDataQuery, [userId]);
+
+    if (!userData) {
+      return {
+        statusCode: 404,
+        statusMessage: "Falha ao localizar as informações do usuário",
+      };
+    }
+
+    const companyId = userData.company_id;
+
+    const {
+      rows: [appointmentData],
+    } = await client.query(getAppointmentDataQuery, [appointmentId]);
+
+    if (!appointmentData) {
+      return {
+        statusCode: 404,
+        statusMessage: "Falha ao localizar as informações do agendamento",
+      };
+    }
+
+    const serviceId = appointmentData.service_id;
+
+    const {
+      rows: [isCompanyAppointment],
+    } = await client.query(isCompanyAppointmentQuery, [serviceId, companyId]);
+
+    if (!isCompanyAppointment) {
+      return {
+        statusCode: 403,
+        statusMessage: "Agendamento não pertence a empresa",
+      };
+    }
+
+    const {
+      rows: [appointmentFullData],
+    } = await client.query(getAppointmentFullDataQuery, [appointmentId]);
+
+    if (!appointmentFullData) {
+      return {
+        statusCode: 404,
+        statusMessage:
+          "Falha ao localizar as informações necessárias do agendamento",
+      };
+    }
+
+    return appointmentFullData;
+  } catch (error) {
+    throw error;
+  } finally {
+    if (client) {
+      client.release();
+    }
+  }
+};
+
 const insertNewAppointment = async (
   userId,
   employeeId,
@@ -37,7 +111,7 @@ const insertNewAppointment = async (
 
     await client.query("BEGIN");
 
-    const getUserData = "SELECT * FROM users WHERE id = $1";
+    const getUserDataQuery = "SELECT * FROM users WHERE id = $1";
 
     const doesCompanyOfferServiceQuery =
       "SELECT * FROM services WHERE id = $1 AND company_id = $2";
@@ -66,7 +140,7 @@ const insertNewAppointment = async (
 
     const {
       rows: [userData],
-    } = await client.query(getUserData, [userId]);
+    } = await client.query(getUserDataQuery, [userId]);
 
     if (!userData) {
       return {
@@ -214,7 +288,7 @@ const insertNewAppointment = async (
       Number(serviceStartTimeArray[1])
     );
 
-    const todayDate = new Date().toLocaleDateString();
+    const todayDate = new Date().toLocaleDateString("pt-BR");
 
     const todayDateArray = todayDate.split("/");
 
@@ -528,7 +602,7 @@ const setEmployeeScheduleAsBlocked = async (
   try {
     client = await pool.connect();
 
-    const getUserData = "SELECT * FROM users WHERE id = $1";
+    const getUserDataQuery = "SELECT * FROM users WHERE id = $1";
 
     const isEmployeeBelongsToCompanyQuery =
       "SELECT * FROM staffs WHERE id = $1 AND company_id = $2";
@@ -538,7 +612,7 @@ const setEmployeeScheduleAsBlocked = async (
 
     const {
       rows: [userData],
-    } = await client.query(getUserData, [userId]);
+    } = await client.query(getUserDataQuery, [userId]);
 
     if (!userData) {
       return {
@@ -743,8 +817,76 @@ const setEmployeeScheduleAsBlocked = async (
   }
 };
 
+const modifyAppointmentStatus = async (
+  userId,
+  appointmentId,
+  staffId,
+  newStatus
+) => {
+  let client;
+
+  try {
+    const getUserDataQuery = "SELECT * FROM users WHERE id = $1";
+
+    const allowedToChangeStatusQuery =
+      "SELECT * FROM staffs WHERE id = $1 AND company_id = $2";
+
+    const changeAppointmentStatusQuery =
+      "UPDATE appointments SET status = $1 WHERE id = $2 RETURNING *";
+
+    client = await pool.connect();
+
+    const {
+      rows: [userData],
+    } = await client.query(getUserDataQuery, [userId]);
+
+    if (!userData) {
+      return {
+        statusCode: 404,
+        statusMessage: "Falha ao localizar as informações do usuário",
+      };
+    }
+
+    const companyId = userData.company_id;
+
+    const {
+      rows: [allowedToChangeStatus],
+    } = await client.query(allowedToChangeStatusQuery, [staffId, companyId]);
+
+    if (!allowedToChangeStatus) {
+      return {
+        statusCode: 403,
+        statusMessage:
+          "Usuário não possui permissões para alterar o status do agendamento",
+      };
+    }
+
+    const {
+      rows: [changeAppointmentStatus],
+    } = await client.query(changeAppointmentStatusQuery, [
+      newStatus,
+      appointmentId,
+    ]);
+
+    if (!changeAppointmentStatus) {
+      return {
+        statusCode: 404,
+        statusMessage: "Falha ao atualizar o status do agendamento",
+      };
+    }
+  } catch (error) {
+    throw error;
+  } finally {
+    if (client) {
+      client.release();
+    }
+  }
+};
+
 module.exports = {
   insertNewAppointment,
+  retrieveAppointmentFullData,
   getAllAppointmentsByEmployee,
   setEmployeeScheduleAsBlocked,
+  modifyAppointmentStatus,
 };

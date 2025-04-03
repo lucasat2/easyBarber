@@ -14,6 +14,19 @@ const listAllAppointmentsByEmployee = async (employeeId) => {
   }
 };
 
+const getAppointmentFullInfo = async (appointmentId, userId) => {
+  try {
+    const response = await appointmentsRepository.retrieveAppointmentFullData(
+      appointmentId,
+      userId
+    );
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const createAppointment = async (
   userId,
   employeeId,
@@ -70,8 +83,25 @@ const blockEmployeeSchedule = async (
   }
 };
 
+const setScheduleStatus = async (userId, appointmentId, staffId, newStatus) => {
+  try {
+    const response = await appointmentsRepository.modifyAppointmentStatus(
+      userId,
+      appointmentId,
+      staffId,
+      newStatus
+    );
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
-  createAppointment,
   listAllAppointmentsByEmployee,
+  getAppointmentFullInfo,
+  createAppointment,
   blockEmployeeSchedule,
+  setScheduleStatus,
 };
