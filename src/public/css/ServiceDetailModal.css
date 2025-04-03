@@ -1,0 +1,102 @@
+.serviceDetailsModalTitle {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.serviceDetailsModalField {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.serviceDetailsModalField span:first-child {
+  font-weight: bold;
+  color: #333;
+  width: auto;
+  text-align: right;
+}
+
+.serviceDetailsModalField span:last-child {
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.serviceDetailsModalButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.serviceDetailsModalButtons button {
+  background: #dee33e;
+  color: black;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.serviceDetailsModalButtons button:hover {
+  background: #c4c400;
+}
+
+.serviceDetailsModalButtons button:nth-child(1) {
+  background-color: #dee33e;
+  color: #000;
+}
+
+.serviceDetailsModalButtons button:nth-child(2) {
+  background-color: #eb4335;
+  color: #fff;
+}
+
+.serviceDetailsModalButtons button:nth-child(3) {
+  background-color: #e0e0e0;
+  color: #000;
+}
+
+.serviceDetailsModalButtons button:nth-child(4) {
+  background-color: #4cd964;
+  color: #fff;
+}
+
+.serviceDetailsModalClose {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  color: white;
+  background-color: #eb4335;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+textarea.modalBoxStyles {
+  width: 100%;
+  height: auto;
+  min-height: 80px;
+  resize: vertical;
+  box-sizing: border-box;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+}

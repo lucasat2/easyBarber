@@ -10,8 +10,8 @@ async function checkSession() {
     const data = await response.json();
     return data;
   } catch (error) {
-    if (window.location.pathname !== "/login") {
-      window.location.href = "/login";
+    if (window.location.pathname !== '/login' && window.location.pathname !== '/client') {
+      window.location.href = '/login';
     }
   }
 }
