@@ -1,29 +1,33 @@
 import { SchedulingTimelineSelectionContainer } from "./SchedulingTimelineSelectionContainer.js";
+import { fetchStaff, fetchAppointmentsByEmployee } from "./fetchData.js";
+import { setGlobalAppointments } from "./setAndGetGlobalVariables.js";
+import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
 
-const test = [
-  {
-    name: "Gabriell",
-  },
-  {
-    name: "Bruno",
-  },
-  {
-    name: "Lucas",
-  },
-  {
-    name: "Fabiano",
-  },
-];
+let selectElement = null;
 
-function InitialSchedulingTimelineSection() {
+async function InitialSchedulingTimelineSection() {
   const schedulingTimelineSection = document.createElement("div");
   schedulingTimelineSection.id = "schedulingTimelineSection";
   schedulingTimelineSection.classList.add("initialSchedulingTimelineSection");
 
-  const selectElement = SchedulingTimelineSelectionContainer(
-    "Selecione um funcionário",
-    test
-  );
+  let staff;
+
+  try {
+    staff = await fetchStaff();
+  } catch (error) {
+    MessageNotification(error.message, "#ff6347");
+
+    staff = [];
+  }
+  
+  // Verificar se o select já existe para não recriá-lo
+  if (!selectElement) {
+    selectElement = SchedulingTimelineSelectionContainer(
+      "Selecione um funcionário",
+      staff
+    );
+
+  }
   schedulingTimelineSection.appendChild(selectElement);
 
   const initialSchedulingTimelineDiv = document.createElement("div");

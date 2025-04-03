@@ -51,14 +51,13 @@ let currentYear = today.getUTCFullYear();
 
 function createNextMonthScheduleDashboard() {
   currentMonth += 1;
-
+  console.log("Navegação para o próximo mês:", currentMonth);
   if (currentMonth === 12) {
     currentMonth = 0;
     currentYear += 1;
   }
 
   const displayMonthYear = getMonthYearString(currentMonth, currentYear);
-
   const schedulingTimelineHeaderDateCardText = document.querySelector(
     ".schedulingTimelineHeaderDateCardText"
   );
@@ -78,7 +77,7 @@ function createNextMonthScheduleDashboard() {
 
 function createLastMonthScheduleDashboard() {
   currentMonth -= 1;
-
+  console.log("Navegação para o mês anterior:", currentMonth);
   if (currentMonth === -1) {
     currentMonth = 11;
     currentYear -= 1;

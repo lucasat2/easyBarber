@@ -1,12 +1,14 @@
+const AppointmentDTO = require("../DTO/appointmentsDTO.js")
 const appointmentsRepository = require("../repository/appointmentsRepository.js");
 
 const listAllAppointmentsByEmployee = async (employeeId) => {
   try {
-    const result = await appointmentsRepository.getAllAppointmentsByEmployee(
+    const queryResult = await appointmentsRepository.getAllAppointmentsByEmployee(
       employeeId
     );
 
-    return result;
+    const result = queryResult.map(result=> new AppointmentDTO.AppointmentDTO(result))
+    return  result
   } catch (e) {
     throw e;
   }

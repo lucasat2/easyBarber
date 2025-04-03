@@ -12,26 +12,11 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use("/api", routes);
+
 app.get("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "../src/public/index.html"));
   });
-
-app.use("/api", routes);
-
-
-app.get("/api/me", (req, res) => {
-	const token = req.cookies.token;
-	if (!token) {
-		return res.status(401).send({loggedIn: false});
-	}
-
-	try {
-		jwt.verify(token, config.DB_PASSWORD);
-		res.status(200).send({loggedIn: true});
-	} catch (error) {
-		res.status(401).send({loggedIn: false});
-	}
-});
 
 app.use('/', routes)
 
