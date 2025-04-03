@@ -8,7 +8,7 @@ function navigateTo(pageFunction) {
 }
 
 function fetchCompanyServices(idCompany) {
-	const apiUrl = "http://localhost:3000/api/customer/company/services";
+	const apiUrl = "/api/customer/company/services";
 
 	return fetch(apiUrl, {
 		method: "POST",
@@ -47,7 +47,7 @@ export default function ServicesPage() {
 	}
 
 	// Configurar a URL da API
-	const apiUrl = "http://localhost:3000/api/customer/company";
+	const apiUrl = "/api/customer/company";
 
 	// Fazer o POST para a API com o idCompany
 	fetch(apiUrl, {

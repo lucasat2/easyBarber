@@ -226,7 +226,7 @@ export default function ConfirmScheduling(obj) {
 
 			// --- Fetch ---
 			fetch(
-				"http://localhost:3000/api/customer/company/services/staff/schedule/appointments",
+				"/api/customer/company/services/staff/schedule/appointments",
 				{
 					// Replace with your API endpoint
 					method: "POST",

@@ -23,7 +23,7 @@ export default function StratYoutBooking() {
 	}
 
 	// Configurar a URL da API
-	const apiUrl = "http://localhost:3000/api/customer/company";
+	const apiUrl = "/api/customer/company";
 
 	// Fazer o POST para a API com o idCompany
 	fetch(apiUrl, {

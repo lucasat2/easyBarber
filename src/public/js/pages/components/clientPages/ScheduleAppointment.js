@@ -10,7 +10,7 @@ function navigateTo(pageFunction, obj) {
 }
 
 function fetchStaffServices(idCompany, idService) {
-	const apiUrl = "http://localhost:3000/api/customer/company/services/staff";
+	const apiUrl = "/api/customer/company/services/staff";
 
 	return fetch(apiUrl, {
 		method: "POST",
@@ -34,7 +34,7 @@ function fetchStaffServices(idCompany, idService) {
 }
 
 function fetchCompanyServices(idCompany) {
-	const apiUrl = "http://localhost:3000/api/customer/company/services";
+	const apiUrl = "/api/customer/company/services";
 
 	return fetch(apiUrl, {
 		method: "POST",
@@ -74,7 +74,7 @@ export default function ScheduleAppointment() {
 	}
 
 	// Configurar a URL da API
-	const apiUrl = "http://localhost:3000/api/customer/company";
+	const apiUrl = "/api/customer/company";
 
 	// Fazer o POST para a API com o idCompany
 	fetch(apiUrl, {
@@ -333,7 +333,7 @@ export default function ScheduleAppointment() {
 
 						try {
 							const response = await fetch(
-								"http://localhost:3000/api/customer/company/services/staff/schedule",
+								"/api/customer/company/services/staff/schedule",
 								{
 									method: "POST",
 									headers: {
@@ -457,7 +457,7 @@ export default function ScheduleAppointment() {
 
 					try {
 						const response = await fetch(
-							"http://localhost:3000/api/customer/company/services/staff/schedule",
+							"/api/customer/company/services/staff/schedule",
 							{
 								method: "POST",
 								headers: {
