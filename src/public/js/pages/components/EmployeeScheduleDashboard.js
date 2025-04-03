@@ -2,7 +2,9 @@ import { SchedulingTimelineSelectionContainer } from "./SchedulingTimelineSelect
 import { SchedulingTimelineEmployeesCard } from "./SchedulingTimelineEmployeesCard.js";
 import { SchedulingTimelineDateCard } from "./SchedulingTimelineDateCard.js";
 import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
-import * as modalAppointment from "./modalAppointmentScheduling.js"
+import * as modalAppointment from "./modalAppointmentScheduling.js";
+
+let selectElement = null;
 
 function EmployeeScheduleDashboard(employeeName, staff) {
   const employeeSchedulingTimelineSection = document.createElement("div");
@@ -18,10 +20,14 @@ function EmployeeScheduleDashboard(employeeName, staff) {
     employeeSchedulingTimelineHeader
   );
 
-  const selectElement = SchedulingTimelineSelectionContainer(
-    "Selecione um funcionário",
-    staff
-  );
+  // Verificar se o select já existe para não recriá-lo
+  if (!selectElement) {
+    selectElement = SchedulingTimelineSelectionContainer(
+      "Selecione um funcionário",
+      staff
+    );
+  }
+
   employeeSchedulingTimelineHeader.appendChild(selectElement);
 
   const employeeCard = SchedulingTimelineEmployeesCard(
@@ -50,20 +56,18 @@ function EmployeeScheduleDashboard(employeeName, staff) {
     employeeScheduleTimelineContainer
   );
 
-  const today = new Date();
-  today.setUTCHours(0, 0, 0, 0);
-  const currentMonth = today.getUTCMonth();
-  const currentYear = today.getUTCFullYear();
-
   const employeeScheduleTimeline = SchedulingTimelineDiv(
-    currentMonth,
-    currentYear
+    new Date().getMonth(),
+    new Date().getFullYear()
   );
   employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline);
 
-  employeeSchedulingTimelineHeaderManagementButton.addEventListener('click', () => {
-    modalAppointment.createModal()
-  });
+  employeeSchedulingTimelineHeaderManagementButton.addEventListener(
+    "click",
+    () => {
+      modalAppointment.createModal();
+    }
+  );
 
   return employeeSchedulingTimelineSection;
 }
