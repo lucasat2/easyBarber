@@ -38,7 +38,7 @@ async function fetchStaff() {
 
 async function fetchAppointmentsByEmployee(employeeData) {
   try {
-    const response = await fetch(`/api/appointments/${employeeData.id}`, {
+    const response = await fetch(`/api/appointments/employee/${employeeData.id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
