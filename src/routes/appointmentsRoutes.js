@@ -19,7 +19,7 @@ router.post(
   verifyActiveSession,
   appointmentsController.blockTimeForStaff
 );
-router.post(
+router.put(
   "/updateStatus",
   verifyActiveSession,
   appointmentsController.updateScheduleStatus
