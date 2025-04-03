@@ -1,4 +1,5 @@
 import onNavigate from "../event.js";
+import { MessageNotification } from "./components/MessageNotification.js";
 
 export default function signup() {
   const div = document.createElement("div");
@@ -73,12 +74,12 @@ export default function signup() {
 
   const loginLink = document.createElement("p");
   loginLink.classList.add("signupLoginLink");
-  const textoLogin = document.createTextNode("Já tem uma conta? ");
+  const textLogin = document.createTextNode("Já tem uma conta? ");
   const linkLogin = document.createElement("a");
   linkLogin.href = "#";
   linkLogin.id = "goToLogin";
   linkLogin.textContent = "Faça o login aqui.";
-  loginLink.appendChild(textoLogin);
+  loginLink.appendChild(textLogin);
   loginLink.appendChild(linkLogin);
   form.appendChild(loginLink);
 
@@ -96,26 +97,34 @@ export default function signup() {
 
   const sendForm = div.querySelector("#signUpForm");
   sendForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const formData = {};
-    inputFields.forEach((field) => {
-      formData[field.id] = div.querySelector(`#${field.id}`).value;
-    });
-    console.log(formData);
-    const response = await fetch("/api/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-    const data = await response.json();
-    if (response.ok) {
-      console.log("Registration successful:", data);
-      alert("Registration successful!");
-    } else {
-      console.error("Registration error:", data);
-      alert("Error creating account. Please try again.");
+    try {
+      e.preventDefault();
+
+      const formData = {};
+
+      inputFields.forEach((field) => {
+        formData[field.id] = div.querySelector(`#${field.id}`).value;
+      });
+
+      const response = await fetch("/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+
+        throw new Error(errorData.error || "Falha não identificada");
+      }
+
+      const data = await response.json();
+
+      MessageNotification(data.message, " #28a745");
+    } catch (error) {
+      MessageNotification(error.message, "#ff6347");
     }
   });
 

@@ -1,5 +1,5 @@
-const { response } = require("express");
 const pool = require("../db");
+
 let client;
 
 const getAllStaff = async (userId) => {
@@ -29,6 +29,46 @@ const getAllStaff = async (userId) => {
     }
 
     return allEmployees;
+  } catch (error) {
+    throw error;
+  } finally {
+    if (client) {
+      client.release();
+    }
+  }
+};
+
+const findStaffInfo = async (employeeId, userId) => {
+  try {
+    const getUserDataQuery = "SELECT * FROM users WHERE id = $1";
+
+    const getEmployeeDataQuery =
+      "SELECT * FROM staffs WHERE id = $1 AND company_id = $2";
+
+    client = await pool.connect();
+
+    const {
+      rows: [userData],
+    } = await client.query(getUserDataQuery, [userId]);
+
+    if (!userData) {
+      return { errorStatus: 404, errorMessage: "Usuário não encontrado" };
+    }
+
+    const companyId = userData.company_id;
+
+    const {
+      rows: [employeeData],
+    } = await client.query(getEmployeeDataQuery, [employeeId, companyId]);
+
+    if (!employeeData) {
+      return {
+        errorStatus: 403,
+        errorMessage: "Funcionário não pertence a empresa",
+      };
+    }
+
+    return employeeData;
   } catch (error) {
     throw error;
   } finally {
@@ -499,6 +539,7 @@ const unlinkServiceFromStaff = async (userId, staffId, serviceId) => {
 
 module.exports = {
   getAllStaff,
+  findStaffInfo,
   createStaff,
   associateServicesWithStaff,
   bindSchedulesToStaff,

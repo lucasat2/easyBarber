@@ -1,14 +1,29 @@
+const AppointmentDTO = require("../DTO/appointmentsDTO.js")
 const appointmentsRepository = require("../repository/appointmentsRepository.js");
 
 const listAllAppointmentsByEmployee = async (employeeId) => {
   try {
-    const result = await appointmentsRepository.getAllAppointmentsByEmployee(
+    const queryResult = await appointmentsRepository.getAllAppointmentsByEmployee(
       employeeId
     );
 
-    return result;
+    const result = queryResult.map(result=> new AppointmentDTO.AppointmentDTO(result))
+    return  result
   } catch (e) {
     throw e;
+  }
+};
+
+const getAppointmentFullInfo = async (appointmentId, userId) => {
+  try {
+    const response = await appointmentsRepository.retrieveAppointmentFullData(
+      appointmentId,
+      userId
+    );
+
+    return response;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -68,8 +83,25 @@ const blockEmployeeSchedule = async (
   }
 };
 
+const setScheduleStatus = async (userId, appointmentId, staffId, newStatus) => {
+  try {
+    const response = await appointmentsRepository.modifyAppointmentStatus(
+      userId,
+      appointmentId,
+      staffId,
+      newStatus
+    );
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
-  createAppointment,
   listAllAppointmentsByEmployee,
+  getAppointmentFullInfo,
+  createAppointment,
   blockEmployeeSchedule,
+  setScheduleStatus,
 };

@@ -5,13 +5,10 @@ const currentPage = document.getElementById("root");
 
 async function checkSession() {
   try {
-    
-    const response = await fetch('/api/login/checkLogin');
-    if (!response.ok) throw new Error('Sessão inválida');
+    const response = await fetch("/api/login/checkLogin");
+    if (!response.ok) throw new Error("Sessão inválida");
     const data = await response.json();
-    console.log("Sessão ativa:", data.user);
     return data;
-
   } catch (error) {
     if (window.location.pathname !== '/login' && window.location.pathname !== '/client') {
       window.location.href = '/login';

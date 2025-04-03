@@ -60,6 +60,36 @@ const createService = async (req, res) => {
   }
 };
 
+const getServiceData = async (req, res) => {
+  try {
+    const serviceId = req.params.id;
+
+    const userId = req.user.id;
+
+    if (!validator.isUUID(serviceId)) {
+      return res.status(400).json({ error: "ID inválido de serviço" });
+    }
+
+    if (!validator.isUUID(userId)) {
+      return res.status(400).json({ error: "ID inválido de usuário" });
+    }
+
+    const result = await servicesService.findServiceById(serviceId, userId);
+
+    if (!result.errorCode) {
+      return res.status(200).json(result);
+    }
+
+    res.status(result.errorCode).json({ error: result.errorMessage });
+  } catch (error) {
+    console.log(error);
+
+    res
+      .status(500)
+      .json({ error: "Falha no servidor ao buscar informações do serviço" });
+  }
+};
+
 const listAllCompanyServices = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -158,6 +188,7 @@ const deleteService = async (req, res) => {
 
 module.exports = {
   createService,
+  getServiceData,
   listAllCompanyServices,
   updateService,
   deleteService,

@@ -4,6 +4,7 @@ const { verifyActiveSession } = require("../middleware");
 const router = express.Router();
 
 router.get("/", verifyActiveSession, staffController.list);
+router.get("/:id", verifyActiveSession, staffController.getStaffData);
 router.post("/", verifyActiveSession, staffController.create);
 router.post(
   "/associateServices",
