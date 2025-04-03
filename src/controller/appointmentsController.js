@@ -25,7 +25,7 @@ const listAllAppointmentsByEmployee = async (req, res) => {
 
 const getAppointmentFullData = async (req, res) => {
   try {
-    const appointmentId = req.query.id;
+    const appointmentId = req.params.id;
 
     const userId = req.user.id;
 
