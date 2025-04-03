@@ -2,7 +2,7 @@ import { AppointmentCard } from "./AppointmentCard.js";
 import { BlockedCard } from "./BlockedCard.js";
 import { FinishedCard } from "./FinishedCard.js";
 
-function DailyAppointmentsModal(appointmentsData) {
+function DailyAppointmentsModal(date, appointmentsData) {
   const containerModal = document.createElement("div");
   containerModal.id = "dailyAppointmentsModal";
   containerModal.style.zIndex = "100";
@@ -84,10 +84,10 @@ function DailyAppointmentsModal(appointmentsData) {
 
     appointmentsData.forEach((appointmentData) => {
       if (appointmentData.status === "BLOQUEADO") {
-        const appointmentCard = BlockedCard(appointmentsData, appointmentData);
+        const appointmentCard = BlockedCard(date, appointmentData);
         modalBody.appendChild(appointmentCard);
       } else if (appointmentData.status === "AGENDADO") {
-        const appointmentCard = AppointmentCard(appointmentData);
+        const appointmentCard = AppointmentCard(date, appointmentData);
         modalBody.appendChild(appointmentCard);
       } else if (appointmentData.status === "CONCLUÍDO") {
         const appointmentCard = FinishedCard(appointmentData);
