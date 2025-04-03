@@ -40,6 +40,34 @@ const createStaff = async (
   }
 };
 
+const linkServicesToStaff = async (userId, staffId, serviceId) => {
+  try {
+    const response = await staffRepository.associateServicesWithStaff(
+      userId,
+      staffId,
+      serviceId
+    );
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const attachSchedulesToStaff = async (userId, staffId, schedulesData) => {
+  try {
+    const response = await staffRepository.bindSchedulesToStaff(
+      userId,
+      staffId,
+      schedulesData
+    );
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const updateStaff = async (
   name,
   surname,
@@ -66,12 +94,34 @@ const updateStaff = async (
   }
 };
 
-const deleteStaff = async (id) => {
+const deleteStaff = async (staffId) => {
   try {
-    await staffRepository.removeStaff(id);
+    await staffRepository.removeStaff(staffId);
   } catch (error) {
     throw error;
   }
 };
 
-module.exports = { listAllStaff, createStaff, updateStaff, deleteStaff };
+const detachServiceFromStaff = async (userId, staffId, serviceId) => {
+  try {
+    const response = await staffRepository.unlinkServiceFromStaff(
+      userId,
+      staffId,
+      serviceId
+    );
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = {
+  listAllStaff,
+  createStaff,
+  linkServicesToStaff,
+  attachSchedulesToStaff,
+  updateStaff,
+  deleteStaff,
+  detachServiceFromStaff,
+};

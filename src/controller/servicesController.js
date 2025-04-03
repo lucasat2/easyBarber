@@ -4,14 +4,14 @@ const priceRegex = /^\d+(\.\d{1,2})?$/;
 
 const createService = async (req, res) => {
   try {
-    const { name, description, price, avegareDuration } = req.body;
+    const { name, description, price,averageDuration } = req.body;
     const userId = req.user.id;
 
     if (!validator.isUUID(userId)) {
       return res.status(400).json({ error: "ID de usuário inválido" });
     }
 
-    if (!name || !description || !price || !avegareDuration) {
+    if (!name || !description || !price || !averageDuration) {
       return res
         .status(400)
         .json({ error: "Preenchimento obrigatório de todos os campos" });
@@ -35,10 +35,10 @@ const createService = async (req, res) => {
       });
     }
 
-    if (!validator.isInt(avegareDuration, { min: 1 })) {
+    if (!validator.isInt(averageDuration, { min: 1 })) {
       return res
         .status(400)
-        .json({ error: "Duração média deve ser em minutos" });
+        .json({ error: "Duração deve ser um número válido e em minutos"});
     }
 
     const result = await servicesService.createService(
@@ -46,7 +46,7 @@ const createService = async (req, res) => {
       name,
       description,
       price,
-      avegareDuration
+      averageDuration
     );
 
     if (result) {
@@ -150,7 +150,7 @@ const updateService = async (req, res) => {
     if (averageDuration && !validator.isInt(averageDuration, { min: 1 })) {
       return res
         .status(400)
-        .json({ error: "Duração média deve ser em minutos" });
+        .json({ error: "Duração deve ser um número válido e em minutos" });
     }
 
     const result = await servicesService.updateService(

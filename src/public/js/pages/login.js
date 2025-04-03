@@ -1,154 +1,150 @@
 import onNavigate from "../event.js";
+import { MessageNotification } from "./components/MessageNotification.js";
 
 export default function login() {
-	const div = document.createElement("div");
+  const div = document.createElement("div");
 
-	const loginPrincipalContainer = document.createElement("div");
-	loginPrincipalContainer.classList.add("loginPrincipalContainer");
+  const loginMainContainer = document.createElement("div");
+  loginMainContainer.classList.add("loginPrincipalContainer");
 
-	const leftSide = document.createElement("div");
-	leftSide.classList.add("loginLeftSideStyle");
+  const leftSide = document.createElement("div");
+  leftSide.classList.add("loginLeftSideStyle");
 
-	const barberPole = document.createElement("img");
-	barberPole.src = "../assets/login/barberPole.jpeg";
-	barberPole.alt = "Barber Pole";
-	barberPole.classList.add("loginBarberPoleStyle");
+  const barberPole = document.createElement("img");
+  barberPole.src = "../assets/login/barberPole.jpg";
+  barberPole.alt = "Barber Pole";
+  barberPole.classList.add("loginBarberPoleStyle");
 
-	leftSide.appendChild(barberPole);
+  leftSide.appendChild(barberPole);
 
-	const rightSide = document.createElement("div");
-	rightSide.classList.add("loginRightSideStyle");
+  const rightSide = document.createElement("div");
+  rightSide.classList.add("loginRightSideStyle");
 
-	const logoContainer = document.createElement("div");
-	logoContainer.classList.add("loginLogoContainer");
+  const logoContainer = document.createElement("div");
+  logoContainer.classList.add("loginLogoContainer");
 
-	const logo = document.createElement("img");
-	logo.src = "../assets/logo.jpeg";
-	logo.alt = "EasyBarber Logo";
-	logo.classList.add("loginLogoStyle");
+  const logo = document.createElement("img");
+  logo.src = "../assets/logo.jpeg";
+  logo.alt = "EasyBarber Logo";
+  logo.classList.add("loginLogoStyle");
 
-	logoContainer.appendChild(logo);
+  logoContainer.appendChild(logo);
 
-	const loginContainer = document.createElement("div");
-	loginContainer.classList.add("loginSecondContainer");
+  const loginContainer = document.createElement("div");
+  loginContainer.classList.add("loginSecondContainer");
 
-	const titulo = document.createElement("h1");
-	titulo.classList.add("loginTitleStyle");
-	titulo.textContent = "Entre na sua conta";
+  const title = document.createElement("h1");
+  title.classList.add("loginTitleStyle");
+  title.textContent = "Entre na sua conta";
 
-	const form = document.createElement("form");
-	form.classList.add("loginFormStyle");
-	form.id = "loginForm";
+  const form = document.createElement("form");
+  form.classList.add("loginFormStyle");
+  form.id = "loginForm";
 
-	const inputGroupEmail = document.createElement("div");
-	inputGroupEmail.classList.add("loginInputGroupStyle");
+  const inputGroupEmail = document.createElement("div");
+  inputGroupEmail.classList.add("loginInputGroupStyle");
 
-	const inputEmail = document.createElement("input");
-	inputEmail.type = "email";
-	inputEmail.id = "email";
-	inputEmail.placeholder = "Email";
-	inputEmail.required = true;
-	inputEmail.classList.add("loginInputStyle");
+  const inputEmail = document.createElement("input");
+  inputEmail.type = "email";
+  inputEmail.id = "email";
+  inputEmail.placeholder = "Email";
+  inputEmail.required = true;
+  inputEmail.classList.add("loginInputStyle");
 
-	inputGroupEmail.appendChild(inputEmail);
+  inputGroupEmail.appendChild(inputEmail);
 
-	const inputGroupSenha = document.createElement("div");
-	inputGroupSenha.classList.add("loginInputGroupStyle");
+  const inputGroupPassword = document.createElement("div");
+  inputGroupPassword.classList.add("loginInputGroupStyle");
 
-	const inputSenha = document.createElement("input");
-	inputSenha.type = "password";
-	inputSenha.id = "password";
-	inputSenha.placeholder = "Senha";
-	inputSenha.required = true;
-	inputSenha.classList.add("loginInputStyle");
+  const inputPassword = document.createElement("input");
+  inputPassword.type = "password";
+  inputPassword.id = "password";
+  inputPassword.placeholder = "Senha";
+  inputPassword.required = true;
+  inputPassword.classList.add("loginInputStyle");
 
-	inputGroupSenha.appendChild(inputSenha);
+  inputGroupPassword.appendChild(inputPassword);
 
-	const forgotPassword = document.createElement("div");
-	forgotPassword.classList.add("loginForgotPassword");
+  const forgotPassword = document.createElement("div");
+  forgotPassword.classList.add("loginForgotPassword");
 
-	const linkEsqueci = document.createElement("a");
-	linkEsqueci.href = "#";
-	linkEsqueci.textContent = "Esqueceu sua senha?";
+  const forgotLink = document.createElement("a");
+  forgotLink.href = "#";
+  forgotLink.textContent = "Esqueceu sua senha?";
 
-	forgotPassword.appendChild(linkEsqueci);
+  forgotPassword.appendChild(forgotLink);
 
-	const loginButton = document.createElement("button");
-	loginButton.type = "submit";
-	loginButton.classList.add("loginLoginButton");
-	loginButton.textContent = "Entrar";
+  const loginButton = document.createElement("button");
+  loginButton.type = "submit";
+  loginButton.classList.add("loginLoginButton");
+  loginButton.textContent = "Entrar";
 
-	loginButton.id = "goToDashboard";
+  loginButton.id = "goToDashboard";
 
-	const registerLink = document.createElement("div");
-	registerLink.classList.add("loginRegisterLink");
+  const registerLink = document.createElement("div");
+  registerLink.classList.add("loginRegisterLink");
 
-	const textoCadastro = document.createTextNode("Não tem uma conta? ");
-	const linkCadastro = document.createElement("a");
-	linkCadastro.href = "#";
-	linkCadastro.id = "goToSignUp";
-	linkCadastro.textContent = "Cadastre-se";
+  const registerText = document.createTextNode("Não tem uma conta? ");
+  const linkSignUp = document.createElement("a");
+  linkSignUp.href = "#";
+  linkSignUp.id = "goToSignUp";
+  linkSignUp.textContent = "Cadastre-se";
 
-	registerLink.appendChild(textoCadastro);
-	registerLink.appendChild(linkCadastro);
+  registerLink.appendChild(registerText);
+  registerLink.appendChild(linkSignUp);
 
-	form.appendChild(inputGroupEmail);
-	form.appendChild(inputGroupSenha);
-	form.appendChild(forgotPassword);
-	form.appendChild(loginButton);
-	form.appendChild(registerLink);
+  form.appendChild(inputGroupEmail);
+  form.appendChild(inputGroupPassword);
+  form.appendChild(forgotPassword);
+  form.appendChild(loginButton);
+  form.appendChild(registerLink);
 
-	loginContainer.appendChild(titulo);
-	loginContainer.appendChild(form);
+  loginContainer.appendChild(title);
+  loginContainer.appendChild(form);
 
-	rightSide.appendChild(logoContainer);
-	rightSide.appendChild(loginContainer);
+  rightSide.appendChild(logoContainer);
+  rightSide.appendChild(loginContainer);
 
-	loginPrincipalContainer.appendChild(leftSide);
-	loginPrincipalContainer.appendChild(rightSide);
+  loginMainContainer.appendChild(leftSide);
+  loginMainContainer.appendChild(rightSide);
 
-	div.appendChild(loginPrincipalContainer);
+  div.appendChild(loginMainContainer);
 
-	const sendForm = div.querySelector("#loginForm");
-	sendForm.addEventListener("submit", async e => {
-		e.preventDefault();
+  const sendForm = div.querySelector("#loginForm");
+  sendForm.addEventListener("submit", async (e) => {
+    try {
+      e.preventDefault();
 
-		const email = div.querySelector("#email").value;
-		const password = div.querySelector("#password").value;
+      const email = div.querySelector("#email").value;
+      const password = div.querySelector("#password").value;
 
-		const response = await fetch("/api/login", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify({email, password})
-		});
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-		const data = await response.json();
+      if (!response.ok) {
+        const errorData = await response.json();
 
-		if (response.ok) {
-			console.log("Login bem-sucedido:", data);
-			//Ao invés de console colocar modal
-			const event = onNavigate("/");
-			document.dispatchEvent(event);
-		} else {
-			console.error("Erro no login:", data);
-			//Ao invés de console colocar modal
-			alert("Email ou senha incorretos!");
-		}
-	});
+        throw new Error(errorData.error || "Falha não identificada");
+      }
 
-	div.querySelector("#goToSignUp").addEventListener("click", e => {
-		e.preventDefault();
-		const event = onNavigate("/signup");
-		document.dispatchEvent(event);
-	});
+      const event = onNavigate("/dashboard");
 
-	div.querySelector("#goToDashboard").addEventListener("click", e => {
-		e.preventDefault();
-		const event = onNavigate("/dashboard");
-		document.dispatchEvent(event);
-	});
+      document.dispatchEvent(event);
+    } catch (error) {
+      MessageNotification(error.message, "#ff6347");
+    }
+  });
 
-	return div;
+  div.querySelector("#goToSignUp").addEventListener("click", (e) => {
+    e.preventDefault();
+    const event = onNavigate("/signup");
+    document.dispatchEvent(event);
+  });
+
+  return div;
 }
