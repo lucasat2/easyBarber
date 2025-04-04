@@ -144,8 +144,6 @@ export default function header() {
     if (activeItem.id == "Agendamentos") {
       const section = await InitialSchedulingTimelineSection();
       main.appendChild(section);
-    } else if (activeItem.id == "Clientes") {
-      main.innerHTML = "Clientes";
     } else if (activeItem.id == "Equipe") {
       main.innerHTML = "Equipe";
     } else if (activeItem.id == "Serviço") {
@@ -153,7 +151,7 @@ export default function header() {
     }
   }
 
-  const menuItems = ["Agendamentos", "Clientes", "Equipe", "Serviço"];
+  const menuItems = ["Agendamentos", "Equipe", "Serviço"];
 
   menuItems.forEach((item) => {
     const li = document.createElement("li");
