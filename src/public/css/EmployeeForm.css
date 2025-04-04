@@ -1,0 +1,73 @@
+.employee-form {
+  width: 300px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: sans-serif;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.employee-form-avatar-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.employee-form-avatar-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #e0f2fe;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #0288d1;
+  font-size: 2em;
+}
+
+.employee-form-field-container {
+  margin-bottom: 15px;
+}
+
+.employee-form-field-container label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.9em;
+}
+
+.employee-form-field-container input {
+  width: calc(100% - 12px);
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.employee-form-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.employee-form-buttons button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.employee-form-schedule-button,
+.employee-form-services-button {
+  background-color: #ffeb3b;
+  color: #333;
+}
+
+.employee-form-save-button {
+  background-color: #4caf50;
+  color: white;
+}
+
+.employee-form-delete-button {
+  background-color: #f44336;
+  color: white;
+}
