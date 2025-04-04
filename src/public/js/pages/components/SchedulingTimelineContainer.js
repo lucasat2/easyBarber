@@ -2,7 +2,7 @@ import { SchedulingTimelineCard } from "./SchedulingTimelineCard.js";
 import { getGlobalAppointments } from "./setAndGetGlobalVariables.js";
 
 function SchedulingTimelineDiv(month, year) {
-console.log(1)
+  console.log(1);
   const cardReferences = [];
 
   const schedulingTimelineContainer = document.createElement("div");
@@ -35,11 +35,11 @@ console.log(1)
       false,
       "",
       "",
-      "#transparent",
+      "transparent",
       "70px",
       "70px"
     );
-    schedulingTimelineCard.classList.add("invisible")
+    schedulingTimelineCard.classList.add("invisible");
     schedulingTimelineContainer.appendChild(schedulingTimelineCard);
   }
 
@@ -102,7 +102,7 @@ async function ColorCardAppointments(
     const foundPendindgAppointments = appointments.filter(
       (appointment) =>
         appointment.appointmentStart === date &&
-        (appointment.status === "PENDENTE" ||appointment.status === "AGENDADO")
+        (appointment.status === "PENDENTE" || appointment.status === "AGENDADO")
     );
 
     const foundBlockedAppointments = appointments.filter(
@@ -113,13 +113,13 @@ async function ColorCardAppointments(
     const classNames = getCardClassesForAppointments(foundBlockedAppointments);
     const foundElements = [];
 
-    const foundPendingElements = []
-    const pendingClassName = getPendentAppointment(foundPendindgAppointments)
+    const foundPendingElements = [];
+    const pendingClassName = getPendentAppointment(foundPendindgAppointments);
 
-    pendingClassName.forEach((className)=>{
-      const elements = [...document.querySelectorAll(`.${className}`)]
-      foundPendingElements.push(...elements)
-    })
+    pendingClassName.forEach((className) => {
+      const elements = [...document.querySelectorAll(`.${className}`)];
+      foundPendingElements.push(...elements);
+    });
 
     classNames.forEach((classNameArray) => {
       classNameArray.classes.forEach((className) => {
@@ -138,9 +138,9 @@ async function ColorCardAppointments(
     if (foundPendindgAppointments.length > 0) {
       foundPendingElements.forEach((element) => {
         if (element) {
-          element.classList.add("SchedulingTimelineCardPending")
+          element.classList.add("SchedulingTimelineCardPending");
         }
-      })
+      });
     }
   });
 }
@@ -176,18 +176,20 @@ const getCardClassesForAppointments = function (appointments) {
 };
 
 function getPendentAppointment(foundPendindgAppointments) {
-  const classesArray = []
+  const classesArray = [];
 
   foundPendindgAppointments.forEach(({ appointmentStart }) => {
     const [startDate, startTime] = appointmentStart.split(", ");
     const [startDay, startMonth, startYear] = startDate.split("/");
-    const className = `Card-${new Date(
-      `${startYear}-${startMonth}-${startDay}T${startTime}`
-    ).getDate()-1}`
-    classesArray.push(className)
+    const className = `Card-${
+      new Date(
+        `${startYear}-${startMonth}-${startDay}T${startTime}`
+      ).getDate() - 1
+    }`;
+    classesArray.push(className);
   });
 
-  return classesArray
+  return classesArray;
 }
 
 export { SchedulingTimelineDiv };
