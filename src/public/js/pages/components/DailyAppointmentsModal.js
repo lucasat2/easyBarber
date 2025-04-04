@@ -69,29 +69,84 @@ function DailyAppointmentsModal(date, appointmentsData) {
   closeButton.addEventListener("click", () => containerModal.remove());
   modalHeader.appendChild(closeButton);
 
+  let isValid = false;
+
+  let appointmentsCount = 0;
+
   if (appointmentsData.length !== 0) {
-    modalContent.style.width = "fit-content";
-    modalContent.style.padding = "0px 20px 30px 20px";
-
-    modalBody.style.justifyContent = "flex-start";
-    modalBody.style.alignItems = "stretch";
-    modalBody.style.maxHeight = "550px";
-    modalBody.style.minWidth = "1000px";
-
-    closeButton.style.right = "-8px";
-
-    modalBody.style.overflowY = "auto";
-
     appointmentsData.forEach((appointmentData) => {
+      appointmentsCount++;
+
       if (appointmentData.status === "BLOQUEADO") {
+        modalContent.style.width = "fit-content";
+        modalContent.style.padding = "0px 20px 30px 20px";
+
+        modalBody.style.justifyContent = "flex-start";
+        modalBody.style.alignItems = "stretch";
+        modalBody.style.maxHeight = "550px";
+        modalBody.style.minWidth = "1000px";
+
+        closeButton.style.right = "-8px";
+
+        modalBody.style.overflowY = "auto";
+
         const appointmentCard = BlockedCard(date, appointmentData);
         modalBody.appendChild(appointmentCard);
+
+        isValid = true;
       } else if (appointmentData.status === "AGENDADO") {
+        modalContent.style.width = "fit-content";
+        modalContent.style.padding = "0px 20px 30px 20px";
+
+        modalBody.style.justifyContent = "flex-start";
+        modalBody.style.alignItems = "stretch";
+        modalBody.style.maxHeight = "550px";
+        modalBody.style.minWidth = "1000px";
+
+        closeButton.style.right = "-8px";
+
+        modalBody.style.overflowY = "auto";
+
         const appointmentCard = AppointmentCard(date, appointmentData);
         modalBody.appendChild(appointmentCard);
+
+        isValid = true;
       } else if (appointmentData.status === "CONCLUÍDO") {
+        modalContent.style.width = "fit-content";
+        modalContent.style.padding = "0px 20px 30px 20px";
+
+        modalBody.style.justifyContent = "flex-start";
+        modalBody.style.alignItems = "stretch";
+        modalBody.style.maxHeight = "550px";
+        modalBody.style.minWidth = "1000px";
+
+        closeButton.style.right = "-8px";
+
+        modalBody.style.overflowY = "auto";
+
         const appointmentCard = FinishedCard(appointmentData);
         modalBody.appendChild(appointmentCard);
+
+        isValid = true;
+      }
+
+      if (isValid === false && appointmentsCount === appointmentsData.length) {
+        const modalImage = document.createElement("div");
+        modalImage.style.backgroundImage = `url("../../../assets/schedulingTimelinePage/initialSchedullingTimelineIcon.svg")`;
+        modalImage.style.width = "100px";
+        modalImage.style.height = "100px";
+        modalImage.style.backgroundRepeat = "no-repeat";
+        modalImage.style.backgroundPosition = "center";
+        modalImage.style.backgroundSize = "cover";
+        modalBody.appendChild(modalImage);
+
+        const modalText = document.createElement("div");
+        modalText.innerText = "SEM AGENDAMENTOS";
+        modalText.style.color = "#9fa324";
+        modalBody.style.fontSize = "25px";
+        modalBody.appendChild(modalText);
+
+        return containerModal;
       }
     });
 
