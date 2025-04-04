@@ -102,7 +102,7 @@ async function ColorCardAppointments(
     const foundPendindgAppointments = appointments.filter(
       (appointment) =>
         appointment.appointmentStart === date &&
-        (appointment.status === "PENDENTE" || appointment.status === "AGENDADO")
+        ( appointment.status === "AGENDADO")
     );
 
     const foundBlockedAppointments = appointments.filter(
