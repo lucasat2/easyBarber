@@ -1,4 +1,5 @@
 import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
+import { setEditedCurrentTime } from "./setAndGetGlobalVariables.js";
 
 function SchedulingTimelineDateCard() {
   const dateCard = document.createElement("div");
@@ -57,6 +58,8 @@ function createNextMonthScheduleDashboard() {
     currentYear += 1;
   }
 
+  setEditedCurrentTime(currentMonth, currentYear);
+
   const displayMonthYear = getMonthYearString(currentMonth, currentYear);
   const schedulingTimelineHeaderDateCardText = document.querySelector(
     ".schedulingTimelineHeaderDateCardText"
@@ -82,6 +85,8 @@ function createLastMonthScheduleDashboard() {
     currentMonth = 11;
     currentYear -= 1;
   }
+
+  setEditedCurrentTime(currentMonth, currentYear);
 
   const displayMonthYear = getMonthYearString(currentMonth, currentYear);
 
@@ -130,5 +135,4 @@ function getMonthYearString(month, year) {
       return `Dezembro de ${year}`;
   }
 }
-
 export { SchedulingTimelineDateCard };
