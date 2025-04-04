@@ -131,10 +131,12 @@ export default function header() {
     const allItems = document.querySelectorAll("#navBarListUl li");
     allItems.forEach((item) => {
       item.style.background = "";
+      item.style.color = "#000";
     });
 
     // Define a cor de fundo apenas no item clicado
     activeItem.style.background = "#DEE33E";
+    activeItem.style.color = "#fff";
 
     // arrumando main
     const main = document.getElementById("main");
@@ -142,7 +144,10 @@ export default function header() {
     main.style.padding = "1rem";
 
     if (activeItem.id == "Agendamentos") {
+      main.innerHTML = "";
+
       const section = await InitialSchedulingTimelineSection();
+
       main.appendChild(section);
     } else if (activeItem.id == "Equipe") {
       main.innerHTML = "Equipe";
@@ -174,13 +179,24 @@ export default function header() {
   buttonLogout.classList = "cursor";
   buttonLogout.innerText = "Sair";
   buttonLogout.id = "Sair";
+  buttonLogout.style.cursor = "pointer";
+  buttonLogout.style.color = "#fff";
   buttonLogout.style.width = "100%";
   buttonLogout.style.height = "3rem";
-  buttonLogout.style.background = "#EB4335";
+  buttonLogout.style.background = "#dc3545";
   buttonLogout.style.borderRadius = "10px";
   buttonLogout.style.display = "flex";
   buttonLogout.style.justifyContent = "center";
   buttonLogout.style.alignItems = "center";
+
+  buttonLogout.addEventListener("mouseenter", () => {
+    buttonLogout.style.backgroundColor = "#c82333";
+  });
+
+  buttonLogout.addEventListener("mouseout", () => {
+    buttonLogout.style.backgroundColor = "#dc3545";
+  });
+
   buttonLogout.addEventListener("click", () => {
     fetch("/api/logout", {
       method: "POST",
