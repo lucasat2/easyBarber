@@ -76,11 +76,7 @@ export default function header() {
   nameUser.innerText = "Usuário";
   nameUser.style.fontWeight = "900";
 
-  const typeUser = document.createElement("div");
-  typeUser.innerText = "Comum";
-
   contentUser.appendChild(nameUser);
-  contentUser.appendChild(typeUser);
 
   divImage.appendChild(image);
   divProfile.appendChild(divImage);
@@ -88,7 +84,7 @@ export default function header() {
 
   // componente da navbar em si
   const navBar = document.createElement("nav");
-  navBar.style.height = "100vh";
+  navBar.style.minHeight = "100vh";
   navBar.style.width = "256px";
   navBar.style.minWidth = "256px";
   navBar.style.background = "white";
