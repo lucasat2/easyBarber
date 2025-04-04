@@ -225,16 +225,26 @@ const getSchedules = async (staff, date) => {
 
 		// horários agendados
 		const schedulesWithAppointments = unavailableAppointments.map(hour => {
-			const start = new Date(hour.date_hour_begin);
-			const end = new Date(hour.date_hour_end);
+			const startHour = hour.date_hour_begin
+				.getUTCHours()
+				.toString()
+				.padStart(2, "0");
+			const startMinute = hour.date_hour_begin
+				.getUTCMinutes()
+				.toString()
+				.padStart(2, "0");
+			const endHour = hour.date_hour_end
+				.getUTCHours()
+				.toString()
+				.padStart(2, "0");
+			const endMinute = hour.date_hour_end
+				.getUTCMinutes()
+				.toString()
+				.padStart(2, "0");
 
 			return {
-				start: `${String(start.getHours()).padStart(2, "0")}:${String(
-					start.getMinutes()
-				).padStart(2, "0")}:00`,
-				end: `${String(end.getHours()).padStart(2, "0")}:${String(
-					end.getMinutes()
-				).padStart(2, "0")}:00`
+				start: `${startHour}:${startMinute}:00`,
+				end: `${endHour}:${endMinute}:00`
 			};
 		});
 

@@ -17,19 +17,19 @@ function fetchStaffServices(idCompany, idService) {
 		headers: {
 			"Content-Type": "application/json"
 		},
-		body: JSON.stringify({idCompany, idService}) // Envia o idCompany no corpo da requisição
+		body: JSON.stringify({idCompany, idService})
 	})
 		.then(response => response.json())
 		.then(data => {
 			if (data.result) {
-				return data.result; // Retorna os dados se a resposta for bem-sucedida
+				return data.result;
 			} else {
-				throw new Error("Serviços não encontrados."); // Caso a resposta não contenha os dados esperados
+				throw new Error("Serviços não encontrados.");
 			}
 		})
 		.catch(error => {
 			console.error("Erro ao buscar os serviços da empresa:", error.message);
-			throw error; // Lança o erro para que o chamador possa tratá-lo
+			throw error;
 		});
 }
 
@@ -41,21 +41,120 @@ function fetchCompanyServices(idCompany) {
 		headers: {
 			"Content-Type": "application/json"
 		},
-		body: JSON.stringify({idCompany}) // Envia o idCompany no corpo da requisição
+		body: JSON.stringify({idCompany})
 	})
 		.then(response => response.json())
 		.then(data => {
 			if (data.result) {
-				return data.result; // Retorna os dados se a resposta for bem-sucedida
+				return data.result;
 			} else {
-				throw new Error("Serviços não encontrados."); // Caso a resposta não contenha os dados esperados
+				throw new Error("Serviços não encontrados.");
 			}
 		})
 		.catch(error => {
 			console.error("Erro ao buscar os serviços da empresa:", error.message);
-			throw error; // Lança o erro para que o chamador possa tratá-lo
+			throw error;
 		});
 }
+
+// Função para buscar e exibir os horários disponíveis
+async function updateAvailableTimes(
+	idStaff,
+	date,
+	time,
+	hoursToWork,
+	setHourSelected,
+	setDateDaySelected
+) {
+	try {
+		const response = await fetch(
+			"/api/customer/company/services/staff/schedule",
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({idStaff, date})
+			}
+		);
+
+		if (!response.ok) {
+			hoursToWork.innerHTML = "Funcionário não trabalha esse dia";
+			setHourSelected(null);
+			setDateDaySelected(null);
+			return;
+		}
+
+		hoursToWork.innerHTML = "";
+		const data = await response.json();
+		console.log(data)
+
+		if (
+			!data.getSchedules ||
+			!data.getSchedules.availableTimes ||
+			!Array.isArray(data.getSchedules.availableTimes) ||
+			data.getSchedules.availableTimes.length === 0
+		) {
+			hoursToWork.innerHTML = "Funcionário com agenda cheia";
+			setHourSelected(null);
+			setDateDaySelected(null);
+			return;
+		}
+
+		const availableTimes = data.getSchedules.availableTimes.flatMap(
+			({start, end}) => {
+				const slots = [];
+				let startTime = new Date(`2000-01-01T${start}`);
+				const endTime = new Date(`2000-01-01T${end}`);
+
+				while (startTime.getTime() + time * 60000 <= endTime.getTime()) {
+					const nextTime = new Date(startTime.getTime() + time * 60000);
+					slots.push(
+						`${startTime.toTimeString().slice(0, 5)} - ${nextTime
+							.toTimeString()
+							.slice(0, 5)}`
+					);
+					startTime = nextTime;
+				}
+
+				return slots;
+			}
+		);
+
+		availableTimes.forEach(timeSlot => {
+			const listItem = document.createElement("li");
+			listItem.textContent = timeSlot;
+			listItem.style.listStyle = "none";
+			listItem.style.background = "#D9D9D9";
+			listItem.style.width = "8rem";
+			listItem.style.height = "3rem";
+			listItem.style.display = "flex";
+			listItem.style.justifyContent = "center";
+			listItem.style.alignItems = "center";
+			listItem.style.borderRadius = "0.5rem";
+			listItem.style.cursor = "pointer";
+
+			listItem.addEventListener("click", () => {
+				document.querySelectorAll("#hoursToWork li").forEach(li => {
+					li.style.background = "#D9D9D9";
+				});
+				setHourSelected(listItem.textContent.split(" - ")[0]);
+				listItem.style.background = "#DEE33E";
+			});
+
+			hoursToWork.appendChild(listItem);
+			hoursToWork.style.display = "flex";
+			hoursToWork.style.gap = "1rem";
+			hoursToWork.style.flexWrap = "wrap";
+		});
+	} catch (error) {
+		hoursToWork.innerHTML = "Funcionário não trabalha esse dia";
+		setHourSelected(null);
+		setDateDaySelected(null);
+		console.error("Erro no fetch:", error);
+	}
+}
+
 let objCompany = null;
 
 export default function ScheduleAppointment() {
@@ -64,43 +163,39 @@ export default function ScheduleAppointment() {
 
 	const container = document.createElement("div");
 
-	// Pegando o nome correto da empresa
 	const urlParams = new URLSearchParams(window.location.search);
 	const idCompany = urlParams.get("idCompany");
 
 	if (!idCompany) {
 		container.innerHTML = "ID da empresa não encontrado na URL.";
-		return container; // Se o idCompany não existir, mostra a mensagem e retorna a página
+		return container;
 	}
 
-	// Configurar a URL da API
 	const apiUrl = "/api/customer/company";
 
-	// Fazer o POST para a API com o idCompany
 	fetch(apiUrl, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json"
 		},
-		body: JSON.stringify({idCompany}) // Envia o idCompany no corpo da requisição
+		body: JSON.stringify({idCompany})
 	})
 		.then(response => response.json())
 		.then(data => {
 			if (data.result) {
-				// Se a empresa for encontrada, atualiza o título
 				const companyName = data.result;
 				const header = Header(companyName);
 				objCompany = {idCompany, companyName};
 
 				container.appendChild(header);
-				buildContent(container); // Chama a função que monta o conteúdo da página
+				buildContent(container);
 			} else {
-				container.innerHTML = "Empresa não encontrada."; // Se a empresa não for encontrada
+				container.innerHTML = "Empresa não encontrada.";
 			}
 		})
 		.catch(error => {
 			console.error("Erro ao buscar o nome da empresa:", error.message);
-			container.innerHTML = "Erro ao buscar o nome da empresa."; // Caso ocorra um erro na requisição
+			container.innerHTML = "Erro ao buscar o nome da empresa.";
 		});
 
 	function buildContent(container) {
@@ -280,9 +375,8 @@ export default function ScheduleAppointment() {
 
 				let mediaQuery = window.matchMedia(`(max-width: ${maxWidth})`);
 
-				// Configurar a mídia query corretamente
 				mediaQuery.addEventListener("change", handleScreenChange);
-				handleScreenChange(mediaQuery); // Aplica a configuração inicial
+				handleScreenChange(mediaQuery);
 
 				confirm.appendChild(contentService);
 
@@ -323,7 +417,6 @@ export default function ScheduleAppointment() {
 					div.appendChild(img);
 					div.appendChild(paragraph);
 
-					// Evento para selecionar apenas um staff por vez
 					div.addEventListener("click", async () => {
 						const calendar = document.getElementById("calendar-input");
 						const idStaff = staff.id;
@@ -331,101 +424,25 @@ export default function ScheduleAppointment() {
 						lastIdStaff = idStaff;
 						const dateDay = calendar.value;
 
-						try {
-							const response = await fetch(
-								"/api/customer/company/services/staff/schedule",
-								{
-									method: "POST",
-									headers: {
-										"Content-Type": "application/json"
-									},
-									body: JSON.stringify({idStaff: lastIdStaff, date: dateDay})
-								}
-							);
+						hourSelected = null;
+						dateDaySelected = dateDay;
 
-							hourSelected = null;
-							dateDaySelected = dateDay;
+						await updateAvailableTimes(
+							idStaff,
+							dateDay,
+							time,
+							hoursToWork,
+							value => (hourSelected = value),
+							value => (dateDaySelected = value)
+						);
 
-							if (!response.ok) {
-								hoursToWork.innerHTML = "Funcionário não trabalha esse dia";
-							}
-
-							hoursToWork.innerHTML = "";
-							const data = await response.json();
-
-							const availableTimes = data.getSchedules.availableTimes.flatMap(
-								({start, end}) => {
-									const slots = [];
-									let startTime = new Date(`2000-01-01T${start}`);
-									const endTime = new Date(`2000-01-01T${end}`);
-
-									while (
-										startTime.getTime() + time * 60000 <=
-										endTime.getTime()
-									) {
-										const nextTime = new Date(
-											startTime.getTime() + time * 60000
-										);
-										slots.push(
-											`${startTime.toTimeString().slice(0, 5)} - ${nextTime
-												.toTimeString()
-												.slice(0, 5)}`
-										);
-										startTime = nextTime;
-									}
-
-									return slots;
-								}
-							);
-
-							availableTimes.forEach(timeSlot => {
-								const listItem = document.createElement("li");
-								listItem.textContent = timeSlot;
-								listItem.style.listStyle = "none";
-								listItem.style.background = "#D9D9D9";
-								listItem.style.width = "8rem";
-								listItem.style.height = "3rem";
-								listItem.style.display = "flex";
-								listItem.style.justifyContent = "center";
-								listItem.style.alignItems = "center";
-								listItem.style.borderRadius = "0.5rem";
-								listItem.style.cursor = "pointer";
-
-								// Evento de clique para mudar a cor do item selecionado
-								listItem.addEventListener("click", () => {
-									// Resetar todos os itens para cinza
-									document.querySelectorAll("#hoursToWork li").forEach(li => {
-										li.style.background = "#D9D9D9";
-										hourSelected = listItem.textContent.split(" - ")[0];
-									});
-
-									// Definir o item clicado como amarelo
-									listItem.style.background = "#DEE33E";
-								});
-
-								hoursToWork.appendChild(listItem);
-								hoursToWork.style.display = "flex";
-								hoursToWork.style.gap = "1rem";
-								hoursToWork.style.flexWrap = "wrap";
-							});
-						} catch (error) {
-							const hoursToWork = document.getElementById("hoursToWork");
-							hoursToWork.innerHTML = "Funcionário não trabalha esse dia";
-
-							hourSelected = null;
-							dateDaySelected = null;
-							console.error("Erro no fetch:", error);
-						}
-
-						// Remove a seleção de todos os outros funcionários
 						document.querySelectorAll(".selected-staff").forEach(el => {
 							el.classList.remove("selected-staff");
-							el.style.background = "#D9D9D9"; // Voltar para a cor padrão
+							el.style.background = "#D9D9D9";
 						});
 
-						// Adiciona a seleção no clicado
 						div.classList.add("selected-staff");
-						div.style.background = "#DEE33E"; // Muda a cor do selecionado
+						div.style.background = "#DEE33E";
 					});
 
 					selectStaff.appendChild(div);
@@ -438,7 +455,7 @@ export default function ScheduleAppointment() {
 
 				const now = new Date();
 				const year = now.getFullYear();
-				const month = String(now.getMonth() + 1).padStart(2, "0"); // Mês começa do 0, então +1
+				const month = String(now.getMonth() + 1).padStart(2, "0");
 				const day = String(now.getDate()).padStart(2, "0");
 
 				const today = `${year}-${month}-${day}`;
@@ -455,89 +472,17 @@ export default function ScheduleAppointment() {
 						return;
 					}
 
-					try {
-						const response = await fetch(
-							"/api/customer/company/services/staff/schedule",
-							{
-								method: "POST",
-								headers: {
-									"Content-Type": "application/json"
-								},
-								body: JSON.stringify({idStaff: lastIdStaff, date: dataDay})
-							}
-						);
+					hourSelected = null;
+					dateDaySelected = dataDay;
 
-						hourSelected = null;
-						dateDaySelected = dataDay;
-
-						if (!response.ok) {
-							throw new Error("Erro ao enviar dados");
-						}
-
-						hoursToWork.innerHTML = "";
-						const data = await response.json();
-
-						const availableTimes = data.getSchedules.availableTimes.flatMap(
-							({start, end}) => {
-								const slots = [];
-								let startTime = new Date(`2000-01-01T${start}`);
-								const endTime = new Date(`2000-01-01T${end}`);
-
-								while (
-									startTime.getTime() + time * 60000 <=
-									endTime.getTime()
-								) {
-									const nextTime = new Date(startTime.getTime() + time * 60000);
-									slots.push(
-										`${startTime.toTimeString().slice(0, 5)} - ${nextTime
-											.toTimeString()
-											.slice(0, 5)}`
-									);
-									startTime = nextTime;
-								}
-
-								return slots;
-							}
-						);
-
-						availableTimes.forEach(timeSlot => {
-							const listItem = document.createElement("li");
-							listItem.textContent = timeSlot;
-							listItem.style.listStyle = "none";
-							listItem.style.background = "#D9D9D9";
-							listItem.style.width = "8rem";
-							listItem.style.height = "3rem";
-							listItem.style.display = "flex";
-							listItem.style.justifyContent = "center";
-							listItem.style.alignItems = "center";
-							listItem.style.borderRadius = "0.5rem";
-							listItem.style.cursor = "pointer";
-
-							// Evento de clique para mudar a cor do item selecionado
-							listItem.addEventListener("click", () => {
-								// Resetar todos os itens para cinza
-								document.querySelectorAll("#hoursToWork li").forEach(li => {
-									li.style.background = "#D9D9D9";
-									hourSelected = listItem.textContent.split(" - ")[0];
-								});
-
-								// Definir o item clicado como amarelo
-								listItem.style.background = "#DEE33E";
-							});
-
-							hoursToWork.appendChild(listItem);
-							hoursToWork.style.display = "flex";
-							hoursToWork.style.gap = "1rem";
-							hoursToWork.style.flexWrap = "wrap";
-						});
-					} catch (error) {
-						const hoursToWork = document.getElementById("hoursToWork");
-						hoursToWork.innerHTML = "Funcionário não trabalha esse dia";
-
-						hourSelected = null;
-						dateDaySelected = null;
-						console.error("Erro no fetch:", error);
-					}
+					await updateAvailableTimes(
+						lastIdStaff,
+						dataDay,
+						time,
+						hoursToWork,
+						value => (hourSelected = value),
+						value => (dateDaySelected = value)
+					);
 				});
 
 				containerContent.appendChild(dateInput);

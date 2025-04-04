@@ -35,6 +35,8 @@ export default function ServicesPage() {
 	const root = document.getElementById("root");
 	root.style.width = "100%";
 
+	root.innerHTML = "";
+
 	const container = document.createElement("div");
 
 	// Pegando o nome correto da empresa
