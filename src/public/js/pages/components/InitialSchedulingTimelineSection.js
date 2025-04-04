@@ -1,5 +1,6 @@
 import { SchedulingTimelineSelectionContainer } from "./SchedulingTimelineSelectionContainer.js";
 import { fetchStaff } from "./fetchData.js";
+import { MessageNotification } from "./MessageNotification.js";
 
 async function InitialSchedulingTimelineSection() {
   const schedulingTimelineSection = document.createElement("div");
