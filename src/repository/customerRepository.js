@@ -242,6 +242,11 @@ const getSchedules = async (staff, date) => {
 				.toString()
 				.padStart(2, "0");
 
+			console.log({
+				start: `${startHour}:${startMinute}:00`,
+				end: `${endHour}:${endMinute}:00`
+			});
+
 			return {
 				start: `${startHour}:${startMinute}:00`,
 				end: `${endHour}:${endMinute}:00`
@@ -514,7 +519,11 @@ const insertNewAppointment = async (
 
 		const todayDateArray = todayDate.split("/");
 
-		const todayTime = new Date().toLocaleTimeString();
+		const todayTime = new Date().toLocaleTimeString("pt-BR", {
+			hour: "2-digit",
+			minute: "2-digit",
+			hour12: false
+		});
 
 		const todayTimeArray = todayTime.split(":");
 

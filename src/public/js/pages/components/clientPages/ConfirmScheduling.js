@@ -1,4 +1,5 @@
 import ServicesPage from "./ServicesPage.js";
+import {MessageNotification} from "../MessageNotification.js";
 
 function navigateTo(pageFunction) {
 	const root = document.getElementById("root");
@@ -46,7 +47,6 @@ function isValidPhoneNumber(phoneNumber) {
 }
 
 export default function ConfirmScheduling(obj) {
-	console.log(obj);
 	const div = document.createElement("div");
 	div.style.width = "100%";
 	div.style.maxWidth = "1200px";
@@ -222,38 +222,29 @@ export default function ConfirmScheduling(obj) {
 				startTime: obj.hourSelected,
 				observation: obsValue
 			};
-      console.log(dataToSend)
 
 			// --- Fetch ---
-			fetch(
-				"/api/customer/company/services/staff/schedule/appointments",
-				{
-					// Replace with your API endpoint
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json"
-					},
-					body: JSON.stringify(dataToSend)
-				}
-			)
+			fetch("/api/customer/company/services/staff/schedule/appointments", {
+				// Replace with your API endpoint
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(dataToSend)
+			})
 				.then(response => {
 					if (!response.ok) {
-						throw new Error("Erro ao agendar, tente novamente mais tarde.");
+						return response.json().then(errorData => {
+							throw new Error(errorData.error || "Falha desconhecida");
+						});
 					}
 					return response.json();
 				})
 				.then(data => {
-					console.log("Success:", data);
-					successContainer.textContent = "Agendamento realizado com sucesso!";
-					successContainer.style.display = "block";
-					errorContainer.style.display = "none";
-					// Optionally, you can redirect the user or clear the form here
+					MessageNotification(data.message, "#28a745");
 				})
 				.catch(error => {
-					console.error("Error:", error);
-					errorContainer.textContent = error.message; // Display the error message from the server
-					errorContainer.style.display = "block";
-					successContainer.style.display = "none";
+					MessageNotification(error.message, "#ff6347");
 				});
 		}
 	});
