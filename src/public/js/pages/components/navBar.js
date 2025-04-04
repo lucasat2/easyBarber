@@ -141,7 +141,7 @@ export default function header() {
     // arrumando main
     const main = document.getElementById("main");
     main.innerHTML = "";
-    main.style.padding = "1rem";
+    main.style.padding = "30px";
 
     if (activeItem.id == "Agendamentos") {
       main.innerHTML = "";
