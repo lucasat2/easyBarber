@@ -292,7 +292,11 @@ const insertNewAppointment = async (
 
     const todayDateArray = todayDate.split("/");
 
-    const todayTime = new Date().toLocaleTimeString();
+    const todayTime = new Date().toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
 
     const todayTimeArray = todayTime.split(":");
 
@@ -667,11 +671,15 @@ const setEmployeeScheduleAsBlocked = async (
       Number(endBlockTimeArray[1])
     );
 
-    const todayDate = new Date().toLocaleDateString();
+    const todayDate = new Date().toLocaleDateString("pt-BR");
 
     const todayDateArray = todayDate.split("/");
 
-    const todayTime = new Date().toLocaleTimeString();
+    const todayTime = new Date().toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
 
     const todayTimeArray = todayTime.split(":");
 
