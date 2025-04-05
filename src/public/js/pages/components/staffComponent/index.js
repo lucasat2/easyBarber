@@ -1,4 +1,5 @@
 import StaffInformation from "./StaffInformation.js";
+import StaffShiftEditor from "./StaffSchedule.js";
 import StaffServicesSelection from "./StaffServicesSelection.js";
 
 export default async function StaffManager() {
@@ -130,7 +131,16 @@ export default async function StaffManager() {
 						break;
 
 					case "Horários":
-						// Coloque aqui a lógica para Horários
+						try {
+							const modal = await StaffShiftEditor(id);
+
+							const root = document.getElementById("root");
+
+							root.appendChild(modal);
+						} catch (err) {
+							console.error("Erro ao carregar funcionário:", err);
+							alert("Erro ao carregar os dados do funcionário.");
+						}
 						break;
 
 					case "Serviços":
