@@ -149,8 +149,6 @@ export default function header() {
     } else if (activeItem.id == "Equipe") {
       main.innerHTML = "Equipe";
     } else if (activeItem.id == "Serviço") {
-      main.innerHTML = "Serviço";
-
       const section = ServiceDashboard();
 
       main.appendChild(section);
