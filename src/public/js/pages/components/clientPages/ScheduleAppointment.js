@@ -88,13 +88,8 @@ async function updateAvailableTimes(
 		hoursToWork.innerHTML = "";
 		const data = await response.json();
 
-		if (
-			!data.getSchedules ||
-			!data.getSchedules.availableTimes ||
-			!Array.isArray(data.getSchedules.availableTimes) ||
-			data.getSchedules.availableTimes.length === 0
-		) {
-			hoursToWork.innerHTML = "Funcionário com agenda cheia";
+		if (!data.getSchedules || !data.getSchedules.availableTimes) {
+			hoursToWork.innerHTML = "Funcionário não trabalha esse dia";
 			setHourSelected(null);
 			setDateDaySelected(null);
 			return;
@@ -119,6 +114,14 @@ async function updateAvailableTimes(
 				return slots;
 			}
 		);
+
+		// Se o array de horários estiver vazio, então ele trabalha, mas está com agenda cheia
+		if (availableTimes.length === 0) {
+			hoursToWork.innerHTML = "Funcionário indisponível";
+			setHourSelected(null);
+			setDateDaySelected(null);
+			return;
+		}
 
 		availableTimes.forEach(timeSlot => {
 			const listItem = document.createElement("li");

@@ -12,11 +12,9 @@ function getGlobalAppointments() {
 
 function setEditedCurrentTime(newMonth, newYear) {
     globalDate = { month: newMonth, year: newYear } 
-    console.log(globalDate)
 }
 
 function getEditedCurrentTime(){
-    console.log(globalDate)
     return globalDate
 }
 
