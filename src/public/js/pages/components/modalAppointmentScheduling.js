@@ -1,5 +1,9 @@
 import { fetchStaff, fetchServices } from "./fetchData.js";
 import { MessageNotification } from "./MessageNotification.js";
+import { fetchAppointmentsByEmployee } from "./fetchData.js";
+import { setGlobalAppointments } from "./setAndGetGlobalVariables.js";
+import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
+import { getEditedCurrentTime, getSelectedEmployeeId } from "./setAndGetGlobalVariables.js";
 
 function createModal() {
   const title = document.createElement("h2");
@@ -137,15 +141,12 @@ async function createApointForm() {
   inputClientEmail.name = "clientEmail";
 
   // Horário inicial
-  const selectDateTime = document.createElement("select");
+  const selectDateTime = document.createElement("input");
+  selectDateTime.type = "time";
+  selectDateTime.placeholder = "Email do cliente";
+  selectDateTime.required = true;
   selectDateTime.classList.add("modalBoxStyles");
-  ["Horário inicial", "08:00", "09:00", "10:00"].forEach((horario) => {
-    const option = document.createElement("option");
-    option.value = horario;
-    option.textContent = horario;
-    selectDateTime.appendChild(option);
-    selectDateTime.name = "startTime";
-  });
+  selectDateTime.name = "appointmentTime"
 
   // Observações
   const textareaObs = document.createElement("textarea");
@@ -231,8 +232,28 @@ async function createApointForm() {
 
         throw new Error(errorData.error || "Falha não identificada");
       }
-
       const result = await response.json();
+      const employeeId = getSelectedEmployeeId();
+      if (employeeId) {
+        try {
+          const appointments = await fetchAppointmentsByEmployee({
+            id: employeeId,
+          });
+          setGlobalAppointments(appointments);
+        } catch (error) {
+          console.error("Erro ao buscar agendamentos:", error.message);
+        }
+      }
+
+
+      const {month, year} = getEditedCurrentTime()
+      const employeeScheduleTimeline = SchedulingTimelineDiv(month, year);
+
+      const employeeScheduleTimelineContainer = document.getElementById("employeeScheduleTimelineContainer");
+      employeeScheduleTimelineContainer.innerHTML = "";
+      employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline);
+
+
 
       MessageNotification(result.message, " #28a745");
     } catch (error) {
@@ -366,8 +387,29 @@ async function createBlockForm() {
 
         throw new Error(errorData.error || "Falha não identificada");
       }
-
       const result = await response.json();
+      const employeeId = getSelectedEmployeeId();
+
+      if (employeeId) {
+        try {
+          const appointments = await fetchAppointmentsByEmployee({
+            id: employeeId,
+          });
+          setGlobalAppointments(appointments);
+          console.log(appointments)
+        } catch (error) {
+          console.error("Erro ao buscar agendamentos:", error.message);
+        }
+      }
+
+
+      const {month, year} = getEditedCurrentTime()
+      const employeeScheduleTimeline = SchedulingTimelineDiv(month, year);
+
+      const employeeScheduleTimelineContainer = document.getElementById("employeeScheduleTimelineContainer");
+      employeeScheduleTimelineContainer.innerHTML = "";
+      employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline);
+
 
       MessageNotification(result.message, " #28a745");
     } catch (error) {
