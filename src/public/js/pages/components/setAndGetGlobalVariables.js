@@ -1,5 +1,6 @@
 let globalAppointments = [];
 let globalDate = {};
+let globalEmployeeId = null
 
 function setGlobalAppointments(appointments) {
     globalAppointments = appointments;
@@ -10,8 +11,8 @@ function getGlobalAppointments() {
 }
 
 function setEditedCurrentTime(newMonth, newYear) {
-    globalDate = { month: newMonth, year: newYear }
-  return  ;
+    globalDate = { month: newMonth, year: newYear } 
+    console.log(globalDate)
 }
 
 function getEditedCurrentTime(){
@@ -19,4 +20,12 @@ function getEditedCurrentTime(){
     return globalDate
 }
 
-export {setGlobalAppointments,getGlobalAppointments, setEditedCurrentTime, getEditedCurrentTime}
+function setSelectedEmployeeId(employeeId){
+    globalEmployeeId = employeeId
+}
+
+function getSelectedEmployeeId(){
+    return globalEmployeeId
+}
+
+export {setGlobalAppointments,getGlobalAppointments, setEditedCurrentTime, getEditedCurrentTime, setSelectedEmployeeId, getSelectedEmployeeId}
