@@ -1,24 +1,22 @@
 import { MessageNotification } from "./MessageNotification.js";
+import { ServicesCard } from "./ServiceCard.js";
+import { ServiceModal } from "./ServiceModal.js";
 
 function ServiceDashboard() {
   const mainContainer = document.createElement("div");
+  mainContainer.classList.add("serviceDashboardMainContainer");
 
   const registerStaffButton = document.createElement("button");
-  mainContainer.appendChild("registerStaffButton");
+  registerStaffButton.innerText = "Cadastrar um novo serviço";
+  registerStaffButton.classList.add("registerStaffButton");
+  mainContainer.appendChild(registerStaffButton);
 
-  const servicesTable = document.createElement("table");
-  mainContainer.appendChild("servicesTable");
+  registerStaffButton.addEventListener("click", () => {
+    ServiceModal(false, {});
+  });
 
-  const tableHeaderRow = document.createElement("tr");
-  servicesTable.appendChild(tableHeaderRow);
-
-  const columnsNameArray = ["Tipo de serviço", "Editar", "Deletar"];
-
-  for (let i = 0; i < columnsNameArray.length; i++) {
-    const tableHeaderColumn = document.createElement("th");
-    tableHeaderRow.innerText = columnsNameArray[i];
-    tableHeaderRow.appendChild(tableHeaderColumn);
-  }
+  const cardsContainer = document.createElement("div");
+  mainContainer.appendChild(cardsContainer);
 
   fetch("/api/services")
     .then((response) => {
@@ -31,29 +29,24 @@ function ServiceDashboard() {
       return response.json();
     })
     .then((data) => {
+      if (data.length === 0) {
+        const noDataContainer = document.createElement("div");
+        noDataContainer.classList.add("noDataContainer");
+        cardsContainer.appendChild(noDataContainer);
+
+        const noDataImage = document.createElement("div");
+        noDataImage.classList.add("noDataImage");
+        noDataContainer.appendChild(noDataImage);
+
+        const noDataTitle = document.createElement("div");
+        noDataTitle.innerText = "Sem serviços cadastrados";
+        noDataTitle.classList.add("noDataTitle");
+        noDataContainer.appendChild(noDataTitle);
+      }
+
       for (let j = 0; j < data.length; j++) {
-        const tableBodyRow = document.createElement("tr");
-        servicesTable.appendChild(tableBodyRow);
-
-        for (let k = 0; k < 3; k++) {
-          if (k === 0) {
-            const tableBodyColumn = document.createElement("td");
-            tableBodyColumn.innerText = data[j].name;
-            tableBodyRow.appendChild(tableBodyColumn);
-          } else if (k === 1) {
-            const tableBodyColumn = document.createElement("td");
-            tableBodyRow.appendChild(tableBodyColumn);
-
-            const editButton = document.createElement("div");
-            tableBodyColumn.appendChild(editButton);
-          } else {
-            const tableBodyColumn = document.createElement("td");
-            tableBodyRow.appendChild(tableBodyColumn);
-
-            const deleteButton = document.createElement("div");
-            tableBodyColumn.appendChild(deleteButton);
-          }
-        }
+        const serviceCard = ServicesCard(data[j]);
+        cardsContainer.appendChild(serviceCard);
       }
     })
     .catch((error) => {
