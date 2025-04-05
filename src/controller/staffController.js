@@ -277,7 +277,7 @@ const assignSchedulesToEmployee = async (req, res) => {
       const firstShiftStartTime = dailyFirstShiftStartTimes[j];
 
       if (!validator.isTime(firstShiftStartTime)) {
-        return res.satus(400).json({
+        return res.status(400).json({
           error: "Formato inválido de horário de início do primeiro turno",
         });
       }
