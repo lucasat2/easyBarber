@@ -18,7 +18,8 @@ const getAllStaff = async (userId) => {
 
     const companyId = user.company_id;
 
-    const getAllEmployees = "SELECT * FROM staffs WHERE company_id = $1";
+    const getAllEmployees =
+      "SELECT * FROM staffs WHERE company_id = $1 AND status = true";
 
     const { rows: allEmployees } = await client.query(getAllEmployees, [
       companyId,
