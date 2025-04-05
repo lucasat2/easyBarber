@@ -157,8 +157,16 @@ const getSchedules = async (staff, date) => {
 		}
 
 		// Verifica somente os horários em que o funcionário estará indisponível na data solicitada, passando a data e o funcionário
-		const getDay =
-			"SELECT * FROM appointments WHERE date_hour_begin::DATE = $1 AND staff_id = $2 AND status != 'CANCELADO'";
+		const getDay = `
+			SELECT * FROM appointments 
+			WHERE 
+				staff_id = $2 
+				AND status != 'CANCELADO'
+				AND (
+					date_hour_begin::DATE = $1 
+					OR (date_hour_begin::DATE <= $1 AND date_hour_end::DATE >= $1)
+				)
+		`;
 		const values = [date, staff]; // date deve estar no formato 'YYYY-MM-DD'
 
 		const resultGetDay = await pool.query(getDay, values);
@@ -217,6 +225,21 @@ const getSchedules = async (staff, date) => {
 				day: date,
 				week_day: dayName,
 				availableTimes: scheduleWithOutAppointments
+			};
+		}
+		// Verifica se há algum bloqueio que abrange o dia inteiro
+		const isCompletelyBlocked = unavailableAppointments.some(
+			appointment =>
+				appointment.status === "BLOQUEADO" &&
+				appointment.date_hour_begin.toISOString().split("T")[0] <= date &&
+				appointment.date_hour_end.toISOString().split("T")[0] >= date
+		);
+
+		if (isCompletelyBlocked) {
+			return {
+				day: date,
+				week_day: dayName,
+				availableTimes: [] // Retorna um array vazio se estiver completamente bloqueado
 			};
 		}
 
@@ -309,7 +332,6 @@ const getSchedules = async (staff, date) => {
 	}
 };
 
-// GABRIELL O FEIO
 const getAllAppointmentsByEmployee = async idStaff => {
 	let client;
 	try {
