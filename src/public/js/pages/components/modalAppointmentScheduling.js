@@ -176,16 +176,16 @@ async function createApointForm() {
   line1.classList.add("modalFormRows");
 
   line1.appendChild(createField("Funcionário", selectStaff));
-  line1.appendChild(createField("Serviço", selectService));
+  line1.appendChild(createField("Nome do Cliente", inputClientName));
 
   const line2 = document.createElement("div");
   line2.classList.add("modalFormRows");
-  line2.appendChild(createField("Data", inputData));
-  line2.appendChild(createField("Nome do cliente", inputClientName));
+  line2.appendChild(createField("Serviço", selectService));
+  line2.appendChild(createField("Telefone do Cliente", inputClientPhone));
 
   const line3 = document.createElement("div");
   line3.classList.add("modalFormRows");
-  line3.appendChild(createField("Telefone do cliente", inputClientPhone));
+  line3.appendChild(createField("Data", inputData));
   line3.appendChild(createField("Email do cliente", inputClientEmail));
 
   const line4 = document.createElement("div");
