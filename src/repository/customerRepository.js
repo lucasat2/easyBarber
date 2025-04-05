@@ -187,8 +187,7 @@ const getSchedules = async (staff, date) => {
 		);
 
 		if (!correctDay) {
-			// funcionario não trabalha esse dia
-			return null;
+			throw new Error("O funcionário não trabalha nesse dia da semana.");
 		}
 
 		let availableTimes = [];
@@ -241,11 +240,6 @@ const getSchedules = async (staff, date) => {
 				.getUTCMinutes()
 				.toString()
 				.padStart(2, "0");
-
-			console.log({
-				start: `${startHour}:${startMinute}:00`,
-				end: `${endHour}:${endMinute}:00`
-			});
 
 			return {
 				start: `${startHour}:${startMinute}:00`,

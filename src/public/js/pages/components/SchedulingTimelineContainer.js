@@ -2,7 +2,6 @@ import { SchedulingTimelineCard } from "./SchedulingTimelineCard.js";
 import { getGlobalAppointments } from "./setAndGetGlobalVariables.js";
 
 function SchedulingTimelineDiv(month, year) {
-  console.log(1);
   const cardReferences = [];
 
   const schedulingTimelineContainer = document.createElement("div");

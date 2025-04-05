@@ -396,7 +396,6 @@ async function createBlockForm() {
             id: employeeId,
           });
           setGlobalAppointments(appointments);
-          console.log(appointments)
         } catch (error) {
           console.error("Erro ao buscar agendamentos:", error.message);
         }
