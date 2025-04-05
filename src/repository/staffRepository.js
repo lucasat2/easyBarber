@@ -18,7 +18,8 @@ const getAllStaff = async (userId) => {
 
     const companyId = user.company_id;
 
-    const getAllEmployees = "SELECT * FROM staffs WHERE company_id = $1";
+    const getAllEmployees =
+      "SELECT * FROM staffs WHERE company_id = $1 AND status = true";
 
     const { rows: allEmployees } = await client.query(getAllEmployees, [
       companyId,
@@ -91,7 +92,7 @@ const createStaff = async (
   const getUserDataQuery = "SELECT * FROM users WHERE id = $1";
 
   const createStaffsQuery =
-    "INSERT INTO staffs (company_id, name, surname, cpf, email, phone_number, birthdate, postal_code) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)";
+    "INSERT INTO staffs (company_id, name, surname, cpf, email, phone_number, birthdate, postal_code, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)";
 
   try {
     client = await pool.connect();
@@ -114,6 +115,7 @@ const createStaff = async (
       phoneNumber,
       birthdate,
       postalCode,
+      true,
     ]);
   } catch (error) {
     throw error;

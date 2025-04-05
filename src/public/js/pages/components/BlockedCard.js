@@ -119,6 +119,27 @@ async function unlockSchedule(date, appointmentData) {
       throw new Error(errorData.error || "Falha desconhecida");
     }
 
+    const employeeId = getSelectedEmployeeId();
+    if (employeeId) {
+      try {
+        const appointments = await fetchAppointmentsByEmployee({
+          id: employeeId,
+        });
+        setGlobalAppointments(appointments);
+      } catch (error) {
+        console.error("Erro ao buscar agendamentos:", error.message);
+      }
+    }
+
+
+    const {month, year} = getEditedCurrentTime()
+    const employeeScheduleTimeline = SchedulingTimelineDiv(month, year);
+
+    const employeeScheduleTimelineContainer = document.getElementById("employeeScheduleTimelineContainer");
+    employeeScheduleTimelineContainer.innerHTML = "";
+    employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline);
+
+
     const result = await fetch(
       `/api/appointments/employee/${appointmentData.staff_id}`
     );

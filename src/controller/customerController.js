@@ -66,35 +66,42 @@ const listScheduleByStaff = async (req, res) => {
 };
 
 const createAppointments = async (req, res) => {
-	const {
-		idCompany,
-		idStaff,
-		idService,
-		date,
-		clientName,
-		clientEmail,
-		clientPhoneNumber,
-		startTime,
-		observation
-	} = req.body;
-	const result = await customerServices.insertNewAppointment(
-		idCompany,
-		idStaff,
-		idService,
-		date,
-		clientName,
-		clientEmail,
-		clientPhoneNumber,
-		startTime,
-		observation
-	);
+	try {
+		const {
+			idCompany,
+			idStaff,
+			idService,
+			date,
+			clientName,
+			clientEmail,
+			clientPhoneNumber,
+			startTime,
+			observation
+		} = req.body;
+		const result = await customerServices.insertNewAppointment(
+			idCompany,
+			idStaff,
+			idService,
+			date,
+			clientName,
+			clientEmail,
+			clientPhoneNumber,
+			startTime,
+			observation
+		);
 
-	if (!result) {
-		return res
-			.status(404)
-			.json({error: "Não foi possível salvar o agendamento"});
+		if (result.statusCode === 201) {
+			return res
+				.status(result.statusCode)
+				.json({message: result.statusMessage});
+		}
+
+		res.status(result.statusCode).json({error: result.statusMessage});
+	} catch (e) {
+		console.log(error);
+
+		res.status(500).json({error: "Falha ao criar o agendamento"});
 	}
-	res.json({result});
 };
 
 module.exports = {

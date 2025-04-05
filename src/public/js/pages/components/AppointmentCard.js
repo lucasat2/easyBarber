@@ -1,5 +1,8 @@
 import { MessageNotification } from "./MessageNotification.js";
 import { DailyAppointmentsModal } from "./DailyAppointmentsModal.js";
+import { fetchAppointmentsByEmployee } from "./fetchData.js";
+import { getSelectedEmployeeId, setGlobalAppointments, getEditedCurrentTime} from "./setAndGetGlobalVariables.js";
+import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
 
 function AppointmentCard(date, appointmentData) {
   const cardContainer = document.createElement("div");
@@ -215,6 +218,29 @@ async function updateAppointmentStatus(
     }
 
     const data = await result.json();
+
+    
+    const employeeId = getSelectedEmployeeId();
+    if (employeeId) {
+      try {
+        const appointments = await fetchAppointmentsByEmployee({
+          id: employeeId,
+        });
+        setGlobalAppointments(appointments);
+      } catch (error) {
+        console.error("Erro ao buscar agendamentos:", error.message);
+      }
+    }
+
+
+    const {month, year} = getEditedCurrentTime()
+    const employeeScheduleTimeline = SchedulingTimelineDiv(month, year);
+
+    const employeeScheduleTimelineContainer = document.getElementById("employeeScheduleTimelineContainer");
+    employeeScheduleTimelineContainer.innerHTML = "";
+    employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline);
+
+
 
     const currentDateAndTimeArray = date.split("T");
 

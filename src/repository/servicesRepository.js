@@ -13,8 +13,8 @@ const createService = async (
     const findUserDataQuery = `SELECT * FROM users WHERE id = $1;`;
 
     const createServiceQuery = `
-      INSERT INTO services (company_id, name, description, price, average_duration)
-      VALUES ($1, $2, $3, $4, $5);
+      INSERT INTO services (company_id, name, description, price, average_duration, status)
+      VALUES ($1, $2, $3, $4, $5, $6);
     `;
     client = await pool.connect();
     await client.query("BEGIN");
@@ -32,6 +32,7 @@ const createService = async (
       description,
       price,
       averageDuration,
+      true,
     ]);
     await client.query("COMMIT");
   } catch (error) {
@@ -92,7 +93,7 @@ const listAllCompanyServices = async (userId) => {
     const findUserDataQuery = `SELECT * FROM users WHERE id = $1`;
 
     const listAllCompanyServicesQuery = `
-      SELECT * FROM services WHERE company_id = $1;
+      SELECT * FROM services WHERE company_id = $1 AND status = true;
     `;
     client = await pool.connect();
 

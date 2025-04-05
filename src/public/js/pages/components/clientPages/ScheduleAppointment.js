@@ -87,15 +87,9 @@ async function updateAvailableTimes(
 
 		hoursToWork.innerHTML = "";
 		const data = await response.json();
-		console.log(data)
 
-		if (
-			!data.getSchedules ||
-			!data.getSchedules.availableTimes ||
-			!Array.isArray(data.getSchedules.availableTimes) ||
-			data.getSchedules.availableTimes.length === 0
-		) {
-			hoursToWork.innerHTML = "Funcionário com agenda cheia";
+		if (!data.getSchedules || !data.getSchedules.availableTimes) {
+			hoursToWork.innerHTML = "Funcionário não trabalha esse dia";
 			setHourSelected(null);
 			setDateDaySelected(null);
 			return;
@@ -120,6 +114,14 @@ async function updateAvailableTimes(
 				return slots;
 			}
 		);
+
+		// Se o array de horários estiver vazio, então ele trabalha, mas está com agenda cheia
+		if (availableTimes.length === 0) {
+			hoursToWork.innerHTML = "Funcionário indisponível";
+			setHourSelected(null);
+			setDateDaySelected(null);
+			return;
+		}
 
 		availableTimes.forEach(timeSlot => {
 			const listItem = document.createElement("li");
@@ -165,6 +167,7 @@ export default function ScheduleAppointment() {
 
 	const urlParams = new URLSearchParams(window.location.search);
 	const idCompany = urlParams.get("idCompany");
+	const idService = urlParams.get("idService"); // Pegar o idService aqui
 
 	if (!idCompany) {
 		container.innerHTML = "ID da empresa não encontrado na URL.";
@@ -188,7 +191,7 @@ export default function ScheduleAppointment() {
 				objCompany = {idCompany, companyName};
 
 				container.appendChild(header);
-				buildContent(container);
+				buildContent(container, idService); // Passar o idService para buildContent
 			} else {
 				container.innerHTML = "Empresa não encontrada.";
 			}
@@ -198,9 +201,7 @@ export default function ScheduleAppointment() {
 			container.innerHTML = "Erro ao buscar o nome da empresa.";
 		});
 
-	function buildContent(container) {
-		const idService = urlParams.get("idService");
-
+	async function buildContent(container, idService) {
 		const content = document.createElement("div");
 		let serviceNames = "";
 		let time = "";
@@ -210,7 +211,30 @@ export default function ScheduleAppointment() {
 		let dateDaySelected = null;
 		let hourSelected = null;
 		let objStaff = null;
-		let objService = null;
+		let objService = null; // Inicializa como null
+
+		// Buscar os dados do serviço sempre que buildContent for chamado
+		const services = await fetchCompanyServices(idCompany);
+
+		// Encontrar o serviço correto e definir objService
+		const selectedService = services.find(service => service.id == idService);
+
+		if (selectedService) {
+			serviceNames = selectedService.name;
+			time = selectedService.average_duration;
+			cost = selectedService.price;
+			objService = {
+				id: selectedService.id,
+				name: selectedService.name,
+				time: selectedService.average_duration,
+				cost: selectedService.price
+			};
+		} else {
+			console.error("Serviço não encontrado com o ID:", idService);
+			// Trate o caso em que o serviço não é encontrado, por exemplo, exibindo uma mensagem de erro
+			container.innerHTML = "Serviço não encontrado.";
+			return;
+		}
 
 		fetchStaffServices(idCompany, idService)
 			.then(staffs => {
@@ -245,31 +269,16 @@ export default function ScheduleAppointment() {
 				imageService.style.width = "100%";
 
 				const containerContent = document.createElement("div");
+				containerContent.style.display = "flex";
+				containerContent.style.flexDirection = "column";
+				containerContent.style.gap = "1rem";
 
 				const contentServiceInformation = document.createElement("div");
-				contentServiceInformation.innerHTML = fetchCompanyServices(
-					idCompany
-				).then(services => {
-					services.forEach(service => {
-						if (service.id == idService) {
-							serviceNames = service.name;
-							time = service.average_duration;
-							cost = service.price;
-						}
-						objService = {
-							id: service.id,
-							name: service.name,
-							time: service.average_duration,
-							cost: service.price
-						};
-					});
-
-					contentServiceInformation.innerHTML = `
+				contentServiceInformation.innerHTML = `
             <h3>${serviceNames.trim()}</h3>
             <p>${time} min</p>
             <p>R$ ${cost.toString().replace(".", ",")}</p>
             `;
-				});
 
 				chosenService.appendChild(imageService);
 				chosenService.appendChild(contentServiceInformation);
@@ -294,7 +303,7 @@ export default function ScheduleAppointment() {
 				});
 
 				back.addEventListener("click", () => {
-					navigateTo(ServicesPage);
+					navigateTo(ServicesPage, objCompany); // Passar objCompany
 				});
 
 				contentService.appendChild(chosenService);

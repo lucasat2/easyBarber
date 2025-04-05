@@ -2,7 +2,6 @@ import { SchedulingTimelineCard } from "./SchedulingTimelineCard.js";
 import { getGlobalAppointments } from "./setAndGetGlobalVariables.js";
 
 function SchedulingTimelineDiv(month, year) {
-  console.log(1);
   const cardReferences = [];
 
   const schedulingTimelineContainer = document.createElement("div");
@@ -102,7 +101,7 @@ async function ColorCardAppointments(
     const foundPendindgAppointments = appointments.filter(
       (appointment) =>
         appointment.appointmentStart === date &&
-        (appointment.status === "PENDENTE" || appointment.status === "AGENDADO")
+        ( appointment.status === "AGENDADO")
     );
 
     const foundBlockedAppointments = appointments.filter(
