@@ -1,6 +1,18 @@
+import { MessageNotification } from "../MessageNotification.js";
+
 export default async function StaffServicesSelection(staffId) {
 	const response = await fetch("/api/services");
 	const services = await response.json();
+
+	// Buscar serviços já associados
+	const associatedRes = await fetch(`/api/staff/serviceStaff/${staffId}`);
+	const associatedServices = await associatedRes.json();
+	const associatedServiceIds = associatedServices.map(item => item.service_id);
+
+	const serviceStates = {};
+	services.forEach(service => {
+		serviceStates[service.id] = associatedServiceIds.includes(service.id);
+	});
 
 	const div = document.createElement("div");
 	Object.assign(div.style, {
@@ -36,11 +48,9 @@ export default async function StaffServicesSelection(staffId) {
 	title.style.marginBottom = "1rem";
 	modalContent.appendChild(title);
 
-	const serviceStates = {}; // Armazena se o serviço está selecionado ou não
+	const icons = {};
 
 	services.forEach(service => {
-		serviceStates[service.id] = false;
-
 		const serviceRow = document.createElement("label");
 		(serviceRow.style.userSelect = "none"), (serviceRow.style.display = "flex");
 		serviceRow.style.justifyContent = "space-between";
@@ -53,7 +63,7 @@ export default async function StaffServicesSelection(staffId) {
 
 		const toggleButton = document.createElement("button");
 		Object.assign(toggleButton.style, {
-			background: "#e74c3c",
+			background: serviceStates[service.id] ? "#dee33e" : "#e74c3c",
 			border: "none",
 			cursor: "pointer",
 			display: "flex",
@@ -64,22 +74,24 @@ export default async function StaffServicesSelection(staffId) {
 		});
 
 		const icon = document.createElement("img");
-		icon.src = "../../assets/staff/close.svg";
+		icon.src = serviceStates[service.id]
+			? "../../assets/staff/check.svg"
+			: "../../assets/staff/close.svg";
 		icon.alt = "Status do serviço";
-    icon.style.padding = "5px 10px";
+		icon.style.padding = "5px 10px";
+
+		icons[service.id] = icon;
 
 		toggleButton.appendChild(icon);
 
 		toggleButton.addEventListener("click", () => {
 			serviceStates[service.id] = !serviceStates[service.id];
-
-			if (serviceStates[service.id]) {
-				icon.src = "../../assets/staff/check.svg";
-				toggleButton.style.backgroundColor = "#dee33e";
-			} else {
-				icon.src = "../../assets/staff/close.svg";
-				toggleButton.style.backgroundColor = "#e74c3c";
-			}
+			icon.src = serviceStates[service.id]
+				? "../../assets/staff/check.svg"
+				: "../../assets/staff/close.svg";
+			toggleButton.style.backgroundColor = serviceStates[service.id]
+				? "#dee33e"
+				: "#e74c3c";
 		});
 
 		serviceRow.appendChild(name);
@@ -87,7 +99,6 @@ export default async function StaffServicesSelection(staffId) {
 		modalContent.appendChild(serviceRow);
 	});
 
-	// Container de botões
 	const buttonsContainer = document.createElement("div");
 	buttonsContainer.style.display = "flex";
 	buttonsContainer.style.justifyContent = "flex-end";
@@ -102,34 +113,56 @@ export default async function StaffServicesSelection(staffId) {
 		border: "none",
 		borderRadius: "4px",
 		cursor: "pointer",
-    fontSize: "1rem"
+		fontSize: "1rem"
 	});
 
 	saveButton.addEventListener("click", async () => {
-		const selected = Object.entries(serviceStates)
-			.filter(([_, selected]) => selected)
-			.map(([serviceId]) => ({staffId, serviceId}));
+		const promises = [];
 
-		if (selected.length === 0) {
-			alert("Selecione ao menos um serviço!");
+		services.forEach(service => {
+			const isSelected = serviceStates[service.id];
+			const wasAssociated = associatedServiceIds.includes(service.id);
+
+			if (isSelected && !wasAssociated) {
+				// Associar novo
+				promises.push(
+					fetch("/api/staff/associateServices", {
+						method: "POST",
+						headers: {"Content-Type": "application/json"},
+						body: JSON.stringify({staffId, serviceId: service.id})
+					})
+				);
+			} else if (!isSelected && wasAssociated) {
+				// Desassociar
+				promises.push(
+					fetch("/api/staff/disassociateServices", {
+						method: "DELETE",
+						headers: {"Content-Type": "application/json"},
+						body: JSON.stringify({staffId, serviceId: service.id})
+					})
+				);
+			}
+		});
+
+		if (promises.length === 0) {
+			MessageNotification("Nenhuma alteração feita.", "#6c757d");
 			return;
 		}
 
 		try {
-			await Promise.all(
-				selected.map(data =>
-					fetch("/api/staff/associateServices", {
-						method: "POST",
-						headers: {"Content-Type": "application/json"},
-						body: JSON.stringify(data)
-					})
-				)
-			);
+			const responses = await Promise.all(promises);
 
-			alert("Serviços associados com sucesso!");
-			div.remove();
+			// Verifica se alguma falhou
+			const hasError = responses.some(res => !res.ok);
+			if (hasError) {
+				const errorText = await responses.find(res => !res.ok).text();
+				MessageNotification(errorText || "Erro ao salvar serviços.", "#ff6347");
+			} else {
+				MessageNotification("Serviços atualizados com sucesso!", "#28a745");
+				div.remove();
+			}
 		} catch (err) {
-			alert("Erro ao salvar serviços.");
+			MessageNotification(err.message || "Erro ao salvar serviços.", "#ff6347");
 			console.error(err);
 		}
 	});
@@ -138,7 +171,7 @@ export default async function StaffServicesSelection(staffId) {
 	cancelButton.textContent = "Cancelar";
 	Object.assign(cancelButton.style, {
 		padding: "10px 20px",
-    fontSize: "1rem",
+		fontSize: "1rem",
 		backgroundColor: "#6c757d",
 		color: "#fff",
 		border: "none",
@@ -154,7 +187,6 @@ export default async function StaffServicesSelection(staffId) {
 	buttonsContainer.appendChild(saveButton);
 	modalContent.appendChild(buttonsContainer);
 
-	// Clicar fora do modal fecha
 	div.addEventListener("click", e => {
 		if (e.target === div) {
 			div.remove();
