@@ -357,4 +357,4 @@ async function updateAppointmentStatus(
   }
 }
 
-export { AppointmentCard };
+export { AppointmentCard, updateAppointmentStatus };
