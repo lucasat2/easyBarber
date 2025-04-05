@@ -92,7 +92,7 @@ const listAllCompanyServices = async (userId) => {
     const findUserDataQuery = `SELECT * FROM users WHERE id = $1`;
 
     const listAllCompanyServicesQuery = `
-      SELECT * FROM services WHERE company_id = $1;
+      SELECT * FROM services WHERE company_id = $1 AND status = true;
     `;
     client = await pool.connect();
 
