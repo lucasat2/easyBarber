@@ -97,7 +97,7 @@ export default async function StaffInformation(data, onSave) {
 		border: "none",
 		borderRadius: "4px",
 		cursor: "pointer",
-    fontSize: "1rem"
+		fontSize: "1rem"
 	});
 
 	const buttonsContainer = document.createElement("div");
@@ -111,7 +111,7 @@ export default async function StaffInformation(data, onSave) {
 	cancelButton.textContent = "Cancelar";
 	Object.assign(cancelButton.style, {
 		padding: "10px 20px",
-    fontSize: "1rem",
+		fontSize: "1rem",
 		backgroundColor: "#6c757d",
 		color: "#fff",
 		border: "none",
@@ -168,10 +168,12 @@ export default async function StaffInformation(data, onSave) {
 				body: JSON.stringify(payload)
 			});
 
-			const responseData = await res.json();
+			if (!res.ok) {
+				const errorData = await res.json();
+				throw new Error(errorData.error || "Falha Desconhecida");
+			}
 
-			if (!res.ok)
-				throw new Error(responseData.message || "Erro ao salvar os dados.");
+			const responseData = await res.json();
 
 			MessageNotification(
 				responseData.message ||

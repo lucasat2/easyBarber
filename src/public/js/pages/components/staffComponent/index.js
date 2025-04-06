@@ -1,6 +1,7 @@
 import StaffInformation from "./StaffInformation.js";
 import StaffShiftEditor from "./StaffSchedule.js";
 import StaffServicesSelection from "./StaffServicesSelection.js";
+import StaffDelete from "./StaffDelete.js";
 
 export default async function StaffManager() {
 	const div = document.createElement("div");
@@ -151,13 +152,22 @@ export default async function StaffManager() {
 
 							root.appendChild(modal);
 						} catch (err) {
-							console.error("Erro ao carregar funcionário:", err);
-							alert("Erro ao carregar os dados do funcionário.");
+							console.error("Erro ao carregar serviço:", err);
+							alert("Erro ao carregar os dados do serviço.");
 						}
 						break;
 
 					case "Deletar":
-						// Coloque aqui a lógica para Deletar
+						try {
+							const modal = await StaffDelete(id, loadStaff);
+
+							const root = document.getElementById("root");
+
+							root.appendChild(modal);
+						} catch (err) {
+							console.error("Erro ao carregar deletar:", err);
+							alert("Erro ao deletar.");
+						}
 						break;
 				}
 			});

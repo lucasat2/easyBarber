@@ -277,15 +277,19 @@ export default async function StaffShiftEditor(staffId) {
 				headers: {"Content-Type": "application/json"},
 				body: JSON.stringify(payload)
 			});
+
 			if (!res.ok) {
-				const error = await res.text();
-				MessageNotification(error || "Erro ao salvar.", "#ff6347");
-			} else {
-				MessageNotification("Turnos salvos com sucesso!", "#28a745");
-				div.remove();
+				const errorData = await res.json();
+				throw new Error(errorData.error || "Falha Desconhecida");
 			}
+
+			const responseData = await res.json();
+
+			MessageNotification(responseData.message, "#28a745");
 		} catch (e) {
-			MessageNotification("Erro de conexão.", "#ff6347");
+			MessageNotification(e.message, "#ff6347");
+		} finally {
+			div.remove();
 		}
 	};
 

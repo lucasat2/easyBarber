@@ -1,8 +1,7 @@
 const pool = require("../db");
 
-let client;
-
 const getAllStaff = async userId => {
+	let client;
 	try {
 		const getCompanyData = "SELECT * FROM users WHERE id = $1";
 
@@ -40,6 +39,7 @@ const getAllStaff = async userId => {
 };
 
 const findStaffInfo = async (employeeId, userId) => {
+	let client;
 	try {
 		const getUserDataQuery = "SELECT * FROM users WHERE id = $1";
 
@@ -89,6 +89,7 @@ const createStaff = async (
 	postalCode,
 	userId
 ) => {
+	let client;
 	const getUserDataQuery = "SELECT * FROM users WHERE id = $1";
 
 	const createStaffsQuery =
@@ -127,6 +128,7 @@ const createStaff = async (
 };
 
 const associateServicesWithStaff = async (userId, staffId, serviceId) => {
+	let client;
 	try {
 		const getUserDataQuery = "SELECT * FROM users WHERE id = $1";
 
@@ -207,6 +209,7 @@ const associateServicesWithStaff = async (userId, staffId, serviceId) => {
 };
 
 const bindSchedulesToStaff = async (userId, staffId, schedulesData) => {
+	let client;
 	try {
 		const userDataQuery = "SELECT * FROM users WHERE id = $1";
 
@@ -378,6 +381,7 @@ const updateStaff = async (
 	postalCode,
 	id
 ) => {
+	let client;
 	try {
 		client = await pool.connect();
 
@@ -444,58 +448,60 @@ const updateStaff = async (
 };
 
 const removeStaff = async (staffId, userId) => {
-  try {
-    const getUserDataQuery = "SELECT * FROM users WHERE id = $1";
+	let client;
+	try {
+		const getUserDataQuery = "SELECT * FROM users WHERE id = $1";
 
-    const isEmployeeOfCompanyQuery =
-      "SELECT * FROM staffs WHERE id = $1 AND company_id = $2";
+		const isEmployeeOfCompanyQuery =
+			"SELECT * FROM staffs WHERE id = $1 AND company_id = $2";
 
-    const updateStaffStatusQuery =
-      "UPDATE staffs SET status = false, updated_at = NOW() WHERE id = $1 RETURNING *";
+		const updateStaffStatusQuery =
+			"UPDATE staffs SET status = false, updated_at = NOW() WHERE id = $1 RETURNING *";
 
-    client = await pool.connect();
+		client = await pool.connect();
 
-    const {
-      rows: [userData],
-    } = await client.query(getUserDataQuery, [userId]);
+		const {
+			rows: [userData]
+		} = await client.query(getUserDataQuery, [userId]);
 
-    if (!userData) {
-      return { statusCode: 404, statusMessage: "Usuário não encontrado" };
-    }
+		if (!userData) {
+			return {statusCode: 404, statusMessage: "Usuário não encontrado"};
+		}
 
-    const companyId = userData.company_id;
+		const companyId = userData.company_id;
 
-    const {
-      rows: [isEmployeeOfCompany],
-    } = await client.query(isEmployeeOfCompanyQuery, [staffId, companyId]);
+		const {
+			rows: [isEmployeeOfCompany]
+		} = await client.query(isEmployeeOfCompanyQuery, [staffId, companyId]);
 
-    if (!isEmployeeOfCompany) {
-      return {
-        statusCode: 404,
-        statusMessage: "Funcionário não pertence a empresa",
-      };
-    }
+		if (!isEmployeeOfCompany) {
+			return {
+				statusCode: 404,
+				statusMessage: "Funcionário não pertence a empresa"
+			};
+		}
 
-    const {
-      rows: [updateStaffStatus],
-    } = await client.query(updateStaffStatusQuery, [staffId]);
+		const {
+			rows: [updateStaffStatus]
+		} = await client.query(updateStaffStatusQuery, [staffId]);
 
-    if (!updateStaffStatus) {
-      return {
-        statusCode: 404,
-        statusMessage: "Falha ao remover o funcionário",
-      };
-    }
-  } catch (error) {
-    throw error;
-  } finally {
-    if (client) {
-      client.release();
-    }
-  }
+		if (!updateStaffStatus) {
+			return {
+				statusCode: 404,
+				statusMessage: "Falha ao remover o funcionário"
+			};
+		}
+	} catch (error) {
+		throw error;
+	} finally {
+		if (client) {
+			client.release();
+		}
+	}
 };
 
 const unlinkServiceFromStaff = async (userId, staffId, serviceId) => {
+	let client;
 	try {
 		const getUserDataQuery = "SELECT * FROM users WHERE id = $1";
 
