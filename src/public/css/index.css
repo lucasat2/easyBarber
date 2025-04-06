@@ -693,7 +693,9 @@ textarea.modalBoxStyles {
 }
 
 .registerStaffButton:hover {
-  background-color: #8a8a15;
+  background-color: transparent;
+  color: #9fa324;
+  border: 1px solid #9fa324;
 }
 
 .noDataContainer {
