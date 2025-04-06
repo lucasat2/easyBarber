@@ -6,6 +6,30 @@ const passwordPattern =
   /^(?=.*[a-zà-öø-ÿ])(?=.*[A-ZÀ-ÖØ-ß])(?=.*\d)(?=.*[!@#$%^&*()_+={[}\]:;"'<>,.?/~`|\\-])[A-Za-zÀ-ÖØ-öø-ÿ\d!@#$%^&*()_+={[}\]:;"'<>,.?/~`|\\-]{8,}$/;
 const cnpjPattern = /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/;
 
+const getCompanyData = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    if (!validator.isUUID(userId)) {
+      return res.status(400).json({ error: "ID de usuário inválido" });
+    }
+
+    const result = await usersServices.getAuthenticatedCompanyData(userId);
+
+    if (!result.errorCode) {
+      return res.status(200).json(result);
+    }
+
+    res.status(result.errorCode).json({ error: result.errorMessage });
+  } catch (error) {
+    console.log(error);
+
+    res
+      .status(500)
+      .json({ error: "Falha no servidor ao buscar os dados da empresa" });
+  }
+};
+
 const createUser = async (req, res) => {
   try {
     const {
@@ -223,4 +247,4 @@ const updateUser = async (req, res) => {
   }
 };
 
-module.exports = { createUser, updateUser };
+module.exports = { getCompanyData, createUser, updateUser };
