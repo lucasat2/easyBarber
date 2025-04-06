@@ -111,8 +111,8 @@ function FinishedCard(date, appointmentData) {
   undoButton.innerText = "Desfazer";
   undoButton.style.padding = "10px 0px";
   undoButton.style.width = "150px";
-  undoButton.style.backgroundColor = "#A6A6A6";
-  undoButton.style.color = "#fff";
+  undoButton.style.backgroundColor = "#fff";
+  undoButton.style.color = "#9FA324";
   undoButton.style.border = "none";
   undoButton.style.cursor = "pointer";
   undoButton.style.borderRadius = "5px";
@@ -121,10 +121,10 @@ function FinishedCard(date, appointmentData) {
   buttonArea.appendChild(undoButton);
 
   undoButton.addEventListener("mouseover", function () {
-    undoButton.style.backgroundColor = "#7F7F7F";
+    undoButton.style.backgroundColor = "#f0f0f0";
   });
   undoButton.addEventListener("mouseout", function () {
-    undoButton.style.backgroundColor = "#A6A6A6";
+    undoButton.style.backgroundColor = "#fff";
   });
 
   undoButton.addEventListener("click", async function () {
