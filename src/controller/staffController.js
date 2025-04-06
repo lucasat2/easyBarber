@@ -552,14 +552,33 @@ const update = async (req, res) => {
 };
 
 const remove = async (req, res) => {
-	const {staffId} = req.body;
-	try {
-		await staffServices.deleteStaff(staffId);
+  const { staffId } = req.body;
 
-		res.status(200).json({message: "Funcionário deletado com sucesso"});
-	} catch (error) {
-		res.status(500).json({error: "Falha ao deletar o funcionário"});
-	}
+  const userId = req.user.id;
+
+  try {
+    if (!validator.isUUID(staffId)) {
+      return res.status(400).json({ error: "ID inválido de funcionário" });
+    }
+
+    if (!validator.isUUID(userId)) {
+      return res.status(400).json({ error: "ID inválido de usuário" });
+    }
+
+    const result = await staffServices.deleteStaff(staffId, userId);
+
+    if (result) {
+      return res
+        .status(result.statusCode)
+        .json({ error: result.statusMessage });
+    }
+
+    res.status(200).json({ message: "Funcionário deletado com sucesso" });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({ error: "Falha ao deletar o funcionário" });
+  }
 };
 
 const unassignServiceFromStaff = async (req, res) => {

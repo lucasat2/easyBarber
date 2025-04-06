@@ -104,12 +104,14 @@ const updateStaff = async (
 	}
 };
 
-const deleteStaff = async staffId => {
-	try {
-		await staffRepository.removeStaff(staffId);
-	} catch (error) {
-		throw error;
-	}
+const deleteStaff = async (staffId, userId) => {
+  try {
+    const response = await staffRepository.removeStaff(staffId, userId);
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const detachServiceFromStaff = async (userId, staffId, serviceId) => {

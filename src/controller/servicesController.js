@@ -4,7 +4,7 @@ const priceRegex = /^\d+(\.\d{1,2})?$/;
 
 const createService = async (req, res) => {
   try {
-    const { name, description, price,averageDuration } = req.body;
+    const { name, description, price, averageDuration } = req.body;
     const userId = req.user.id;
 
     if (!validator.isUUID(userId)) {
@@ -38,7 +38,7 @@ const createService = async (req, res) => {
     if (!validator.isInt(averageDuration, { min: 1 })) {
       return res
         .status(400)
-        .json({ error: "Duração deve ser um número válido e em minutos"});
+        .json({ error: "Duração deve ser um número válido e em minutos" });
     }
 
     const result = await servicesService.createService(
@@ -175,13 +175,30 @@ const updateService = async (req, res) => {
 
 const deleteService = async (req, res) => {
   try {
-    const { serviceID } = req.body;
+    const { serviceId } = req.body;
 
-    await servicesService.deleteService(serviceID);
+    const userId = req.user.id;
+
+    if (!validator.isUUID(serviceId)) {
+      return res.status(400).json({ error: "ID inválido de serviço" });
+    }
+
+    if (!validator.isUUID(userId)) {
+      return res.status(400).json({ error: "ID inválido de usuário" });
+    }
+
+    const result = await servicesService.deleteService(serviceId, userId);
+
+    if (result) {
+      return res
+        .status(result.statusCode)
+        .json({ error: result.statusMessage });
+    }
 
     res.status(200).json({ message: "Serviço deletado com sucesso" });
   } catch (error) {
     console.log(error);
+
     res.status(500).json({ error: "Falha ao deletar o serviço" });
   }
 };
