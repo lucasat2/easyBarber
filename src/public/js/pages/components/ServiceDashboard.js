@@ -22,7 +22,7 @@ function ServiceDashboard() {
     .then((response) => {
       if (!response.ok) {
         return response.json().then((errorData) => {
-          throw new Error(errorData.error || "Falha desconhecida");
+          throw new Error(errorData.error || "Falha Desconhecida");
         });
       }
 

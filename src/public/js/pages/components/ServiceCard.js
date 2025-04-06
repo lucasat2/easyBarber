@@ -1,4 +1,6 @@
 import { ServiceModal } from "./ServiceModal.js";
+import { ServiceDashboard } from "./ServiceDashboard.js";
+import { MessageNotification } from "./MessageNotification.js";
 
 function ServicesCard(serviceData) {
   const cardContainer = document.createElement("div");
@@ -38,7 +40,45 @@ function ServicesCard(serviceData) {
   deleteButton.classList.add("serviceCardDeleteButton");
   buttonContainer.appendChild(deleteButton);
 
+  deleteButton.addEventListener("click", () => {
+    deleteService(serviceData);
+  });
+
   return cardContainer;
+}
+
+function deleteService(serviceData) {
+  fetch("/api/services/remove", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      serviceId: serviceData.id,
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((errorData) => {
+          throw new Error(errorData.error || "Falha Desconhecida");
+        });
+      }
+
+      return response.json();
+    })
+    .then((data) => {
+      const serviceDashboard = ServiceDashboard();
+
+      const main = document.getElementById("main");
+      main.innerHTML = "";
+      main.style.padding = "30px";
+      main.appendChild(serviceDashboard);
+
+      MessageNotification(data.message, " #28a745");
+    })
+    .catch((error) => {
+      MessageNotification(error.message, "#ff6347");
+    });
 }
 
 export { ServicesCard };
