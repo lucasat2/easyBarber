@@ -567,11 +567,30 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   const { staffId } = req.body;
+
+  const userId = req.user.id;
+
   try {
-    await staffServices.deleteStaff(staffId);
+    if (!validator.isUUID(staffId)) {
+      return res.status(400).json({ error: "ID inválido de funcionário" });
+    }
+
+    if (!validator.isUUID(userId)) {
+      return res.status(400).json({ error: "ID inválido de usuário" });
+    }
+
+    const result = await staffServices.deleteStaff(staffId, userId);
+
+    if (result) {
+      return res
+        .status(result.statusCode)
+        .json({ error: result.statusMessage });
+    }
 
     res.status(200).json({ message: "Funcionário deletado com sucesso" });
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({ error: "Falha ao deletar o funcionário" });
   }
 };

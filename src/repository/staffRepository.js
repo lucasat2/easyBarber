@@ -443,13 +443,49 @@ const updateStaff = async (
   }
 };
 
-const removeStaff = async (staffId) => {
-  const deleteStaff = "DELETE FROM staffs WHERE id = $1";
-
+const removeStaff = async (staffId, userId) => {
   try {
+    const getUserDataQuery = "SELECT * FROM users WHERE id = $1";
+
+    const isEmployeeOfCompanyQuery =
+      "SELECT * FROM staffs WHERE id = $1 AND company_id = $2";
+
+    const updateStaffStatusQuery =
+      "UPDATE staffs SET status = false, updated_at = NOW() WHERE id = $1 RETURNING *";
+
     client = await pool.connect();
 
-    await client.query(deleteStaff, [staffId]);
+    const {
+      rows: [userData],
+    } = await client.query(getUserDataQuery, [userId]);
+
+    if (!userData) {
+      return { statusCode: 404, statusMessage: "Usuário não encontrado" };
+    }
+
+    const companyId = userData.company_id;
+
+    const {
+      rows: [isEmployeeOfCompany],
+    } = await client.query(isEmployeeOfCompanyQuery, [staffId, companyId]);
+
+    if (!isEmployeeOfCompany) {
+      return {
+        statusCode: 404,
+        statusMessage: "Funcionário não pertence a empresa",
+      };
+    }
+
+    const {
+      rows: [updateStaffStatus],
+    } = await client.query(updateStaffStatusQuery, [staffId]);
+
+    if (!updateStaffStatus) {
+      return {
+        statusCode: 404,
+        statusMessage: "Falha ao remover o funcionário",
+      };
+    }
   } catch (error) {
     throw error;
   } finally {

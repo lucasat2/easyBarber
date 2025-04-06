@@ -176,15 +176,54 @@ const updateService = async (
   }
 };
 
-const deleteService = async (serviceID) => {
+const deleteService = async (serviceId, userId) => {
   let client;
 
   try {
+    const getUserDataQuery = "SELECT * FROM users WHERE id = $1";
+
+    const isServiceProvidedByCompanyQuery =
+      "SELECT * FROM services WHERE id = $1 AND company_id = $2";
+
+    const updateServiceStatusQuery =
+      "UPDATE services SET status = false, updated_at = NOW() WHERE id = $1 RETURNING *";
+
     client = await pool.connect();
 
-    const query = "DELETE FROM services WHERE id = $1";
+    const {
+      rows: [userData],
+    } = await client.query(getUserDataQuery, [userId]);
 
-    await client.query(query, [serviceID]);
+    if (!userData) {
+      return { statusCode: 404, statusMessage: "Usuário não encontrado" };
+    }
+
+    const companyId = userData.company_id;
+
+    const {
+      rows: [isServiceProvidedByCompany],
+    } = await client.query(isServiceProvidedByCompanyQuery, [
+      serviceId,
+      companyId,
+    ]);
+
+    if (!isServiceProvidedByCompany) {
+      return {
+        statusCode: 404,
+        statusMessage: "A empresa não executa tal serviço",
+      };
+    }
+
+    const {
+      rows: [updateServiceStatus],
+    } = await client.query(updateServiceStatusQuery, [serviceId]);
+
+    if (!updateServiceStatus) {
+      return {
+        statusCode: 404,
+        statusMessage: "Falha ao exluir o serviço",
+      };
+    }
   } catch (error) {
     throw error;
   } finally {

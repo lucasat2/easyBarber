@@ -3,7 +3,7 @@ function SchedulingTimelineEmployeesCard(name, image) {
   employeesDiv.classList.add("schedulingTimelineEmployeesCard");
 
   const employeesImageDiv = document.createElement("div");
-  employeesImageDiv.style.backgroundImage = `url("${image}")`;
+  employeesImageDiv.style.backgroundImage = `url("https://picsum.photos/490")`;
   employeesImageDiv.classList.add("schedulingTimelineHeaderEmployeesCardImage");
   employeesDiv.appendChild(employeesImageDiv);
 

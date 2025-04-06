@@ -124,7 +124,7 @@ function DailyAppointmentsModal(date, appointmentsData) {
 
         modalBody.style.overflowY = "auto";
 
-        const appointmentCard = FinishedCard(appointmentData);
+        const appointmentCard = FinishedCard(date, appointmentData);
         modalBody.appendChild(appointmentCard);
 
         isValid = true;

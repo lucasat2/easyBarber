@@ -17,7 +17,7 @@ router.post(
   staffController.assignSchedulesToEmployee
 );
 router.put("/", verifyActiveSession, staffController.update);
-router.delete("/", verifyActiveSession, staffController.remove);
+router.put("/remove", verifyActiveSession, staffController.remove);
 router.delete(
   "/disassociateServices",
   verifyActiveSession,

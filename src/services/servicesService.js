@@ -72,9 +72,11 @@ const updateService = async (
   }
 };
 
-const deleteService = async (serviceID) => {
+const deleteService = async (serviceId, userId) => {
   try {
-    await servicesRepository.deleteService(serviceID);
+    const response = await servicesRepository.deleteService(serviceId, userId);
+
+    return response;
   } catch (error) {
     throw error;
   }

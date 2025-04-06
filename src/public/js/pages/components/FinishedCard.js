@@ -1,6 +1,10 @@
 import { MessageNotification } from "./MessageNotification.js";
+import { AppointmentCard, updateAppointmentStatus } from "./AppointmentCard.js";
+import { getEditedCurrentTime, getSelectedEmployeeId, setGlobalAppointments } from "./setAndGetGlobalVariables.js";
+import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
+import { fetchAppointmentsByEmployee } from "./fetchData.js";
 
-function FinishedCard(appointmentData) {
+function FinishedCard(date, appointmentData) {
   const cardContainer = document.createElement("div");
   cardContainer.style.display = "flex";
   cardContainer.style.justifyContent = "space-between";
@@ -40,12 +44,18 @@ function FinishedCard(appointmentData) {
   const observationArea = document.createElement("p");
   infoContainer.appendChild(observationArea);
 
+  const buttonArea = document.createElement("div");
+  buttonArea.style.display = "flex"
+  buttonArea.style.flexDirection = "column"
+  buttonArea.style.rowGap = "10px"
+  cardContainer.appendChild(buttonArea)
+
   const statusArea = document.createElement("div");
   statusArea.textContent = "Finalizado";
   statusArea.style.width = "150px";
   statusArea.style.textAlign = "center";
   statusArea.style.fontSize = "20px";
-  cardContainer.appendChild(statusArea);
+  buttonArea.appendChild(statusArea);
 
   function fillRequiredFields() {
     fetch(`/api/appointments/${appointmentData.id}`)
@@ -89,6 +99,60 @@ function FinishedCard(appointmentData) {
         MessageNotification(error.message, "#ff6347");
       });
   }
+
+  const undoButton = document.createElement("button");
+  undoButton.innerText = "Desfazer"
+  undoButton.style.padding = "10px 0px";
+  undoButton.style.width = "150px";
+  undoButton.style.backgroundColor = "#A6A6A6";
+  undoButton.style.color = "#fff";
+  undoButton.style.border = "none";
+  undoButton.style.cursor = "pointer";
+  undoButton.style.borderRadius = "5px";
+  undoButton.style.marginBottom = "10px";
+  undoButton.style.fontSize = "20px"
+  buttonArea.appendChild(undoButton);
+
+  undoButton.addEventListener("mouseover", function () {
+    undoButton.style.backgroundColor = "#7F7F7F";
+  });
+  undoButton.addEventListener("mouseout", function () {
+    undoButton.style.backgroundColor = "#A6A6A6";
+  });
+
+  undoButton.addEventListener("click", async function (){
+    updateAppointmentStatus(
+      "AGENDADO",
+      "Serviço atualizado com sucesso",
+      date,
+      appointmentData
+    )
+    const newAppointment = AppointmentCard(date, appointmentData)
+    console.log(date, appointmentData)
+    cardContainer.innerHTML = "";
+    cardContainer.appendChild(newAppointment)
+
+    const employeeId = getSelectedEmployeeId();
+    if (employeeId) {
+      try {
+        const appointments = await fetchAppointmentsByEmployee({
+          id: employeeId,
+        });
+        setGlobalAppointments(appointments);
+      } catch (error) {
+        console.error("Erro ao buscar agendamentos:", error.message);
+      }
+    }
+
+
+    const {month, year} = getEditedCurrentTime()
+    const employeeScheduleTimeline = SchedulingTimelineDiv(month, year);
+
+    const employeeScheduleTimelineContainer = document.getElementById("employeeScheduleTimelineContainer");
+    employeeScheduleTimelineContainer.innerHTML = "";
+    employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline);
+
+  })
 
   fillRequiredFields();
 
