@@ -2,6 +2,7 @@ import { InitialSchedulingTimelineSection } from "./schedulingComponent/InitialS
 import { MessageNotification } from "./MessageNotification.js";
 import StaffManager from "./staffComponent/index.js";
 import { ServiceDashboard } from "./serviceComponent/ServiceDashboard.js";
+import { EditUserProfileModal } from "./editUserComponent/EditUserProfileModal.js";
 
 export default function header() {
   const root = document.getElementById("root");
@@ -77,6 +78,19 @@ export default function header() {
   const nameUser = document.createElement("div");
   nameUser.innerText = "Usuário";
   nameUser.style.fontWeight = "900";
+  nameUser.style.cursor = "pointer";
+
+  nameUser.addEventListener("mouseenter", () => {
+    nameUser.style.color = "#DEE33E";
+  });
+
+  nameUser.addEventListener("mouseleave", () => {
+    nameUser.style.color = "#000";
+  });
+
+  nameUser.addEventListener("click", () => {
+    EditUserProfileModal();
+  });
 
   contentUser.appendChild(nameUser);
 
@@ -137,7 +151,6 @@ export default function header() {
     activeItem.style.color = "#fff";
 
     // arrumando main
-    const main = document.getElementById("main");
     main.innerHTML = "";
     main.style.padding = "30px";
 
@@ -154,6 +167,8 @@ export default function header() {
 
       main.appendChild(section);
     } else if (activeItem.id == "Serviço") {
+      main.innerHTML = "";
+
       const section = ServiceDashboard();
 
       main.appendChild(section);
