@@ -1,9 +1,12 @@
 import { MessageNotification } from "./MessageNotification.js";
 import { DailyAppointmentsModal } from "./DailyAppointmentsModal.js";
-import { getSelectedEmployeeId, setGlobalAppointments, getEditedCurrentTime } from "./setAndGetGlobalVariables.js";
+import {
+  getSelectedEmployeeId,
+  setGlobalAppointments,
+  getEditedCurrentTime,
+} from "./setAndGetGlobalVariables.js";
 import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
 import { fetchAppointmentsByEmployee } from "./fetchData.js";
-
 
 function BlockedCard(date, appointmentData) {
   const cardContainer = document.createElement("div");
@@ -20,6 +23,9 @@ function BlockedCard(date, appointmentData) {
   cardContainer.style.width = "60vw";
 
   const infoContainer = document.createElement("div");
+  infoContainer.style.display = "flex";
+  infoContainer.style.flexDirection = "column";
+  infoContainer.style.rowGap = "10px";
   infoContainer.style.flex = "1";
   infoContainer.style.marginRight = "20px";
   cardContainer.appendChild(infoContainer);
@@ -57,7 +63,6 @@ function BlockedCard(date, appointmentData) {
   buttonContainer.style.flexDirection = "column";
 
   cardContainer.appendChild(buttonContainer);
-
 
   const cancelButton = document.createElement("button");
   cancelButton.textContent = "Desbloquear";
@@ -243,7 +248,7 @@ async function unlockSchedule(date, appointmentData) {
 
     const dailyAppointmentsModal = DailyAppointmentsModal(date, dataFiltered);
 
-    document.body.appendChild(dailyAppointmentsModal); 
+    document.body.appendChild(dailyAppointmentsModal);
 
     const employeeId = getSelectedEmployeeId();
     if (employeeId) {
@@ -257,13 +262,14 @@ async function unlockSchedule(date, appointmentData) {
       }
     }
 
-
-    const {month, year} = getEditedCurrentTime()
+    const { month, year } = getEditedCurrentTime();
     const employeeScheduleTimeline = SchedulingTimelineDiv(month, year);
 
-    const employeeScheduleTimelineContainer = document.getElementById("employeeScheduleTimelineContainer");
+    const employeeScheduleTimelineContainer = document.getElementById(
+      "employeeScheduleTimelineContainer"
+    );
     employeeScheduleTimelineContainer.innerHTML = "";
-    employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline); 
+    employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline);
 
     MessageNotification("Horário desbloqueado com sucesso", " #28a745");
   } catch (error) {
@@ -272,74 +278,3 @@ async function unlockSchedule(date, appointmentData) {
 }
 
 export { BlockedCard };
-
-// const test = {
-//   observation: "TESTE PARA VER SE TUDO ESTÁ CONFORME O DESEJADO",
-//   date_hour_begin: new Date("2025-04-02T12:34:56.789Z"),
-//   date_hour_end: new Date("2025-04-02T15:20:56.789Z"),
-// };
-
-// const test2 = [
-//   {
-//     id: "11111111-1111-1111-1111-111111111111",
-//     client: "João Silva",
-//     staff: "Carlos Mendes",
-//     service: "Corte Masculino",
-//     date_hour_begin: "2025-04-10T10:00:00",
-//     date_hour_end: "2025-04-10T11:00:00",
-//     status: "BLOQUEADO",
-//     observation: "Horário reservado para manutenção",
-//     created_at: "2025-04-01T08:00:00",
-//     updated_at: "2025-04-01T08:00:00",
-//   },
-//   {
-//     id: "55555555-5555-5555-5555-555555555555",
-//     client: "Roberto Oliveira",
-//     staff: "Fernanda Souza",
-//     service: "Barba Completa",
-//     date_hour_begin: "2025-04-12T14:00:00",
-//     date_hour_end: "2025-04-12T15:00:00",
-//     status: "BLOQUEADO",
-//     observation: "Funcionário indisponível nesse horário",
-//     created_at: "2025-04-01T08:30:00",
-//     updated_at: "2025-04-01T08:30:00",
-//   },
-//   {
-//     id: "99999999-9999-9999-9999-999999999999",
-//     client: "Carlos Pereira",
-//     staff: "Ana Martins",
-//     service: "Corte + Barba",
-//     date_hour_begin: "2025-04-15T09:00:00",
-//     date_hour_end: "2025-04-15T10:00:00",
-//     status: "CONCLUÍDO",
-//     observation: "Cliente pediu estilo degradê",
-//     created_at: "2025-04-01T09:00:00",
-//     updated_at: "2025-04-01T09:00:00",
-//   },
-//   {
-//     id: "13131313-1313-1313-1313-131313131313",
-//     client: "Lucas Almeida",
-//     staff: "Ricardo Lima",
-//     service: "Hidratação Capilar",
-//     date_hour_begin: "2025-04-18T16:00:00",
-//     date_hour_end: "2025-04-18T17:00:00",
-//     status: "CANCELADO",
-//     observation: "Cancelado pelo cliente",
-//     created_at: "2025-04-01T09:30:00",
-//     updated_at: "2025-04-01T09:30:00",
-//   },
-//   {
-//     id: "17171717-1717-1717-1717-171717171717",
-//     client: "Fernando Souza",
-//     staff: "Beatriz Rocha",
-//     service: "Corte Infantil",
-//     date_hour_begin: "2025-04-20T11:00:00",
-//     date_hour_end: "2025-04-20T12:00:00",
-//     status: "AGENDADO",
-//     observation: "Aguardando confirmação do funcionário",
-//     created_at: "2025-04-01T10:00:00",
-//     updated_at: "2025-04-01T10:00:00",
-//   },
-// ];
-
-// document.body.appendChild(BlockedCard(test2, test));

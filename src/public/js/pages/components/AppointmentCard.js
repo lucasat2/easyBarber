@@ -1,7 +1,11 @@
 import { MessageNotification } from "./MessageNotification.js";
 import { DailyAppointmentsModal } from "./DailyAppointmentsModal.js";
 import { fetchAppointmentsByEmployee } from "./fetchData.js";
-import { getSelectedEmployeeId, setGlobalAppointments, getEditedCurrentTime} from "./setAndGetGlobalVariables.js";
+import {
+  getSelectedEmployeeId,
+  setGlobalAppointments,
+  getEditedCurrentTime,
+} from "./setAndGetGlobalVariables.js";
 import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
 
 function AppointmentCard(date, appointmentData) {
@@ -18,6 +22,9 @@ function AppointmentCard(date, appointmentData) {
   cardContainer.style.width = "60vw";
 
   const infoContainer = document.createElement("div");
+  infoContainer.style.display = "flex";
+  infoContainer.style.flexDirection = "column";
+  infoContainer.style.rowGap = "10px";
   infoContainer.style.flex = "1";
   infoContainer.style.marginRight = "20px";
   cardContainer.appendChild(infoContainer);
@@ -219,7 +226,6 @@ async function updateAppointmentStatus(
 
     const data = await result.json();
 
-    
     const employeeId = getSelectedEmployeeId();
     if (employeeId) {
       try {
@@ -232,15 +238,14 @@ async function updateAppointmentStatus(
       }
     }
 
-
-    const {month, year} = getEditedCurrentTime()
+    const { month, year } = getEditedCurrentTime();
     const employeeScheduleTimeline = SchedulingTimelineDiv(month, year);
 
-    const employeeScheduleTimelineContainer = document.getElementById("employeeScheduleTimelineContainer");
+    const employeeScheduleTimelineContainer = document.getElementById(
+      "employeeScheduleTimelineContainer"
+    );
     employeeScheduleTimelineContainer.innerHTML = "";
     employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline);
-
-
 
     const currentDateAndTimeArray = date.split("T");
 
