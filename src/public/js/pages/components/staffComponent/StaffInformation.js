@@ -35,7 +35,7 @@ export default async function StaffInformation(data, onSave) {
 		display: "flex",
 		flexDirection: "column",
 		gap: "1rem",
-		minWidth: "300px",
+		width: "500px",
 		position: "relative"
 	});
 
@@ -122,8 +122,8 @@ export default async function StaffInformation(data, onSave) {
 		div.remove();
 	});
 
-	buttonsContainer.appendChild(cancelButton);
 	buttonsContainer.appendChild(saveButton);
+	buttonsContainer.appendChild(cancelButton);
 	form.appendChild(buttonsContainer);
 
 	form.addEventListener("submit", async e => {

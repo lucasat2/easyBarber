@@ -225,7 +225,6 @@ export default function ConfirmScheduling(obj) {
 
 			// --- Fetch ---
 			fetch("/api/customer/company/services/staff/schedule/appointments", {
-				// Replace with your API endpoint
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"

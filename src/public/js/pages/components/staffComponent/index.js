@@ -187,6 +187,33 @@ export default async function StaffManager() {
 			.then(res => res.json())
 			.then(data => {
 				staffList.innerHTML = ""; // limpa antes de renderizar
+				if (data.response.length == 0) {
+					const div = document.createElement("div");
+					Object.assign(div.style, {
+						display: "flex",
+						flexDirection: "column",
+						rowGap: "10px",
+						justifyContent: "center",
+						alignItems: "center",
+						fontFamily: "'Fredoka', sans-serif",
+						fontSize: "50px",
+						color: "#9fa324"
+					});
+					const svg = document.createElement("img");
+					svg.src = "../../assets/staff/person_cancel.svg";
+					svg.style.width = "100px";
+					svg.style.height = "100px";
+
+					div.appendChild(svg);
+					
+					const message = document.createElement("p")
+					message.innerHTML = "Nenhum funcionário cadastrado"
+					
+					div.appendChild(message);
+
+					staffList.appendChild(div);
+					return;
+				}
 				data.response.forEach(staff => {
 					const staffItem = createStaffItem(staff);
 					staffList.appendChild(staffItem);

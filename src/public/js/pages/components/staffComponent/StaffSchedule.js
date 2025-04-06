@@ -18,7 +18,7 @@ export default async function StaffShiftEditor(staffId) {
 		[`firstShiftStatus${i + 1}`]: i === 0 ? false : true,
 		[`secondShiftStartTime${i + 1}`]: "13:00",
 		[`secondShiftEndTime${i + 1}`]: "18:00",
-		[`secondShiftStatus${i + 1}`]: i === 0 ? false : true
+		[`secondShiftStatus${i + 1}`]: i === 0 || i === 6 ? false : true
 	}));
 
 	const div = document.createElement("div");
@@ -293,7 +293,7 @@ export default async function StaffShiftEditor(staffId) {
 		}
 	};
 
-	btnContainer.append(cancelar, salvar);
+	btnContainer.append(salvar, cancelar);
 	modal.appendChild(btnContainer);
 
 	div.onclick = e => {

@@ -211,8 +211,8 @@ export default async function StaffServicesSelection(staffId) {
 			div.remove();
 		});
 
-		buttonsContainer.appendChild(cancelButton);
 		buttonsContainer.appendChild(saveButton);
+		buttonsContainer.appendChild(cancelButton);
 		modalContent.appendChild(buttonsContainer);
 
 		div.addEventListener("click", e => {
