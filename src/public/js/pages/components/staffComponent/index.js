@@ -8,7 +8,6 @@ export default async function StaffManager() {
 	div.style.display = "flex";
 	div.style.flexDirection = "column";
 	div.style.gap = "2rem";
-	div.style.padding = "20px";
 
 	// Botão de cadastro
 	const createButton = document.createElement("button");
@@ -116,8 +115,12 @@ export default async function StaffManager() {
 					case "Editar":
 						try {
 							const res = await fetch(`/api/staff/${id}`);
-							if (!res.ok)
-								throw new Error("Erro ao buscar dados do funcionário");
+
+							if (!res.ok) {
+								const errorData = await res.json();
+								throw new Error(errorData.error || "Falha Desconhecida");
+							}
+
 							const data = await res.json();
 
 							const modal = await StaffInformation(data, loadStaff);
@@ -126,8 +129,7 @@ export default async function StaffManager() {
 
 							root.appendChild(modal);
 						} catch (err) {
-							console.error("Erro ao carregar funcionário:", err);
-							alert("Erro ao carregar os dados do funcionário.");
+							MessageNotification(err.message, "#ff6347");
 						}
 						break;
 
@@ -182,46 +184,54 @@ export default async function StaffManager() {
 	}
 
 	// Carrega os funcionários
-	function loadStaff() {
-		fetch("/api/staff")
-			.then(res => res.json())
-			.then(data => {
-				staffList.innerHTML = ""; // limpa antes de renderizar
-				if (data.response.length == 0) {
-					const div = document.createElement("div");
-					Object.assign(div.style, {
-						display: "flex",
-						flexDirection: "column",
-						rowGap: "10px",
-						justifyContent: "center",
-						alignItems: "center",
-						fontFamily: "'Fredoka', sans-serif",
-						fontSize: "50px",
-						color: "#9fa324"
-					});
-					const svg = document.createElement("img");
-					svg.src = "../../assets/staff/person_cancel.svg";
-					svg.style.width = "100px";
-					svg.style.height = "100px";
+	async function loadStaff() {
+		try {
+			const res = await fetch("/api/staff");
+			if (!res.ok) {
+				const errorData = await res.json();
+				throw new Error(errorData.error || "Falha Desconhecida");
+			}
 
-					div.appendChild(svg);
-					
-					const message = document.createElement("p")
-					message.innerHTML = "Nenhum funcionário cadastrado"
-					
-					div.appendChild(message);
+			const data = await res.json();
+			staffList.innerHTML = "";
 
-					staffList.appendChild(div);
-					return;
-				}
-				data.response.forEach(staff => {
-					const staffItem = createStaffItem(staff);
-					staffList.appendChild(staffItem);
+			if (data.response.length === 0) {
+				const div = document.createElement("div");
+				Object.assign(div.style, {
+					display: "flex",
+					flexDirection: "column",
+					rowGap: "10px",
+					justifyContent: "center",
+					alignItems: "center",
+					fontFamily: "'Fredoka', sans-serif",
+					fontSize: "50px",
+					color: "#9fa324",
+					height: "calc(77vh - 108px)"
 				});
-			})
-			.catch(err => {
-				console.error("Erro ao buscar funcionários", err);
+
+				const svg = document.createElement("img");
+				svg.src = "../../assets/staff/person_cancel.svg";
+				svg.style.width = "100px";
+				svg.style.height = "100px";
+
+				div.appendChild(svg);
+
+				const message = document.createElement("p");
+				message.innerHTML = "Nenhum funcionário cadastrado";
+
+				div.appendChild(message);
+				staffList.appendChild(div);
+				return;
+			}
+
+			data.response.forEach(staff => {
+				const staffItem = createStaffItem(staff);
+				staffList.appendChild(staffItem);
 			});
+		} catch (err) {
+			console.error("Erro ao buscar funcionários", err);
+			MessageNotification(err.message, "#ff6347");
+		}
 	}
 
 	loadStaff();

@@ -86,8 +86,8 @@ export default async function ConfirmRemoveStaffModal(staffId, onSave) {
 		div.remove();
 	});
 
-	buttonsContainer.appendChild(noButton);
 	buttonsContainer.appendChild(yesButton);
+	buttonsContainer.appendChild(noButton);
 	modalContent.appendChild(buttonsContainer);
 
 	div.appendChild(modalContent);
