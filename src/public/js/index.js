@@ -40,8 +40,13 @@ function changePage() {
 }
 
 async function onPageLoad() {
-  await checkSession();
-  changePage();
+  const currentPath = window.location.pathname;
+  if (['/', '/login', '/signup'].includes(currentPath)) {
+    changePage();
+  } else {
+    await checkSession();
+    changePage();
+  }
 }
 
 window.addEventListener("load", onPageLoad);
