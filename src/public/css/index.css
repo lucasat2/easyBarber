@@ -342,7 +342,6 @@ body {
   row-gap: 10px;
   justify-content: center;
   align-items: center;
-  font-family: "Fredoka", sans-serif;
   font-size: 50px;
   color: #9fa324;
 }
@@ -372,12 +371,10 @@ body {
   align-items: center;
   width: 900px;
   height: 70px;
-  font-family: "Fredoka", sans-serif;
   font-size: 16px;
 }
 
 .employeeSchedulingTimelineHeaderManagementButton {
-  font-family: "Fredoka", sans-serif;
   font-size: 14px;
   padding: 10px 20px;
   border-radius: 5px;
@@ -407,7 +404,6 @@ body {
   background-color: #f5f5f5;
   border: 1px solid #f5f5f5;
   border-radius: 12px;
-  font-family: "Fredoka", sans-serif;
   font-size: 14px;
   appearance: none;
   cursor: pointer;
@@ -509,7 +505,6 @@ body {
   place-items: center;
   gap: 15px;
   width: 800px;
-  font-family: "Fredoka", sans-serif;
 }
 
 .schedulingTimelineMainHeader {
@@ -522,7 +517,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: "Fredoka", sans-serif;
   border-radius: 10px;
   transition: all 0.2s ease;
   font-size: 14px;
@@ -717,7 +711,6 @@ textarea.modalBoxStyles {
 }
 
 .noDataTitle {
-  font-family: "Fredoka", sans-serif;
   font-size: 50px;
   color: #9fa324;
 }
@@ -843,7 +836,6 @@ textarea.modalBoxStyles {
   background-color: #f5f5f5;
   padding: 15px 10px;
   border-radius: 5px;
-  font-family: "Fredoka", sans-serif;
 }
 
 .serviceModalPriceAndDurationFields {
@@ -856,7 +848,6 @@ textarea.modalBoxStyles {
   background-color: #f5f5f5;
   padding: 15px 10px;
   border-radius: 5px;
-  font-family: "Fredoka", sans-serif;
   width: 48%;
 }
 
@@ -865,7 +856,6 @@ textarea.modalBoxStyles {
   background-color: #f5f5f5;
   padding: 15px 10px;
   border-radius: 5px;
-  font-family: "Fredoka", sans-serif;
   resize: none;
 }
 
@@ -877,7 +867,6 @@ textarea.modalBoxStyles {
   border-radius: 5px;
   font-size: 16px;
   background-color: #dee33e;
-  font-family: "Fredoka", sans-serif;
   transition: all 0.3s ease;
   align-self: center;
   color: #fff;
