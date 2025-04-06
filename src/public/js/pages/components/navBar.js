@@ -1,6 +1,5 @@
 import { InitialSchedulingTimelineSection } from "./InitialSchedulingTimelineSection.js";
 import { MessageNotification } from "./MessageNotification.js";
-import { ServiceDashboard } from "./ServiceDashboard.js";
 
 export default function header() {
   const root = document.getElementById("root");
@@ -149,9 +148,7 @@ export default function header() {
     } else if (activeItem.id == "Equipe") {
       main.innerHTML = "Equipe";
     } else if (activeItem.id == "Serviço") {
-      const section = ServiceDashboard();
-
-      main.appendChild(section);
+      main.innerHTML = "Serviço";
     }
   }
 
@@ -249,5 +246,9 @@ export default function header() {
     }
   }, 0);
 
+  // root.appendChild(divContainerNav);
   return divContainerNav;
+
+  // const liAgendamentos = document.getElementById("Agendamentos");
+  // highlightActiveButton(liAgendamentos);
 }
