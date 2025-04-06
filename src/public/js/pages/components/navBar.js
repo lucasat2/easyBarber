@@ -80,6 +80,23 @@ export default function header() {
   nameUser.style.fontWeight = "900";
   nameUser.style.cursor = "pointer";
 
+  fetch("/api/users/company")
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((errorData) => {
+          throw new Error(errorData.error || "Falha Desconhecida");
+        });
+      }
+
+      return response.json();
+    })
+    .then((data) => {
+      nameUser.innerText = data.name;
+    })
+    .catch((error) => {
+      MessageNotification(error.message, "#ff6347");
+    });
+
   nameUser.addEventListener("mouseenter", () => {
     nameUser.style.color = "#DEE33E";
   });
