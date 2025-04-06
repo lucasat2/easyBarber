@@ -836,7 +836,7 @@ textarea.modalBoxStyles {
   padding: 0px 60px;
 }
 
-.serviceModalInputs {
+.serviceNameModalInput {
   border: none;
   background-color: #f5f5f5;
   padding: 15px 10px;
@@ -847,6 +847,15 @@ textarea.modalBoxStyles {
 .serviceModalPriceAndDurationFields {
   display: flex;
   justify-content: space-between;
+}
+
+.servicePriceAndDurationModalInputs {
+  border: none;
+  background-color: #f5f5f5;
+  padding: 15px 10px;
+  border-radius: 5px;
+  font-family: "Fredoka", sans-serif;
+  width: 48%;
 }
 
 .serviceModalTextArea {
@@ -869,6 +878,7 @@ textarea.modalBoxStyles {
   font-family: "Fredoka", sans-serif;
   transition: all 0.3s ease;
   align-self: center;
+  color: #fff;
 }
 
 .serviceModalSaveButton:hover {
