@@ -3,8 +3,9 @@ const staffController = require("../controller/staffController.js");
 const { verifyActiveSession } = require("../middleware");
 const router = express.Router();
 
-router.get("/", verifyActiveSession, staffController.list);
+router.get("/serviceStaff/:id", verifyActiveSession, staffController.getServiceStaff);
 router.get("/:id", verifyActiveSession, staffController.getStaffData);
+router.get("/", verifyActiveSession, staffController.list);
 router.post("/", verifyActiveSession, staffController.create);
 router.post(
   "/associateServices",

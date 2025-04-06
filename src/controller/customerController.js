@@ -1,68 +1,88 @@
 const customerServices = require("../services/customerServices.js");
 
 const listCompanyId = async (req, res) => {
-	const {idCompany} = req.body;
-	const result = await customerServices.listCompanyById(idCompany);
+	try {
+		const {idCompany} = req.body;
+		const result = await customerServices.listCompanyById(idCompany);
 
-	if (!result) {
-		return res.status(404).json({error: "Empresa não encontrada"});
+		if (!result) {
+			return res.status(404).json({error: "Empresa não encontrada"});
+		}
+		res.json({result});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({error: "Erro interno ao buscar empresa"});
 	}
-	res.json({result});
 };
 
 const listServicesByCompany = async (req, res) => {
-	const {idCompany} = req.body;
+	try {
+		const {idCompany} = req.body;
 
-	const result = await customerServices.listServicesCompanyByIdCompany(
-		idCompany
-	);
+		const result = await customerServices.listServicesCompanyByIdCompany(
+			idCompany
+		);
 
-	if (!result) {
-		return res.status(404).json({error: "Nenhum serviço encontrado"});
+		if (!result) {
+			return res.status(404).json({error: "Nenhum serviço encontrado"});
+		}
+		res.json({result});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({error: "Erro interno ao buscar serviços"});
 	}
-	res.json({result});
 };
 
 const listStaffByService = async (req, res) => {
-	const {idCompany, idService} = req.body;
+	try {
+		const {idCompany, idService} = req.body;
 
-	const result = await customerServices.listStaffByCompanyAndService(
-		idCompany,
-		idService
-	);
+		const result = await customerServices.listStaffByCompanyAndService(
+			idCompany,
+			idService
+		);
 
-	if (!result) {
-		return res
-			.status(404)
-			.json({error: "Nenhum funcionário encontrado para o serviço"});
+		if (!result) {
+			return res
+				.status(404)
+				.json({error: "Nenhum funcionário encontrado para o serviço"});
+		}
+		res.json({result});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({error: "Erro interno ao buscar funcionários"});
 	}
-	res.json({result});
 };
 
 const listScheduleByStaff = async (req, res) => {
-	const {idStaff, date} = req.body;
+	try {
+		const {idStaff, date} = req.body;
 
-	if (!date) {
-		return res.status(404).json({error: "Envie uma data"});
+		if (!date) {
+			return res.status(404).json({error: "Envie uma data"});
+		}
+
+		const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+
+		if (!dateRegex.test(date)) {
+			return res
+				.status(400)
+				.json({error: "Formato de data inválido. Use YYYY-MM-DD"});
+		}
+
+		const getSchedules = await customerServices.listSchedulesBuStaff(
+			idStaff,
+			date
+		);
+		if (!getSchedules) {
+			return res.status(400).json({error: "Funcionário não trabalha nesse dia"});
+		}
+
+		res.json({getSchedules});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({error: "Erro interno ao buscar horários"});
 	}
-
-	const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-
-	if (!dateRegex.test(date)) {
-		return res
-			.status(400)
-			.json({error: "Formato de data inválido. Use YYYY-MM-DD"});
-	}
-
-	const getSchedules = await customerServices.listSchedulesBuStaff(
-		idStaff,
-		date
-	);
-	if (!getSchedules) {
-		return res.status(400).json({error: "Funcionário não trabalha nesse dia"});
-	}
-
-	res.json({getSchedules});
 };
 
 const createAppointments = async (req, res) => {

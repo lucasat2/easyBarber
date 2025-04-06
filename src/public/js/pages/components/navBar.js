@@ -1,6 +1,8 @@
 import { InitialSchedulingTimelineSection } from "./InitialSchedulingTimelineSection.js";
 import { MessageNotification } from "./MessageNotification.js";
+import StaffManager from "./staffComponent/index.js";
 import { ServiceDashboard } from "./ServiceDashboard.js";
+
 
 export default function header() {
   const root = document.getElementById("root");
@@ -147,7 +149,11 @@ export default function header() {
 
       main.appendChild(section);
     } else if (activeItem.id == "Equipe") {
-      main.innerHTML = "Equipe";
+      main.innerHTML = "";
+
+			const section = await StaffManager();
+
+			main.appendChild(section);
     } else if (activeItem.id == "Serviço") {
       const section = ServiceDashboard();
 
