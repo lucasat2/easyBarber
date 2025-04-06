@@ -1,6 +1,8 @@
 import { InitialSchedulingTimelineSection } from "./InitialSchedulingTimelineSection.js";
 import { MessageNotification } from "./MessageNotification.js";
 import StaffManager from "./staffComponent/index.js";
+import { ServiceDashboard } from "./ServiceDashboard.js";
+
 
 export default function header() {
   const root = document.getElementById("root");
@@ -153,7 +155,9 @@ export default function header() {
 
 			main.appendChild(section);
     } else if (activeItem.id == "Serviço") {
-      main.innerHTML = "Serviço";
+      const section = ServiceDashboard();
+
+      main.appendChild(section);
     }
   }
 
@@ -251,9 +255,5 @@ export default function header() {
     }
   }, 0);
 
-  // root.appendChild(divContainerNav);
   return divContainerNav;
-
-  // const liAgendamentos = document.getElementById("Agendamentos");
-  // highlightActiveButton(liAgendamentos);
 }
