@@ -13,41 +13,37 @@ export default function StratYoutBooking() {
 
 	const container = document.createElement("div");
 
-	// Pegando o nome correto da empresa
 	const urlParams = new URLSearchParams(window.location.search);
 	const idCompany = urlParams.get("idCompany");
 
 	if (!idCompany) {
 		container.innerHTML = "ID da empresa não encontrado na URL.";
-		return container; // Se o idCompany não existir, mostra a mensagem e retorna a página
+		return container;
 	}
 
-	// Configurar a URL da API
 	const apiUrl = "/api/customer/company";
 
-	// Fazer o POST para a API com o idCompany
 	fetch(apiUrl, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json"
 		},
-		body: JSON.stringify({idCompany}) // Envia o idCompany no corpo da requisição
+		body: JSON.stringify({idCompany})
 	})
 		.then(response => response.json())
 		.then(data => {
 			if (data.result) {
-				// Se a empresa for encontrada, atualiza o título
 				const companyName = data.result;
 				const header = Header(companyName);
 				container.appendChild(header);
-				buildContent(container); // Chama a função que monta o conteúdo da página
+				buildContent(container);
 			} else {
-				container.innerHTML = "Empresa não encontrada."; // Se a empresa não for encontrada
+				container.innerHTML = "Empresa não encontrada.";
 			}
 		})
 		.catch(error => {
 			console.error("Erro ao buscar o nome da empresa:", error.message);
-			container.innerHTML = "Erro ao buscar o nome da empresa."; // Caso ocorra um erro na requisição
+			container.innerHTML = "Erro ao buscar o nome da empresa.";
 		});
 
 	function buildContent(container) {
@@ -97,7 +93,7 @@ export default function StratYoutBooking() {
 		});
 
 		const button = document.createElement("button");
-		button.textContent = "Agendar um corte";
+		button.textContent = "Agendar um serviço";
 		button.style.background = "#DEE33E";
 		button.style.fontSize = "1.3rem";
 		button.style.fontWeight = "800";
@@ -110,7 +106,7 @@ export default function StratYoutBooking() {
 		button.addEventListener("click", () => {
 			navigateTo(ServicesPage);
 		});
-		
+
 		button.addEventListener("mouseover", () => {
 			button.style.background = "#ffd700";
 		});

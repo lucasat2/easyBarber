@@ -1,6 +1,7 @@
 import Header from "./Header.js";
 import ServicesPage from "./ServicesPage.js";
 import ConfirmScheduling from "./ConfirmScheduling.js";
+import {MessageNotification} from "../MessageNotification.js";
 
 function navigateTo(pageFunction, obj) {
 	const root = document.getElementById("root");
@@ -9,52 +10,63 @@ function navigateTo(pageFunction, obj) {
 	root.appendChild(pageFunction(obj));
 }
 
-function fetchStaffServices(idCompany, idService) {
+async function fetchStaffServices(idCompany, idService) {
 	const apiUrl = "/api/customer/company/services/staff";
 
-	return fetch(apiUrl, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify({idCompany, idService})
-	})
-		.then(response => response.json())
-		.then(data => {
-			if (data.result) {
-				return data.result;
-			} else {
-				throw new Error("Serviços não encontrados.");
-			}
-		})
-		.catch(error => {
-			console.error("Erro ao buscar os serviços da empresa:", error.message);
-			throw error;
+	try {
+		const res = await fetch(apiUrl, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({idCompany, idService})
 		});
+
+		if (!res.ok) {
+			const errorData = await res.json();
+			throw new Error(errorData.error || "Serviços não encontrados.");
+		}
+
+		const data = await res.json();
+
+		if (data.result) {
+			return data.result;
+		} else {
+			throw new Error("Serviços não encontrados.");
+		}
+	} catch (e) {
+		MessageNotification(e.message, "#ff6347");
+	}
 }
 
-function fetchCompanyServices(idCompany) {
+async function fetchCompanyServices(idCompany) {
 	const apiUrl = "/api/customer/company/services";
 
-	return fetch(apiUrl, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify({idCompany})
-	})
-		.then(response => response.json())
-		.then(data => {
-			if (data.result) {
-				return data.result;
-			} else {
-				throw new Error("Serviços não encontrados.");
-			}
-		})
-		.catch(error => {
-			console.error("Erro ao buscar os serviços da empresa:", error.message);
-			throw error;
+	try {
+		const res = await fetch(apiUrl, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({idCompany})
 		});
+
+		if (!res.ok) {
+			const errorData = await res.json();
+			throw new Error(errorData.error || "Erro ao buscar os serviços.");
+		}
+
+		const data = await res.json();
+
+		if (data.result) {
+			return data.result;
+		} else {
+			throw new Error("Serviços não encontrados.");
+		}
+	} catch (e) {
+		MessageNotification(e.message, "#ff6347");
+		return null; // ou undefined, dependendo do que o resto do código espera
+	}
 }
 
 // Função para buscar e exibir os horários disponíveis
@@ -148,6 +160,8 @@ async function updateAvailableTimes(
 			hoursToWork.style.display = "flex";
 			hoursToWork.style.gap = "1rem";
 			hoursToWork.style.flexWrap = "wrap";
+			hoursToWork.style.justifyContent = "center";
+			hoursToWork.style.width = "fit-content";
 		});
 	} catch (error) {
 		hoursToWork.innerHTML = "Funcionário não trabalha esse dia";
@@ -257,7 +271,9 @@ export default function ScheduleAppointment() {
 				const contentService = document.createElement("div");
 				contentService.style.display = "flex";
 				contentService.style.flexDirection = "column";
+				contentService.style.alignItems = "center";
 				contentService.style.gap = "0.8rem";
+
 				const chosenService = document.createElement("div");
 				chosenService.style.display = "flex";
 				chosenService.style.flexDirection = "column";
@@ -271,20 +287,65 @@ export default function ScheduleAppointment() {
 				const containerContent = document.createElement("div");
 				containerContent.style.display = "flex";
 				containerContent.style.flexDirection = "column";
-				containerContent.style.gap = "1rem";
+				containerContent.style.gap = "2rem";
 
 				const contentServiceInformation = document.createElement("div");
-				contentServiceInformation.innerHTML = `
-            <h3>${serviceNames.trim()}</h3>
-            <p>${time} min</p>
-            <p>R$ ${cost.toString().replace(".", ",")}</p>
-            `;
+
+				// Nome do serviço
+				const nameWrapper = document.createElement("div");
+				nameWrapper.style.display = "flex";
+				nameWrapper.style.gap = "0.5rem";
+				nameWrapper.style.alignItems = "center";
+
+				const nameText = document.createElement("h3");
+				nameText.textContent = serviceNames.trim();
+
+				nameWrapper.appendChild(nameText);
+
+				// Tempo
+				const timeWrapper = document.createElement("div");
+				timeWrapper.style.display = "flex";
+				timeWrapper.style.gap = "0.5rem";
+				timeWrapper.style.alignItems = "center";
+
+				const timeIcon = document.createElement("img");
+				timeIcon.src = "../assets/externalSchedulingPage/time.svg"; // ajuste o caminho se necessário
+				timeIcon.alt = "Ícone tempo";
+				timeIcon.style.width = "24px";
+
+				const timeText = document.createElement("p");
+				timeText.textContent = `Tempo: ${time} min`;
+
+				timeWrapper.appendChild(timeIcon);
+				timeWrapper.appendChild(timeText);
+
+				// Custo
+				const costWrapper = document.createElement("div");
+				costWrapper.style.display = "flex";
+				costWrapper.style.gap = "0.5rem";
+				costWrapper.style.alignItems = "center";
+
+				const costIcon = document.createElement("img");
+				costIcon.src = "../assets/externalSchedulingPage/payments.svg"; // ajuste o caminho se necessário
+				costIcon.alt = "Ícone custo";
+				costIcon.style.width = "24px";
+
+				const costText = document.createElement("p");
+				costText.textContent = `R$ ${cost.toString().replace(".", ",")}`;
+
+				costWrapper.appendChild(costIcon);
+				costWrapper.appendChild(costText);
+
+				// Junta tudo
+				contentServiceInformation.appendChild(nameWrapper);
+				contentServiceInformation.appendChild(timeWrapper);
+				contentServiceInformation.appendChild(costWrapper);
 
 				chosenService.appendChild(imageService);
 				chosenService.appendChild(contentServiceInformation);
 
 				const back = document.createElement("div");
-				back.innerText = "Alterar corte";
+				back.innerText = "Alterar serviço";
 				back.style.background = "#DEE33E";
 				back.style.padding = "10px 20px";
 				back.style.fontWeight = "700";
@@ -351,6 +412,7 @@ export default function ScheduleAppointment() {
 				});
 				containerContent.style.display = "flex";
 				containerContent.style.flexDirection = "column";
+				containerContent.style.alignItems = "center";
 
 				const selectStaff = document.createElement("div");
 				selectStaff.style.display = "flex";
@@ -370,6 +432,7 @@ export default function ScheduleAppointment() {
 						confirm.style.border = "none";
 						confirm.style.minHeight = "auto";
 						containerContent.style.width = "100%";
+						containerContent.style.marginBottom = "6.5rem";
 					} else {
 						button.style.position = "relative";
 						button.style.bottom = "auto";
@@ -462,6 +525,30 @@ export default function ScheduleAppointment() {
 				dateInput.type = "date";
 				dateInput.id = "calendar-input";
 
+				// Estilo básico bonito
+				dateInput.style.padding = "8px 12px";
+				dateInput.style.border = "1px solid #ccc";
+				dateInput.style.borderRadius = "8px";
+				dateInput.style.backgroundColor = "#f9f9f9";
+				dateInput.style.fontSize = "16px";
+				dateInput.style.color = "#333";
+				dateInput.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.1)";
+				dateInput.style.outline = "none";
+				dateInput.style.transition = "border-color 0.3s, box-shadow 0.3s";
+				dateInput.style.width = "fit-content";
+
+				// Estilo ao focar
+				dateInput.addEventListener("focus", () => {
+					dateInput.style.borderColor = "#5c9ded";
+					dateInput.style.boxShadow = "0 0 0 3px rgba(92, 157, 237, 0.3)";
+				});
+
+				dateInput.addEventListener("blur", () => {
+					dateInput.style.borderColor = "#ccc";
+					dateInput.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.1)";
+				});
+
+				// Definindo a data mínima e valor inicial
 				const now = new Date();
 				const year = now.getFullYear();
 				const month = String(now.getMonth() + 1).padStart(2, "0");
@@ -470,8 +557,8 @@ export default function ScheduleAppointment() {
 				const today = `${year}-${month}-${day}`;
 				dateInput.min = today;
 				dateInput.value = today;
-				dateInput.style.width = "fit-content";
 
+				// Evento ao mudar a data
 				dateInput.addEventListener("change", async () => {
 					const dataDay = dateInput.value;
 
@@ -495,7 +582,14 @@ export default function ScheduleAppointment() {
 				});
 
 				containerContent.appendChild(dateInput);
-				containerContent.appendChild(hoursToWork);
+
+				const containerHoursToWork = document.createElement("div");
+				containerHoursToWork.style.width = "100%";
+				containerHoursToWork.style.display = "flex";
+				containerHoursToWork.style.justifyContent = "center";
+
+				containerHoursToWork.appendChild(hoursToWork);
+				containerContent.appendChild(containerHoursToWork);
 
 				div.appendChild(containerContent);
 

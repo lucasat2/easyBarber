@@ -67,7 +67,7 @@ export default function ConfirmScheduling(obj) {
 	containerCheck.style.flex = "1";
 	containerCheck.style.minWidth = "300px";
 
-	const pStaff = document.createElement("p");
+	const pStaff = document.createElement("h3");
 	pStaff.style.fontWeight = "bold";
 	pStaff.style.marginBottom = "10px";
 	pStaff.innerHTML = `Profissional: ${obj.objStaff.name}`;
@@ -80,7 +80,62 @@ export default function ConfirmScheduling(obj) {
 		.join("/")}</p> <p>Hora: ${obj.hourSelected}</p>`;
 
 	const divService = document.createElement("div");
-	divService.innerHTML = `<h3>${obj.objService.name}</h3> <p>Tempo: ${obj.objService.time} min</p> <p>R$ ${obj.objService.cost}</p>`;
+
+	// Serviço (nome)
+	const nameWrapper = document.createElement("div");
+	nameWrapper.style.display = "flex"
+	nameWrapper.style.gap = "0.5rem"
+
+
+	const nameText = document.createElement("h3");
+	nameText.textContent = obj.objService.name;
+
+	nameWrapper.style.display = "flex";
+	nameWrapper.style.alignItems = "center";
+	nameWrapper.appendChild(nameText);
+
+	// Tempo
+	const timeWrapper = document.createElement("div");
+	timeWrapper.style.display = "flex"
+	timeWrapper.style.gap = "0.5rem"
+
+	const timeIcon = document.createElement("img");
+	timeIcon.src = "../assets/externalSchedulingPage/time.svg";
+	timeIcon.alt = "Ícone tempo";
+	timeIcon.style.width = "24px";
+
+	const timeText = document.createElement("p");
+	timeText.textContent = `Tempo: ${obj.objService.time} min`;
+
+	timeWrapper.style.display = "flex";
+	timeWrapper.style.alignItems = "center";
+	timeWrapper.appendChild(timeIcon);
+	timeWrapper.appendChild(timeText);
+
+	// Custo
+	const costWrapper = document.createElement("div");
+	costWrapper.style.display = "flex"
+	costWrapper.style.gap = "0.5rem"
+
+	const costIcon = document.createElement("img");
+	costIcon.src = "../assets/externalSchedulingPage/payments.svg";
+	costIcon.alt = "Ícone custo";
+	costIcon.style.width = "24px";
+
+	const costText = document.createElement("p");
+	costText.textContent = `R$ ${obj.objService.cost
+		.toString()
+		.replace(".", ",")}`;
+
+	costWrapper.style.display = "flex";
+	costWrapper.style.alignItems = "center";
+	costWrapper.appendChild(costIcon);
+	costWrapper.appendChild(costText);
+
+	// Junta tudo no divService
+	divService.appendChild(nameWrapper);
+	divService.appendChild(timeWrapper);
+	divService.appendChild(costWrapper);
 
 	containerCheck.appendChild(pStaff);
 	containerCheck.appendChild(divDate);

@@ -78,11 +78,24 @@ export default function ServicesPage() {
 
 	function buildContent(container) {
 		const content = document.createElement("div");
-		content.style.padding = "2rem";
+		content.style.padding = "3rem";
 		content.style.display = "flex";
 		content.style.flexWrap = "wrap";
 		content.style.justifyContent = "center";
 		content.style.gap = "2rem";
+
+		const h2 = document.createElement("h2")
+		h2.innerText = "Nossos serviços"
+		h2.style.fontSize = "1.8rem"
+
+		content.appendChild(h2)
+
+		const cardsServices = document.createElement("div")
+		cardsServices.style.width = "100%"
+		cardsServices.style.display = "flex";
+		cardsServices.style.flexWrap = "wrap";
+		cardsServices.style.justifyContent = "center";
+		cardsServices.style.gap = "2rem";
 
 		fetchCompanyServices(idCompany)
 			.then(services => {
@@ -109,7 +122,6 @@ export default function ServicesPage() {
 						);
 						const idService = e.id;
 
-						// Atualiza a URL sem recarregar a página
 						const url = `/client?idCompany=${idCompany}&idService=${idService}`;
 						window.history.pushState({path: url}, "", url);
 						navigateTo(ScheduleAppointment);
@@ -176,7 +188,8 @@ export default function ServicesPage() {
 					serviceDiv.appendChild(serviceDescription);
 
 					div.appendChild(serviceDiv);
-					content.appendChild(div);
+					cardsServices.appendChild(div);
+					content.appendChild(cardsServices);
 				});
 			})
 			.catch(error => {
