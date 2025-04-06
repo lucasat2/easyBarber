@@ -84,14 +84,14 @@ export default function ServicesPage() {
 		content.style.justifyContent = "center";
 		content.style.gap = "2rem";
 
-		const h2 = document.createElement("h2")
-		h2.innerText = "Nossos serviços"
-		h2.style.fontSize = "1.8rem"
+		const h2 = document.createElement("h2");
+		h2.innerText = "Nossos serviços";
+		h2.style.fontSize = "1.8rem";
 
-		content.appendChild(h2)
+		content.appendChild(h2);
 
-		const cardsServices = document.createElement("div")
-		cardsServices.style.width = "100%"
+		const cardsServices = document.createElement("div");
+		cardsServices.style.width = "100%";
 		cardsServices.style.display = "flex";
 		cardsServices.style.flexWrap = "wrap";
 		cardsServices.style.justifyContent = "center";
@@ -170,19 +170,55 @@ export default function ServicesPage() {
 					const title = document.createElement("p");
 					title.textContent = "Descrição:";
 
+					// Container da descrição (em vez de aplicar tudo no <p>)
+					const descriptionWrapper = document.createElement("div");
+					descriptionWrapper.style.maxHeight = "4.5em"; // ~3 linhas
+					descriptionWrapper.style.overflow = "hidden";
+					descriptionWrapper.style.transition = "max-height 0.3s ease-in-out";
+
+					// Description em si
 					const description = document.createElement("p");
 					description.textContent = e.description;
-					description.style.display = "-webkit-box";
-					description.style.webkitLineClamp = "3";
-					description.style.webkitBoxOrient = "vertical";
-					description.style.overflow = "hidden";
-					description.style.textOverflow = "ellipsis";
-					description.style.maxWidth = "100%";
 					description.style.whiteSpace = "normal";
 					description.style.wordBreak = "break-word";
 
+					// Adiciona descrição no wrapper
+					descriptionWrapper.appendChild(description);
+
+					// Cria o overlay
+					const overlay = document.createElement("div");
+					overlay.style.position = "absolute";
+					overlay.style.inset = "0"; // top: 0, right: 0, bottom: 0, left: 0
+					overlay.style.borderRadius = "10px";
+					overlay.style.background =
+						"linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent)";
+					overlay.style.opacity = "0";
+					overlay.style.transition = "opacity 0.3s ease-in-out";
+					overlay.style.pointerEvents = "none";
+					overlay.style.zIndex = "0";
+					
+					// Aplica position: relative no container principal
+					div.style.position = "relative";
+
+					// Adiciona o overlay no cartão
+					div.appendChild(overlay);
+
+					// Hover para mostrar o gradiente escuro
+					div.addEventListener("mouseover", () => {
+						overlay.style.opacity = "1";
+						descriptionWrapper.style.maxHeight = "9em";
+					});
+
+					div.addEventListener("mouseout", () => {
+						overlay.style.opacity = "0";
+						descriptionWrapper.style.maxHeight = "4.5em";
+					});
+
 					serviceDescription.appendChild(title);
-					serviceDescription.appendChild(description);
+					serviceDescription.appendChild(descriptionWrapper);
+
+					serviceDiv.style.position = "relative";
+					serviceDiv.style.zIndex = "1";
 
 					serviceDiv.appendChild(serviceContent);
 					serviceDiv.appendChild(serviceDescription);

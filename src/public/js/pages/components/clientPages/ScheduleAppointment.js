@@ -6,6 +6,7 @@ import {MessageNotification} from "../MessageNotification.js";
 function navigateTo(pageFunction, obj) {
 	const root = document.getElementById("root");
 	root.innerHTML = "";
+	root.style.minHeight = "100vh";
 	root.appendChild(Header(objCompany.companyName));
 	root.appendChild(pageFunction(obj));
 }
@@ -65,11 +66,10 @@ async function fetchCompanyServices(idCompany) {
 		}
 	} catch (e) {
 		MessageNotification(e.message, "#ff6347");
-		return null; // ou undefined, dependendo do que o resto do código espera
+		return null;
 	}
 }
 
-// Função para buscar e exibir os horários disponíveis
 async function updateAvailableTimes(
 	idStaff,
 	date,
@@ -127,7 +127,6 @@ async function updateAvailableTimes(
 			}
 		);
 
-		// Se o array de horários estiver vazio, então ele trabalha, mas está com agenda cheia
 		if (availableTimes.length === 0) {
 			hoursToWork.innerHTML = "Funcionário indisponível";
 			setHourSelected(null);
@@ -181,7 +180,7 @@ export default function ScheduleAppointment() {
 
 	const urlParams = new URLSearchParams(window.location.search);
 	const idCompany = urlParams.get("idCompany");
-	const idService = urlParams.get("idService"); // Pegar o idService aqui
+	const idService = urlParams.get("idService");
 
 	if (!idCompany) {
 		container.innerHTML = "ID da empresa não encontrado na URL.";
@@ -205,7 +204,7 @@ export default function ScheduleAppointment() {
 				objCompany = {idCompany, companyName};
 
 				container.appendChild(header);
-				buildContent(container, idService); // Passar o idService para buildContent
+				buildContent(container, idService);
 			} else {
 				container.innerHTML = "Empresa não encontrada.";
 			}
@@ -225,12 +224,10 @@ export default function ScheduleAppointment() {
 		let dateDaySelected = null;
 		let hourSelected = null;
 		let objStaff = null;
-		let objService = null; // Inicializa como null
+		let objService = null;
 
-		// Buscar os dados do serviço sempre que buildContent for chamado
 		const services = await fetchCompanyServices(idCompany);
 
-		// Encontrar o serviço correto e definir objService
 		const selectedService = services.find(service => service.id == idService);
 
 		if (selectedService) {
@@ -245,7 +242,7 @@ export default function ScheduleAppointment() {
 			};
 		} else {
 			console.error("Serviço não encontrado com o ID:", idService);
-			// Trate o caso em que o serviço não é encontrado, por exemplo, exibindo uma mensagem de erro
+
 			container.innerHTML = "Serviço não encontrado.";
 			return;
 		}
@@ -260,8 +257,8 @@ export default function ScheduleAppointment() {
 
 				const confirm = document.createElement("div");
 				confirm.style.width = "270px";
-				confirm.style.minHeight = "500px";
-				confirm.style.borderRight = "1px solid black";
+				confirm.style.height = "90vh";
+				confirm.style.borderRight = "1px solid #E2E2E5";
 				confirm.style.display = "flex";
 				confirm.style.flexDirection = "column";
 				confirm.style.justifyContent = "space-between";
@@ -288,10 +285,10 @@ export default function ScheduleAppointment() {
 				containerContent.style.display = "flex";
 				containerContent.style.flexDirection = "column";
 				containerContent.style.gap = "2rem";
+				containerContent.style.paddingBottom = "2rem";
 
 				const contentServiceInformation = document.createElement("div");
 
-				// Nome do serviço
 				const nameWrapper = document.createElement("div");
 				nameWrapper.style.display = "flex";
 				nameWrapper.style.gap = "0.5rem";
@@ -302,14 +299,13 @@ export default function ScheduleAppointment() {
 
 				nameWrapper.appendChild(nameText);
 
-				// Tempo
 				const timeWrapper = document.createElement("div");
 				timeWrapper.style.display = "flex";
 				timeWrapper.style.gap = "0.5rem";
 				timeWrapper.style.alignItems = "center";
 
 				const timeIcon = document.createElement("img");
-				timeIcon.src = "../assets/externalSchedulingPage/time.svg"; // ajuste o caminho se necessário
+				timeIcon.src = "../assets/externalSchedulingPage/time.svg";
 				timeIcon.alt = "Ícone tempo";
 				timeIcon.style.width = "24px";
 
@@ -319,14 +315,13 @@ export default function ScheduleAppointment() {
 				timeWrapper.appendChild(timeIcon);
 				timeWrapper.appendChild(timeText);
 
-				// Custo
 				const costWrapper = document.createElement("div");
 				costWrapper.style.display = "flex";
 				costWrapper.style.gap = "0.5rem";
 				costWrapper.style.alignItems = "center";
 
 				const costIcon = document.createElement("img");
-				costIcon.src = "../assets/externalSchedulingPage/payments.svg"; // ajuste o caminho se necessário
+				costIcon.src = "../assets/externalSchedulingPage/payments.svg";
 				costIcon.alt = "Ícone custo";
 				costIcon.style.width = "24px";
 
@@ -336,7 +331,6 @@ export default function ScheduleAppointment() {
 				costWrapper.appendChild(costIcon);
 				costWrapper.appendChild(costText);
 
-				// Junta tudo
 				contentServiceInformation.appendChild(nameWrapper);
 				contentServiceInformation.appendChild(timeWrapper);
 				contentServiceInformation.appendChild(costWrapper);
@@ -364,7 +358,7 @@ export default function ScheduleAppointment() {
 				});
 
 				back.addEventListener("click", () => {
-					navigateTo(ServicesPage, objCompany); // Passar objCompany
+					navigateTo(ServicesPage, objCompany);
 				});
 
 				contentService.appendChild(chosenService);
@@ -388,8 +382,7 @@ export default function ScheduleAppointment() {
 						dateDaySelected == null ||
 						hourSelected == null
 					) {
-						document.getElementById("errorMessage").innerHTML =
-							"Preencha todos os campos";
+						MessageNotification("Preencha todos os campos", "#ff6347");
 						return;
 					}
 					document.getElementById("errorMessage").innerHTML = "";
@@ -439,8 +432,8 @@ export default function ScheduleAppointment() {
 						button.style.left = "auto";
 						button.style.transform = "none";
 						confirm.style.width = "270px";
-						confirm.style.borderRight = "1px solid black";
-						confirm.style.minHeight = "500px";
+						confirm.style.borderRight = "1px solid #E2E2E5";
+						confirm.style.height = "80vh";
 						containerContent.style.width = "calc(100% - 300px)";
 					}
 				}
@@ -525,7 +518,6 @@ export default function ScheduleAppointment() {
 				dateInput.type = "date";
 				dateInput.id = "calendar-input";
 
-				// Estilo básico bonito
 				dateInput.style.padding = "8px 12px";
 				dateInput.style.border = "1px solid #ccc";
 				dateInput.style.borderRadius = "8px";
@@ -537,7 +529,6 @@ export default function ScheduleAppointment() {
 				dateInput.style.transition = "border-color 0.3s, box-shadow 0.3s";
 				dateInput.style.width = "fit-content";
 
-				// Estilo ao focar
 				dateInput.addEventListener("focus", () => {
 					dateInput.style.borderColor = "#5c9ded";
 					dateInput.style.boxShadow = "0 0 0 3px rgba(92, 157, 237, 0.3)";
@@ -548,7 +539,6 @@ export default function ScheduleAppointment() {
 					dateInput.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.1)";
 				});
 
-				// Definindo a data mínima e valor inicial
 				const now = new Date();
 				const year = now.getFullYear();
 				const month = String(now.getMonth() + 1).padStart(2, "0");
@@ -558,7 +548,6 @@ export default function ScheduleAppointment() {
 				dateInput.min = today;
 				dateInput.value = today;
 
-				// Evento ao mudar a data
 				dateInput.addEventListener("change", async () => {
 					const dataDay = dateInput.value;
 

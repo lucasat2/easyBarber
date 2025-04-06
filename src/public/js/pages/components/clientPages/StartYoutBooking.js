@@ -51,45 +51,96 @@ export default function StratYoutBooking() {
 		content.style.display = "flex";
 		content.style.alignItems = "center";
 		content.style.justifyContent = "space-around";
-		content.style.marginTop = "30px";
-		content.style.flexWrap = "wrap";
-		content.style.padding = "2rem";
+		content.style.paddingTop = "30px";
+		content.style.flexWrap = "nowrap";
+		content.style.padding = "3rem";
 		content.style.gap = "2rem";
+		content.style.minHeight = "70vh";
 
 		const textSection = document.createElement("div");
 		textSection.style.display = "flex";
 		textSection.style.flexDirection = "column";
 		textSection.style.alignItems = "center";
-		textSection.style.gap = "2rem";
+		textSection.style.gap = "3rem";
 
-		const heading = document.createElement("h2");
-		heading.textContent = "Procurando por uma barbearia diferenciada?";
-		heading.style.fontSize = "3rem";
-		heading.style.textAlign = "center";
+		const h1 = document.createElement("h1");
+		h1.textContent = "Procurando por uma barbearia diferenciada?";
+		h1.style.fontSize = "3rem";
+		h1.style.textAlign = "center";
+		h1.style.color = "#17171B";
+
+		const subTilte = document.createElement("p");
+		subTilte.innerText =
+			"Descubra uma nova experiência em cuidados masculinos. Aqui, estilo e atendimento andam juntos para valorizar ainda mais a sua identidade.";
+		subTilte.style.fontSize = "1.3rem";
+		subTilte.style.textAlign = "center";
+		subTilte.style.maxWidth = "70%";
+
+		const heading = document.createElement("div")
+		heading.style.display = "flex";
+		heading.style.flexDirection = "column";
+		heading.style.alignItems = "center";
+		heading.style.gap = "1.5rem";
+		heading.appendChild(h1)
+		heading.appendChild(subTilte)
 
 		const list = document.createElement("ul");
 		list.style.listStyle = "none";
+		list.style.display = "flex";
+		list.style.flexWrap = "wrap";
+		list.style.justifyContent = "center";
+		list.style.alignItems = "start";
+		list.style.gap = "1.3rem";
 
 		const items = [
-			"Barbeiros qualificados",
-			"Cortes estilizados",
-			"Agendamento rápido e simples"
+			"Profissionais excelêntes",
+			"Estilo sob medida",
+			"Agende em poucos cliques"
 		];
 
-		items.forEach(text => {
+		items.forEach((text, index) => {
+			const containerListItem = document.createElement("div");
+			containerListItem.style.display = "flex";
+			containerListItem.style.flexDirection = "column";
+			containerListItem.style.justifyContent = "center";
+			containerListItem.style.alignItems = "center";
+			containerListItem.style.gap = "0.3rem";
+
+			const imgContainer = document.createElement("div");
+			imgContainer.style.width = "50px";
+			imgContainer.style.height = "50px";
+			imgContainer.style.background = "#E3E3E4";
+			imgContainer.style.borderRadius = "100%";
+			imgContainer.style.display = "flex";
+			imgContainer.style.alignItems = "center";
+			imgContainer.style.justifyContent = "center";
+
+			const imgContent = document.createElement("img");
+			imgContent.style.width = "50%";
+			if (index == 0) {
+				imgContent.src = "../assets/externalSchedulingPage/verified.svg";
+			}
+			if (index == 1) {
+				imgContent.src = "../assets/externalSchedulingPage/content_cut.svg";
+			}
+			if (index == 2) {
+				imgContent.src = "../assets/externalSchedulingPage/event.svg";
+			}
+
 			const listItem = document.createElement("li");
 			listItem.textContent = text;
-			listItem.style.fontSize = "1.2rem";
+			listItem.style.fontSize = "0.9rem";
 			listItem.style.margin = "10px 0";
 			listItem.style.display = "flex";
 			listItem.style.alignItems = "center";
+			listItem.style.maxWidth = "100px";
+			listItem.style.textAlign = "center";
+			listItem.style.color = "#66666F";
 
-			const icon = document.createElement("span");
-			icon.textContent = "✨";
-			icon.style.marginRight = "10px";
-
-			listItem.prepend(icon);
-			list.appendChild(listItem);
+			imgContainer.appendChild(imgContent);
+			containerListItem.appendChild(imgContainer);
+			containerListItem.appendChild(listItem);
+			list.appendChild(containerListItem);
 		});
 
 		const button = document.createElement("button");
@@ -132,6 +183,19 @@ export default function StratYoutBooking() {
 
 		content.appendChild(textSection);
 		content.appendChild(divImage);
+
+		function applyResponsiveLayout() {
+			const isMobile = window.matchMedia("(max-width: 1200px)").matches;
+
+			if (isMobile) {
+				content.style.flexWrap = "wrap";
+			} else {
+				content.style.flexWrap = "nowrap";
+			}
+		}
+
+		applyResponsiveLayout();
+		window.addEventListener("resize", applyResponsiveLayout);
 
 		container.appendChild(content);
 	}

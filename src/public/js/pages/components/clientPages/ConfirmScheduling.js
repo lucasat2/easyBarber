@@ -52,7 +52,6 @@ export default function ConfirmScheduling(obj) {
 	div.style.maxWidth = "1200px";
 	div.style.margin = "0 auto";
 	div.style.padding = "20px";
-	div.style.fontFamily = "Arial, sans-serif";
 	div.style.display = "flex";
 	div.style.flexWrap = "wrap";
 	div.style.gap = "20px";
@@ -83,9 +82,8 @@ export default function ConfirmScheduling(obj) {
 
 	// Serviço (nome)
 	const nameWrapper = document.createElement("div");
-	nameWrapper.style.display = "flex"
-	nameWrapper.style.gap = "0.5rem"
-
+	nameWrapper.style.display = "flex";
+	nameWrapper.style.gap = "0.5rem";
 
 	const nameText = document.createElement("h3");
 	nameText.textContent = obj.objService.name;
@@ -96,8 +94,8 @@ export default function ConfirmScheduling(obj) {
 
 	// Tempo
 	const timeWrapper = document.createElement("div");
-	timeWrapper.style.display = "flex"
-	timeWrapper.style.gap = "0.5rem"
+	timeWrapper.style.display = "flex";
+	timeWrapper.style.gap = "0.5rem";
 
 	const timeIcon = document.createElement("img");
 	timeIcon.src = "../assets/externalSchedulingPage/time.svg";
@@ -114,8 +112,8 @@ export default function ConfirmScheduling(obj) {
 
 	// Custo
 	const costWrapper = document.createElement("div");
-	costWrapper.style.display = "flex"
-	costWrapper.style.gap = "0.5rem"
+	costWrapper.style.display = "flex";
+	costWrapper.style.gap = "0.5rem";
 
 	const costIcon = document.createElement("img");
 	costIcon.src = "../assets/externalSchedulingPage/payments.svg";
@@ -171,6 +169,7 @@ export default function ConfirmScheduling(obj) {
 	obsInput.style.borderRadius = "5px";
 	obsInput.style.height = "80px";
 	obsInput.style.boxSizing = "border-box";
+	obsInput.style.resize = "vertical";
 
 	obsWrapper.appendChild(obsLabel);
 	obsWrapper.appendChild(obsInput);

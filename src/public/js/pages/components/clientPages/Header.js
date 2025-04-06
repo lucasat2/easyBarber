@@ -6,7 +6,8 @@ export default function Header(companyName) {
 	header.style.flexWrap = "wrap";
 	header.style.justifyContent = "space-between";
 	header.style.gap = "1rem";
-	header.style.background = "#ddd";
+	// header.style.background = "#E6E8EB";
+	header.style.borderBottom = "1px solid #E3E3E6";
 	header.style.padding = "1rem 3rem";
 	header.style.boxSizing = "border-box";
 	header.style.textAlign = "center";
