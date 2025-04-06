@@ -1,9 +1,15 @@
-import { fetchStaff, fetchServices } from "./fetchData.js";
-import { MessageNotification } from "./MessageNotification.js";
-import { fetchAppointmentsByEmployee } from "./fetchData.js";
-import { setGlobalAppointments } from "./setAndGetGlobalVariables.js";
+import {
+  fetchStaff,
+  fetchServices,
+  fetchAppointmentsByEmployee,
+} from "../fetchData.js";
+import { MessageNotification } from "../MessageNotification.js";
+import {
+  setGlobalAppointments,
+  getEditedCurrentTime,
+  getSelectedEmployeeId,
+} from "../setAndGetGlobalVariables.js";
 import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
-import { getEditedCurrentTime, getSelectedEmployeeId } from "./setAndGetGlobalVariables.js";
 
 function createModal() {
   const title = document.createElement("h2");
@@ -146,7 +152,7 @@ async function createApointForm() {
   selectDateTime.placeholder = "Email do cliente";
   selectDateTime.required = true;
   selectDateTime.classList.add("modalBoxStyles");
-  selectDateTime.name = "appointmentTime"
+  selectDateTime.name = "appointmentTime";
 
   // Observações
   const textareaObs = document.createElement("textarea");
@@ -245,15 +251,14 @@ async function createApointForm() {
         }
       }
 
-
-      const {month, year} = getEditedCurrentTime()
+      const { month, year } = getEditedCurrentTime();
       const employeeScheduleTimeline = SchedulingTimelineDiv(month, year);
 
-      const employeeScheduleTimelineContainer = document.getElementById("employeeScheduleTimelineContainer");
+      const employeeScheduleTimelineContainer = document.getElementById(
+        "employeeScheduleTimelineContainer"
+      );
       employeeScheduleTimelineContainer.innerHTML = "";
       employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline);
-
-
 
       MessageNotification(result.message, " #28a745");
     } catch (error) {
@@ -401,14 +406,14 @@ async function createBlockForm() {
         }
       }
 
-
-      const {month, year} = getEditedCurrentTime()
+      const { month, year } = getEditedCurrentTime();
       const employeeScheduleTimeline = SchedulingTimelineDiv(month, year);
 
-      const employeeScheduleTimelineContainer = document.getElementById("employeeScheduleTimelineContainer");
+      const employeeScheduleTimelineContainer = document.getElementById(
+        "employeeScheduleTimelineContainer"
+      );
       employeeScheduleTimelineContainer.innerHTML = "";
       employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline);
-
 
       MessageNotification(result.message, " #28a745");
     } catch (error) {

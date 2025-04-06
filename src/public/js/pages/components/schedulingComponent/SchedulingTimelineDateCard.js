@@ -1,5 +1,5 @@
 import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
-import { setEditedCurrentTime } from "./setAndGetGlobalVariables.js";
+import { setEditedCurrentTime } from "../setAndGetGlobalVariables.js";
 
 function SchedulingTimelineDateCard() {
   const dateCard = document.createElement("div");

@@ -1,6 +1,6 @@
 import { ServiceModal } from "./ServiceModal.js";
 import { ServiceDashboard } from "./ServiceDashboard.js";
-import { MessageNotification } from "./MessageNotification.js";
+import { MessageNotification } from "../MessageNotification.js";
 
 function ServicesCard(serviceData) {
   const cardContainer = document.createElement("div");

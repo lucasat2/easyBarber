@@ -3,7 +3,7 @@ import { SchedulingTimelineEmployeesCard } from "./SchedulingTimelineEmployeesCa
 import { SchedulingTimelineDateCard } from "./SchedulingTimelineDateCard.js";
 import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
 import * as modalAppointment from "./modalAppointmentScheduling.js";
-import { setEditedCurrentTime } from "./setAndGetGlobalVariables.js";
+import { setEditedCurrentTime } from "../setAndGetGlobalVariables.js";
 
 let selectElement = null;
 
@@ -31,10 +31,7 @@ function EmployeeScheduleDashboard(employeeName, staff) {
 
   employeeSchedulingTimelineHeader.appendChild(selectElement);
 
-  const employeeCard = SchedulingTimelineEmployeesCard(
-    employeeName,
-    "../assets/signUp/logo.jpeg"
-  );
+  const employeeCard = SchedulingTimelineEmployeesCard(employeeName);
   employeeSchedulingTimelineHeader.appendChild(employeeCard);
 
   const employeeSchedulingTimelineHeaderManagementButton =
@@ -61,9 +58,8 @@ function EmployeeScheduleDashboard(employeeName, staff) {
     new Date().getMonth(),
     new Date().getFullYear()
   );
-  
-  setEditedCurrentTime(new Date().getMonth(),
-  new Date().getFullYear())
+
+  setEditedCurrentTime(new Date().getMonth(), new Date().getFullYear());
 
   employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline);
 

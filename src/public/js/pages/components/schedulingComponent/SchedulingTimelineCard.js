@@ -1,4 +1,4 @@
-import { getGlobalAppointments } from "./setAndGetGlobalVariables.js";
+import { getGlobalAppointments } from "../setAndGetGlobalVariables.js";
 import { DailyAppointmentsModal } from "./DailyAppointmentsModal.js";
 
 function SchedulingTimelineCard(

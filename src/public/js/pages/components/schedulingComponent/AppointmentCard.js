@@ -1,21 +1,20 @@
-import { MessageNotification } from "./MessageNotification.js";
+import { MessageNotification } from "../MessageNotification.js";
 import { DailyAppointmentsModal } from "./DailyAppointmentsModal.js";
+import { fetchAppointmentsByEmployee } from "../fetchData.js";
 import {
   getSelectedEmployeeId,
   setGlobalAppointments,
   getEditedCurrentTime,
-} from "./setAndGetGlobalVariables.js";
+} from "../setAndGetGlobalVariables.js";
 import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
-import { fetchAppointmentsByEmployee } from "./fetchData.js";
 
-function BlockedCard(date, appointmentData) {
+function AppointmentCard(date, appointmentData) {
   const cardContainer = document.createElement("div");
   cardContainer.style.display = "flex";
   cardContainer.style.justifyContent = "space-between";
   cardContainer.style.padding = "20px";
   cardContainer.style.marginBottom = "15px";
-  cardContainer.style.color = "#FFF";
-  cardContainer.style.backgroundColor = "#dc3545";
+  cardContainer.style.backgroundColor = "#fff";
   cardContainer.style.boxShadow = "0 2px 10px rgba(0, 0, 0, 0.1)";
   cardContainer.style.borderRadius = "8px";
   cardContainer.style.alignItems = "center";
@@ -30,46 +29,96 @@ function BlockedCard(date, appointmentData) {
   infoContainer.style.marginRight = "20px";
   cardContainer.appendChild(infoContainer);
 
-  const titleArea = document.createElement("h3");
-  titleArea.textContent = "Horário Bloqueado";
-  infoContainer.appendChild(titleArea);
+  const serviceNameArea = document.createElement("h3");
+  infoContainer.appendChild(serviceNameArea);
 
-  const startFormattedDate = formatDateAndTime(appointmentData.date_hour_begin);
+  const clientNameArea = document.createElement("p");
+  infoContainer.appendChild(clientNameArea);
 
-  const startDateArea = document.createElement("p");
-  startDateArea.textContent = `Data de Ínico: ${startFormattedDate.date}`;
-  infoContainer.appendChild(startDateArea);
+  const clientPhoneNumberArea = document.createElement("p");
+  infoContainer.appendChild(clientPhoneNumberArea);
 
-  const startTimeArea = document.createElement("p");
-  startTimeArea.textContent = `Horário de Ínicio: ${startFormattedDate.time}`;
-  infoContainer.appendChild(startTimeArea);
+  const dateArea = document.createElement("p");
+  infoContainer.appendChild(dateArea);
 
-  const endFormattedDate = formatDateAndTime(appointmentData.date_hour_end);
+  const timeArea = document.createElement("p");
+  infoContainer.appendChild(timeArea);
 
-  const endDateArea = document.createElement("p");
-  endDateArea.textContent = `Data de Término: ${endFormattedDate.date}`;
-  infoContainer.appendChild(endDateArea);
-
-  const endTimeArea = document.createElement("p");
-  endTimeArea.textContent = `Horário de Término: ${endFormattedDate.time}`;
-  infoContainer.appendChild(endTimeArea);
+  const priceArea = document.createElement("p");
+  infoContainer.appendChild(priceArea);
 
   const observationArea = document.createElement("p");
-  observationArea.textContent = `Obervação: ${appointmentData.observation}`;
   infoContainer.appendChild(observationArea);
 
   const buttonContainer = document.createElement("div");
   buttonContainer.style.display = "flex";
   buttonContainer.style.flexDirection = "column";
-
   cardContainer.appendChild(buttonContainer);
 
+  const doneButton = document.createElement("button");
+  doneButton.textContent = "Realizado";
+  doneButton.style.padding = "10px 0px";
+  doneButton.style.width = "150px";
+  doneButton.style.backgroundColor = "#9FA324";
+  doneButton.style.color = "#fff";
+  doneButton.style.border = "none";
+  doneButton.style.cursor = "pointer";
+  doneButton.style.borderRadius = "5px";
+  doneButton.style.marginBottom = "10px";
+  doneButton.style.fontSize = "16px";
+  buttonContainer.appendChild(doneButton);
+
+  doneButton.addEventListener("mouseover", function () {
+    doneButton.style.backgroundColor = "#7F821B";
+  });
+  doneButton.addEventListener("mouseout", function () {
+    doneButton.style.backgroundColor = "#9FA324";
+  });
+
+  doneButton.addEventListener("click", () => {
+    updateAppointmentStatus(
+      "CONCLUÍDO",
+      "Agendamento finalizado com sucesso",
+      date,
+      appointmentData
+    );
+  });
+
+  const absentButton = document.createElement("button");
+  absentButton.textContent = "Ausente";
+  absentButton.style.padding = "10px 0px";
+  absentButton.style.width = "150px";
+  absentButton.style.backgroundColor = "#A6A6A6";
+  absentButton.style.color = "#fff";
+  absentButton.style.border = "none";
+  absentButton.style.cursor = "pointer";
+  absentButton.style.borderRadius = "5px";
+  absentButton.style.marginBottom = "10px";
+  absentButton.style.fontSize = "16px";
+  buttonContainer.appendChild(absentButton);
+
+  absentButton.addEventListener("mouseover", function () {
+    absentButton.style.backgroundColor = "#7F7F7F";
+  });
+  absentButton.addEventListener("mouseout", function () {
+    absentButton.style.backgroundColor = "#A6A6A6";
+  });
+
+  absentButton.addEventListener("click", () => {
+    updateAppointmentStatus(
+      "CANCELADO",
+      "Agendamento alterado com sucesso",
+      date,
+      appointmentData
+    );
+  });
+
   const cancelButton = document.createElement("button");
-  cancelButton.textContent = "Desbloquear";
+  cancelButton.textContent = "Cancelado";
   cancelButton.style.padding = "10px 0px";
   cancelButton.style.width = "150px";
-  cancelButton.style.backgroundColor = "#fff";
-  cancelButton.style.color = "#dc3545";
+  cancelButton.style.backgroundColor = "#dc3545";
+  cancelButton.style.color = "#fff";
   cancelButton.style.border = "none";
   cancelButton.style.cursor = "pointer";
   cancelButton.style.borderRadius = "5px";
@@ -77,39 +126,75 @@ function BlockedCard(date, appointmentData) {
   buttonContainer.appendChild(cancelButton);
 
   cancelButton.addEventListener("mouseover", function () {
-    cancelButton.style.backgroundColor = "#f0f0f0";
+    cancelButton.style.backgroundColor = "#c82333";
   });
   cancelButton.addEventListener("mouseout", function () {
-    cancelButton.style.backgroundColor = "#fff";
+    cancelButton.style.backgroundColor = "#dc3545";
   });
 
   cancelButton.addEventListener("click", () => {
-    unlockSchedule(date, appointmentData);
+    updateAppointmentStatus(
+      "CANCELADO",
+      "Agendamento cancelado com sucesso",
+      date,
+      appointmentData
+    );
   });
+
+  function fillRequiredFields() {
+    fetch(`/api/appointments/${appointmentData.id}`)
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((errorData) => {
+            throw new Error(errorData.error || "Falha desconhecida");
+          });
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        serviceNameArea.textContent = data.service_name;
+
+        clientNameArea.textContent = `Cliente: ${data.client_name}`;
+
+        clientPhoneNumberArea.textContent = `Telefone: ${data.client_phone}`;
+
+        const appointmentDateAndTime = data.date_hour_begin;
+
+        const appointmentDateAndTimeArray = appointmentDateAndTime.split("T");
+
+        const appointmentDateArray = appointmentDateAndTimeArray[0].split("-");
+
+        const appointmentTimeArray = appointmentDateAndTimeArray[1].split(":");
+
+        const date = `${appointmentDateArray[2]}/${appointmentDateArray[1]}/${appointmentDateArray[0]}`;
+
+        const time = `${appointmentTimeArray[0]}:${appointmentTimeArray[1]}`;
+
+        dateArea.textContent = `Data: ${date}`;
+
+        timeArea.textContent = `Horário: ${time}`;
+
+        priceArea.textContent = `Preço: ${data.service_price}`;
+
+        observationArea.textContent = `Observação: ${data.observation}`;
+      })
+      .catch((error) => {
+        MessageNotification(error.message, "#ff6347");
+      });
+  }
+
+  fillRequiredFields();
 
   return cardContainer;
 }
 
-function formatDateAndTime(dateTime) {
-  const appointmentDateAndTime = dateTime;
-
-  const appointmentDateAndTimeArray = appointmentDateAndTime.split("T");
-
-  const appointmentDateArray = appointmentDateAndTimeArray[0].split("-");
-
-  const appointmentTimeArray = appointmentDateAndTimeArray[1].split(":");
-
-  const appointmentDate = `${appointmentDateArray[2]}/${appointmentDateArray[1]}/${appointmentDateArray[0]}`;
-
-  const appointmentTime = `${appointmentTimeArray[0]}:${appointmentTimeArray[1]}`;
-
-  return {
-    date: appointmentDate,
-    time: appointmentTime,
-  };
-}
-
-async function unlockSchedule(date, appointmentData) {
+async function updateAppointmentStatus(
+  newStatus,
+  successMessage,
+  date,
+  appointmentData
+) {
   try {
     const response = await fetch("/api/appointments/updateStatus", {
       method: "PUT",
@@ -119,7 +204,7 @@ async function unlockSchedule(date, appointmentData) {
       body: JSON.stringify({
         appointmentId: appointmentData.id,
         staffId: appointmentData.staff_id,
-        newStatus: "CANCELADO",
+        newStatus: newStatus,
       }),
     });
 
@@ -140,6 +225,27 @@ async function unlockSchedule(date, appointmentData) {
     }
 
     const data = await result.json();
+
+    const employeeId = getSelectedEmployeeId();
+    if (employeeId) {
+      try {
+        const appointments = await fetchAppointmentsByEmployee({
+          id: employeeId,
+        });
+        setGlobalAppointments(appointments);
+      } catch (error) {
+        console.error("Erro ao buscar agendamentos:", error.message);
+      }
+    }
+
+    const { month, year } = getEditedCurrentTime();
+    const employeeScheduleTimeline = SchedulingTimelineDiv(month, year);
+
+    const employeeScheduleTimelineContainer = document.getElementById(
+      "employeeScheduleTimelineContainer"
+    );
+    employeeScheduleTimelineContainer.innerHTML = "";
+    employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline);
 
     const currentDateAndTimeArray = date.split("T");
 
@@ -250,31 +356,10 @@ async function unlockSchedule(date, appointmentData) {
 
     document.body.appendChild(dailyAppointmentsModal);
 
-    const employeeId = getSelectedEmployeeId();
-    if (employeeId) {
-      try {
-        const appointments = await fetchAppointmentsByEmployee({
-          id: employeeId,
-        });
-        setGlobalAppointments(appointments);
-      } catch (error) {
-        console.error("Erro ao buscar agendamentos:", error.message);
-      }
-    }
-
-    const { month, year } = getEditedCurrentTime();
-    const employeeScheduleTimeline = SchedulingTimelineDiv(month, year);
-
-    const employeeScheduleTimelineContainer = document.getElementById(
-      "employeeScheduleTimelineContainer"
-    );
-    employeeScheduleTimelineContainer.innerHTML = "";
-    employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline);
-
-    MessageNotification("Horário desbloqueado com sucesso", " #28a745");
+    MessageNotification(successMessage, " #28a745");
   } catch (error) {
     MessageNotification(error.message, "#ff6347");
   }
 }
 
-export { BlockedCard };
+export { AppointmentCard, updateAppointmentStatus };

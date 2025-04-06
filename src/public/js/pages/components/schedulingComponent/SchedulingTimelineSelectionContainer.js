@@ -1,6 +1,6 @@
 import { EmployeeScheduleDashboard } from "./EmployeeScheduleDashboard.js";
-import { fetchAppointmentsByEmployee } from "./fetchData.js";
-import { setGlobalAppointments, setSelectedEmployeeId } from "./setAndGetGlobalVariables.js";
+import { fetchAppointmentsByEmployee } from "../fetchData.js";
+import { setGlobalAppointments, setSelectedEmployeeId } from "../setAndGetGlobalVariables.js";
 
 function SchedulingTimelineSelectionContainer(initialOptionText, data) {
   const selectionSection = document.createElement("div");

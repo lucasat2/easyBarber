@@ -1,4 +1,4 @@
-function SchedulingTimelineEmployeesCard(name, image) {
+function SchedulingTimelineEmployeesCard(name) {
   const employeesDiv = document.createElement("div");
   employeesDiv.classList.add("schedulingTimelineEmployeesCard");
 

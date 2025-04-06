@@ -1,12 +1,12 @@
-import { MessageNotification } from "./MessageNotification.js";
+import { MessageNotification } from "../MessageNotification.js";
 import { AppointmentCard, updateAppointmentStatus } from "./AppointmentCard.js";
 import {
   getEditedCurrentTime,
   getSelectedEmployeeId,
   setGlobalAppointments,
-} from "./setAndGetGlobalVariables.js";
+} from "../setAndGetGlobalVariables.js";
 import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
-import { fetchAppointmentsByEmployee } from "./fetchData.js";
+import { fetchAppointmentsByEmployee } from "../fetchData.js";
 
 function FinishedCard(date, appointmentData) {
   const cardContainer = document.createElement("div");

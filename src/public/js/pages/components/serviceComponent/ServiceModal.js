@@ -1,4 +1,4 @@
-import { MessageNotification } from "./MessageNotification.js";
+import { MessageNotification } from "../MessageNotification.js";
 import { ServiceDashboard } from "./ServiceDashboard.js";
 
 function ServiceModal(isEdit, serviceData) {
