@@ -262,7 +262,6 @@ async function createApointForm() {
 //Função para gerar formulário de bloquear horário
 async function createBlockForm() {
   const form = document.createElement("form");
-  form.id = "form-bloqueio";
 
   // Select Profissional
   const selectStaff = document.createElement("select");
@@ -312,7 +311,7 @@ async function createBlockForm() {
   // Botões
   const btnSave = document.createElement("button");
   btnSave.id = "modalButtonSaveBlock";
-  btnSave.textContent = "Salvar bloqueio";
+  btnSave.textContent = "Salvar";
   btnSave.type = "submit";
 
   const btnCancel = document.createElement("button");
