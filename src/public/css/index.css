@@ -327,7 +327,7 @@ body {
 /* schedulingTimelineSection */
 
 .initialSchedulingTimelineSection {
-  height: 77vh;
+  height: 100%;
   padding: 15px 50px;
   border-radius: 5px;
   display: flex;
@@ -363,6 +363,7 @@ body {
   padding-bottom: 10px;
   border-radius: 5px;
   background-color: #fff;
+  height: 100%;
 }
 
 .employeeSchedulingTimelineHeader {

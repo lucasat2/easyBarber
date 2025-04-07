@@ -1,6 +1,9 @@
 import { EmployeeScheduleDashboard } from "./EmployeeScheduleDashboard.js";
 import { fetchAppointmentsByEmployee } from "../fetchData.js";
-import { setGlobalAppointments, setSelectedEmployeeId } from "../setAndGetGlobalVariables.js";
+import {
+  setGlobalAppointments,
+  setSelectedEmployeeId,
+} from "../setAndGetGlobalVariables.js";
 
 function SchedulingTimelineSelectionContainer(initialOptionText, data) {
   const selectionSection = document.createElement("div");
@@ -14,8 +17,7 @@ function SchedulingTimelineSelectionContainer(initialOptionText, data) {
 
   selectionContainer.addEventListener("change", async function () {
     const selectName = this.options[this.selectedIndex].text;
-    const employeeId = this.options[this.selectedIndex].value
-    console.log("Nome", selectName, "Id", employeeId)
+    const employeeId = this.options[this.selectedIndex].value;
 
     if (employeeId) {
       try {
@@ -24,7 +26,6 @@ function SchedulingTimelineSelectionContainer(initialOptionText, data) {
         });
         setGlobalAppointments(appointments);
         setSelectedEmployeeId(employeeId);
-        
       } catch (error) {
         console.error("Erro ao buscar agendamentos:", error.message);
       }
@@ -35,7 +36,6 @@ function SchedulingTimelineSelectionContainer(initialOptionText, data) {
       data
     );
 
-
     const schedulingTimelineSection = document.getElementById(
       "schedulingTimelineSection"
     );
@@ -43,13 +43,14 @@ function SchedulingTimelineSelectionContainer(initialOptionText, data) {
     schedulingTimelineSection.classList.remove(
       "initialSchedulingTimelineSection"
     );
-    schedulingTimelineSection.classList.add("schedulingTimelineSection");
+
+    schedulingTimelineSection.style.height = "100%";
     schedulingTimelineSection.appendChild(employeeScheduleTimeline);
   });
 
   const initialOption = document.createElement("option");
   initialOption.innerText = initialOptionText;
-  initialOption.value = '';
+  initialOption.value = "";
   initialOption.disabled = "true";
   initialOption.selected = "true";
   selectionContainer.appendChild(initialOption);

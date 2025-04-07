@@ -173,6 +173,7 @@ export default function header() {
     // arrumando main
     main.innerHTML = "";
     main.style.padding = "30px";
+    main.style.height = "calc(100% - 6rem)";
 
     if (activeItem.id == "Agendamentos") {
       main.innerHTML = "";
