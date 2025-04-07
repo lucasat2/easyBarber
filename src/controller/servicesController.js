@@ -23,10 +23,14 @@ const createService = async (req, res) => {
         .json({ error: "Nome do serviço deve conter apenas letras" });
     }
 
-    if (!validator.isAlpha(description, "pt-BR", { ignore: " " })) {
-      return res
-        .status(400)
-        .json({ error: "Descrição deve conter apenas letras" });
+    if (
+      !validator.matches(description, /^[a-zA-Z0-9À-ÿ\s.,]*$/) ||
+      !validator.isLength(description, { min: 0, max: 100 })
+    ) {
+      return res.status(400).json({
+        error:
+          "O campo de descrição deve conter no máximo 100 caracteres e apenas letras, números, vírgulas, espaços e/ou pontos",
+      });
     }
 
     if (!priceRegex.test(price)) {
@@ -134,11 +138,13 @@ const updateService = async (req, res) => {
 
     if (
       description &&
-      !validator.isAlpha(description, "pt-BR", { ignore: " " })
+      (!validator.matches(description, /^[a-zA-Z0-9À-ÿ\s.,]*$/) ||
+        !validator.isLength(description, { min: 0, max: 100 }))
     ) {
-      return res
-        .status(400)
-        .json({ error: "Descrição deve conter apenas letras" });
+      return res.status(400).json({
+        error:
+          "O campo de descrição deve conter no máximo 100 caracteres e apenas letras, números, vírgulas, espaços e/ou pontos",
+      });
     }
 
     if (price && !validator.isFloat(price, { min: 0 })) {
