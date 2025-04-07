@@ -8,6 +8,8 @@ const retrieveCompanyData = async (userId) => {
 
     const getCompanyDataQuery = "SELECT * FROM companies WHERE id = $1";
 
+    client = await pool.connect();
+
     const {
       rows: [userData],
     } = await client.query(findUserDataQuery, [userId]);
@@ -19,7 +21,7 @@ const retrieveCompanyData = async (userId) => {
       };
     }
 
-    const companyId = userData.id;
+    const companyId = userData.company_id;
 
     const {
       rows: [companyData],
