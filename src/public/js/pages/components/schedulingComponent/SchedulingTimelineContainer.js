@@ -164,7 +164,9 @@ const getCardClassesForAppointments = function (appointments) {
       const monthIndex = dt.getMonth();
       const yearIndex = dt.getFullYear()
       classesArray.push(`Card-${dayIndex}-${monthIndex}-${yearIndex}`);
+          console.log(`Card-${dayIndex}-${monthIndex}-${yearIndex}`)
     }
+
 
     result.push({
       appointmentStart,
@@ -184,7 +186,8 @@ function getPendentAppointment(foundPendindgAppointments) {
       new Date(
         `${startYear}-${startMonth}-${startDay}T${startTime}`
       ).getDate() - 1
-    }`;
+    }-${startMonth-1}-${startYear}`;
+    console.log(className)
     classesArray.push(className);
   });
 
