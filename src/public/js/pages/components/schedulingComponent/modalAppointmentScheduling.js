@@ -12,8 +12,6 @@ import {
 import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
 
 function createModal() {
-  const title = document.createElement("h2");
-  title.classList.add("modalAppointTitle");
   //Cria a estrutura do modal
   const overlay = document.createElement("div");
   overlay.classList.add("appointmentModalOverlay");
@@ -79,10 +77,7 @@ function createModal() {
   toggleContainer.appendChild(btnAppoint);
   toggleContainer.appendChild(btnBlock);
 
-  title.textContent = "Agendamento";
-
   modal.appendChild(toggleContainer);
-  modal.appendChild(title);
   modal.appendChild(formContainer);
 
   renderForm("agendar");
@@ -108,10 +103,6 @@ function createField(labelText, element) {
 
 //Função para criar o formulário de agendamento
 async function createApointForm() {
-  const title = document.createElement("h2");
-  title.classList.add("modalAppointTitle");
-  title.textContent = "Agendamento";
-
   const { selectStaff, selectService } = await populateSelects();
 
   const form = document.createElement("form");
@@ -141,7 +132,7 @@ async function createApointForm() {
 
   const inputClientEmail = document.createElement("input");
   inputClientEmail.type = "email";
-  inputClientEmail.placeholder = "Email do cliente";
+  inputClientEmail.placeholder = "E-mail do cliente";
   inputClientEmail.required = true;
   inputClientEmail.classList.add("modalBoxStyles");
   inputClientEmail.name = "clientEmail";
@@ -149,7 +140,6 @@ async function createApointForm() {
   // Horário inicial
   const selectDateTime = document.createElement("input");
   selectDateTime.type = "time";
-  selectDateTime.placeholder = "Email do cliente";
   selectDateTime.required = true;
   selectDateTime.classList.add("modalBoxStyles");
   selectDateTime.name = "appointmentTime";
@@ -181,7 +171,7 @@ async function createApointForm() {
   const line1 = document.createElement("div");
   line1.classList.add("modalFormRows");
 
-  line1.appendChild(createField("Funcionário", selectStaff));
+  line1.appendChild(createField("Profissional", selectStaff));
   line1.appendChild(createField("Nome do Cliente", inputClientName));
 
   const line2 = document.createElement("div");
@@ -192,7 +182,7 @@ async function createApointForm() {
   const line3 = document.createElement("div");
   line3.classList.add("modalFormRows");
   line3.appendChild(createField("Data", inputData));
-  line3.appendChild(createField("Email do cliente", inputClientEmail));
+  line3.appendChild(createField("E-mail do cliente", inputClientEmail));
 
   const line4 = document.createElement("div");
   line4.classList.add("modalFormRows");
@@ -271,10 +261,6 @@ async function createApointForm() {
 
 //Função para gerar formulário de bloquear horário
 async function createBlockForm() {
-  const title = document.createElement("h2");
-  title.classList.add("modalAppointTitle");
-  title.textContent = "Bloqueio";
-
   const form = document.createElement("form");
   form.id = "form-bloqueio";
 
