@@ -50,7 +50,7 @@ today.setUTCHours(0, 0, 0, 0);
 let currentMonth = today.getUTCMonth();
 let currentYear = today.getUTCFullYear();
 
-function createNextMonthScheduleDashboard() {
+function createLastMonthScheduleDashboard() {
   currentMonth += 1;
   console.log("Navegação para o próximo mês:", currentMonth);
   if (currentMonth === 12) {
@@ -78,7 +78,7 @@ function createNextMonthScheduleDashboard() {
   employeeScheduleTimelineContainer.appendChild(employeeNewScheduleTimeline);
 }
 
-function createLastMonthScheduleDashboard() {
+function createNextMonthScheduleDashboard() {
   currentMonth -= 1;
   console.log("Navegação para o mês anterior:", currentMonth);
   if (currentMonth === -1) {
