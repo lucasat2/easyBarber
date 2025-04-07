@@ -81,23 +81,27 @@ function buildContent(container, idCompany) {
 				div.style.width = "400px";
 				div.style.height = "270px";
 				div.style.borderRadius = "10px";
-				div.style.backgroundImage =
-					"url('../../../../../assets/externalSchedulingPage/serviceImage.jpeg')";
-				div.style.backgroundSize = "cover";
-				div.style.backgroundPosition = "center";
-				div.style.backgroundRepeat = "no-repeat";
+				div.style.overflow = "hidden"; // Importante para esconder o zoom fora da borda
+				div.style.position = "relative";
 				div.style.display = "flex";
 				div.style.flexDirection = "column";
 				div.style.justifyContent = "end";
 				div.style.padding = "1.3rem 1rem";
-				div.style.position = "relative";
 
-				div.addEventListener("click", () => {
-					const idService = service.id;
-					const url = `/client?idCompany=${idCompany}&idService=${idService}`;
-					window.history.pushState({path: url}, "", url);
-					navigateTo(ScheduleAppointment);
-				});
+				// Imagem de fundo com zoom e blur
+				const bgEffect = document.createElement("div");
+				bgEffect.style.position = "absolute";
+				bgEffect.style.inset = "0";
+				bgEffect.style.borderRadius = "10px";
+				bgEffect.style.backgroundImage =
+					"url('../../../../../assets/externalSchedulingPage/serviceImage.jpeg')";
+				bgEffect.style.backgroundSize = "cover";
+				bgEffect.style.backgroundPosition = "center";
+				bgEffect.style.backgroundRepeat = "no-repeat";
+				bgEffect.style.transition = "all 0.3s ease, filter 0.3s ease";
+				bgEffect.style.zIndex = "0";
+				bgEffect.style.pointerEvents = "none";
+				div.appendChild(bgEffect);
 
 				// Overlay gradiente
 				const overlay = document.createElement("div");
@@ -107,28 +111,41 @@ function buildContent(container, idCompany) {
 				overlay.style.background =
 					"linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent)";
 				overlay.style.opacity = "0";
-				overlay.style.transition = "opacity 0.3s ease-in-out";
+				overlay.style.transition = "all 0.3s ease-in-out";
 				overlay.style.pointerEvents = "none";
-				overlay.style.zIndex = "0";
+				overlay.style.zIndex = "1";
 				div.appendChild(overlay);
 
+				// Evento de clique
+				div.addEventListener("click", () => {
+					const idService = service.id;
+					const url = `/client?idCompany=${idCompany}&idService=${idService}`;
+					window.history.pushState({path: url}, "", url);
+					navigateTo(ScheduleAppointment);
+				});
+
+				// Evento de hover
 				div.addEventListener("mouseover", () => {
 					overlay.style.opacity = "1";
-					descriptionWrapper.style.maxHeight = "9em";
+					descriptionWrapper.style.maxHeight = "9em"; // Expande
+					bgEffect.style.transform = "scale(1.1)";
+					bgEffect.style.filter = "blur(2px)";
 				});
-
 				div.addEventListener("mouseout", () => {
 					overlay.style.opacity = "0";
-					descriptionWrapper.style.maxHeight = "4.5em";
+					descriptionWrapper.style.maxHeight = "4.5em"; // Volta ao normal
+					bgEffect.style.transform = "scale(1)";
+					bgEffect.style.filter = "blur(0)";
 				});
 
+				// Conteúdo do serviço
 				const serviceDiv = document.createElement("div");
 				serviceDiv.style.color = "white";
 				serviceDiv.style.display = "flex";
 				serviceDiv.style.flexDirection = "column";
 				serviceDiv.style.gap = "1rem";
 				serviceDiv.style.position = "relative";
-				serviceDiv.style.zIndex = "1";
+				serviceDiv.style.zIndex = "2";
 
 				const serviceContent = document.createElement("div");
 				serviceContent.style.display = "flex";
@@ -165,7 +182,7 @@ function buildContent(container, idCompany) {
 				title.textContent = "Descrição:";
 
 				const descriptionWrapper = document.createElement("div");
-				descriptionWrapper.style.maxHeight = "4.5em";
+				descriptionWrapper.style.maxHeight = "4.5em"; // Altura inicial (com "...")
 				descriptionWrapper.style.overflow = "hidden";
 				descriptionWrapper.style.transition = "max-height 0.3s ease-in-out";
 
@@ -181,6 +198,7 @@ function buildContent(container, idCompany) {
 				serviceDiv.appendChild(serviceContent);
 				serviceDiv.appendChild(serviceDescription);
 				div.appendChild(serviceDiv);
+
 				cardsServices.appendChild(div);
 			});
 		})
