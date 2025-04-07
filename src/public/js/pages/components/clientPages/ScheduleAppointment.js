@@ -79,12 +79,12 @@ async function updateAvailableTimes(
 				headers: {
 					"Content-Type": "application/json"
 				},
-				body: JSON.stringify({idStaff, date})
+				body: JSON.stringify({ idStaff, date })
 			}
 		);
 
 		if (!response.ok) {
-			hoursToWork.innerHTML = "Horários indisponível";
+			hoursToWork.innerHTML = "Funcionário indisponível";
 			MessageNotification("Funcionário indisponível", "#ff6347");
 			setHourSelected(null);
 			setDateDaySelected(null);
@@ -95,15 +95,20 @@ async function updateAvailableTimes(
 		const data = await response.json();
 
 		if (!data.getSchedules || !data.getSchedules.availableTimes) {
-			hoursToWork.innerHTML = "Horários indisponível";
+			hoursToWork.innerHTML = "Funcionário indisponível";
 			MessageNotification("Funcionário indisponível", "#ff6347");
 			setHourSelected(null);
 			setDateDaySelected(null);
 			return;
 		}
 
-		const availableTimes = data.getSchedules.availableTimes.flatMap(
-			({start, end}) => {
+		const now = new Date();
+		const todayString = `${now.getFullYear()}-${String(
+			now.getMonth() + 1
+		).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+
+		let availableTimes = data.getSchedules.availableTimes.flatMap(
+			({ start, end }) => {
 				const slots = [];
 				let startTime = new Date(`2000-01-01T${start}`);
 				const endTime = new Date(`2000-01-01T${end}`);
@@ -122,8 +127,26 @@ async function updateAvailableTimes(
 			}
 		);
 
+		// 🔽 Filtra os horários passados se for hoje
+		if (date === todayString) {
+			availableTimes = availableTimes.filter(timeSlot => {
+				const [startTimeStr] = timeSlot.split(" - ");
+				const [hours, minutes] = startTimeStr.split(":").map(Number);
+
+				const slotTime = new Date(
+					now.getFullYear(),
+					now.getMonth(),
+					now.getDate(),
+					hours,
+					minutes
+				);
+
+				return slotTime >= now;
+			});
+		}
+
 		if (availableTimes.length === 0) {
-			hoursToWork.innerHTML = "Horários indisponível";
+			hoursToWork.innerHTML = "Funcionário indisponível";
 			MessageNotification("Funcionário indisponível", "#ff6347");
 			setHourSelected(null);
 			setDateDaySelected(null);
@@ -159,13 +182,14 @@ async function updateAvailableTimes(
 			hoursToWork.style.width = "fit-content";
 		});
 	} catch (error) {
-		hoursToWork.innerHTML = "Horários indisponível";
+		hoursToWork.innerHTML = "Funcionário indisponível";
 		MessageNotification("Funcionário indisponível", "#ff6347");
 		setHourSelected(null);
 		setDateDaySelected(null);
 		console.error("Erro no fetch:", error);
 	}
 }
+
 
 let objCompany = null;
 
