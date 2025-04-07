@@ -829,7 +829,7 @@ const insertNewAppointment = async (
 	} catch (error) {
 		await client.query("ROLLBACK");
 
-		return null;
+		return;
 	} finally {
 		if (client) {
 			client.release();

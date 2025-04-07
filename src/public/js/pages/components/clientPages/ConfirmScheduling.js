@@ -1,11 +1,6 @@
 import ServicesPage from "./ServicesPage.js";
 import {MessageNotification} from "../MessageNotification.js";
-
-function navigateTo(pageFunction) {
-	const root = document.getElementById("root");
-	root.innerHTML = "";
-	root.appendChild(pageFunction());
-}
+import navigateTo from "./NavigateTo.js";
 
 function createInput(labelText, type, id) {
 	const wrapper = document.createElement("div");
@@ -38,12 +33,6 @@ function isValidEmail(email) {
 	// Basic email regex (you might want to use a more robust one)
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	return emailRegex.test(email);
-}
-
-function isValidPhoneNumber(phoneNumber) {
-	// Phone number regex for (XX) XXXXX-XXXX format
-	const phoneRegex = /^\(\d{2}\) \d{4,5}-\d{4}$/;
-	return phoneRegex.test(phoneNumber);
 }
 
 export default function ConfirmScheduling(obj) {
@@ -220,20 +209,6 @@ export default function ConfirmScheduling(obj) {
 		buttonConfirm.style.background = "#DEE33E";
 	});
 
-	// --- Error Message Container ---
-	const errorContainer = document.createElement("div");
-	errorContainer.style.color = "red";
-	errorContainer.style.marginTop = "10px";
-	errorContainer.style.display = "none"; // Initially hidden
-	containerConfirm.appendChild(errorContainer);
-
-	// --- Success Message Container ---
-	const successContainer = document.createElement("div");
-	successContainer.style.color = "green";
-	successContainer.style.marginTop = "10px";
-	successContainer.style.display = "none";
-	containerConfirm.appendChild(successContainer);
-
 	buttonConfirm.addEventListener("click", () => {
 		const nameValue = nameInput.querySelector("input").value.trim();
 		const emailValue = emailInput.querySelector("input").value.trim();
@@ -252,19 +227,14 @@ export default function ConfirmScheduling(obj) {
 		}
 		if (!phoneValue) {
 			errors.push("Celular");
-		} else if (!isValidPhoneNumber(phoneValue)) {
-			errors.push("Celular inválido");
 		}
 
 		if (errors.length > 0) {
-			errorContainer.textContent = `Preencha os campos corretamente: ${errors.join(
-				", "
-			)}.`;
-			errorContainer.style.display = "block";
-			successContainer.style.display = "none"; // Hide success message if there are errors
+			MessageNotification(
+				`Preencha os campos corretamente: ${errors.join(", ")}.`,
+				"#ff6347"
+			);
 		} else {
-			errorContainer.style.display = "none";
-			// --- Data to be sent ---
 			const dataToSend = {
 				idCompany: obj.objCompany.idCompany,
 				idStaff: obj.objStaff.id,

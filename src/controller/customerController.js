@@ -75,7 +75,9 @@ const listScheduleByStaff = async (req, res) => {
 			date
 		);
 		if (!getSchedules) {
-			return res.status(400).json({error: "Funcionário não trabalha nesse dia"});
+			return res
+				.status(400)
+				.json({error: "Funcionário não trabalha nesse dia"});
 		}
 
 		res.json({getSchedules});
@@ -114,13 +116,15 @@ const createAppointments = async (req, res) => {
 			return res
 				.status(result.statusCode)
 				.json({message: result.statusMessage});
+		} else if(!result) {
+			throw new Error("Algo de errado")
 		}
 
 		res.status(result.statusCode).json({error: result.statusMessage});
 	} catch (e) {
-		console.log(error);
+		console.log(e);
 
-		res.status(500).json({error: "Falha ao criar o agendamento"});
+		res.status(500).json({error: e.message});
 	}
 };
 

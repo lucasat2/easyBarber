@@ -1,15 +1,8 @@
-import Header from "./Header.js";
 import ServicesPage from "./ServicesPage.js";
 import ConfirmScheduling from "./ConfirmScheduling.js";
 import {MessageNotification} from "../MessageNotification.js";
-
-function navigateTo(pageFunction, obj) {
-	const root = document.getElementById("root");
-	root.innerHTML = "";
-	root.style.minHeight = "100vh";
-	root.appendChild(Header(objCompany.companyName));
-	root.appendChild(pageFunction(obj));
-}
+import navigateTo from "./NavigateTo.js";
+import NotFound from "./NotFound.js";
 
 async function fetchStaffServices(idCompany, idService) {
 	const apiUrl = "/api/customer/company/services/staff";
@@ -91,7 +84,8 @@ async function updateAvailableTimes(
 		);
 
 		if (!response.ok) {
-			hoursToWork.innerHTML = "Funcionário não trabalha esse dia";
+			hoursToWork.innerHTML = "Horários indisponível";
+			MessageNotification("Funcionário indisponível", "#ff6347");
 			setHourSelected(null);
 			setDateDaySelected(null);
 			return;
@@ -101,7 +95,8 @@ async function updateAvailableTimes(
 		const data = await response.json();
 
 		if (!data.getSchedules || !data.getSchedules.availableTimes) {
-			hoursToWork.innerHTML = "Funcionário não trabalha esse dia";
+			hoursToWork.innerHTML = "Horários indisponível";
+			MessageNotification("Funcionário indisponível", "#ff6347");
 			setHourSelected(null);
 			setDateDaySelected(null);
 			return;
@@ -128,7 +123,8 @@ async function updateAvailableTimes(
 		);
 
 		if (availableTimes.length === 0) {
-			hoursToWork.innerHTML = "Funcionário indisponível";
+			hoursToWork.innerHTML = "Horários indisponível";
+			MessageNotification("Funcionário indisponível", "#ff6347");
 			setHourSelected(null);
 			setDateDaySelected(null);
 			return;
@@ -163,7 +159,8 @@ async function updateAvailableTimes(
 			hoursToWork.style.width = "fit-content";
 		});
 	} catch (error) {
-		hoursToWork.innerHTML = "Funcionário não trabalha esse dia";
+		hoursToWork.innerHTML = "Horários indisponível";
+		MessageNotification("Funcionário indisponível", "#ff6347");
 		setHourSelected(null);
 		setDateDaySelected(null);
 		console.error("Erro no fetch:", error);
@@ -173,9 +170,6 @@ async function updateAvailableTimes(
 let objCompany = null;
 
 export default function ScheduleAppointment() {
-	const root = document.getElementById("root");
-	root.style.width = "100%";
-
 	const container = document.createElement("div");
 
 	const urlParams = new URLSearchParams(window.location.search);
@@ -200,17 +194,15 @@ export default function ScheduleAppointment() {
 		.then(data => {
 			if (data.result) {
 				const companyName = data.result;
-				const header = Header(companyName);
 				objCompany = {idCompany, companyName};
 
-				container.appendChild(header);
 				buildContent(container, idService);
 			} else {
-				container.innerHTML = "Empresa não encontrada.";
+				throw new Error("Empresa não encontrada.");
 			}
 		})
 		.catch(error => {
-			console.error("Erro ao buscar o nome da empresa:", error.message);
+			MessageNotification(error.message, "#ff6347");
 			container.innerHTML = "Erro ao buscar o nome da empresa.";
 		});
 
@@ -241,9 +233,8 @@ export default function ScheduleAppointment() {
 				cost: selectedService.price
 			};
 		} else {
-			console.error("Serviço não encontrado com o ID:", idService);
-
 			container.innerHTML = "Serviço não encontrado.";
+			MessageNotification("Serviço não encontrado", "#ff6347");
 			return;
 		}
 
@@ -585,8 +576,9 @@ export default function ScheduleAppointment() {
 				content.appendChild(div);
 			})
 			.catch(error => {
-				console.log("Erro ao buscar os serviços:", error);
-				location.reload();
+				console.error("Erro ao buscar os serviços:", error);
+				MessageNotification(error.message, "#ff6347");
+				NotFound();
 			});
 
 		container.appendChild(content);

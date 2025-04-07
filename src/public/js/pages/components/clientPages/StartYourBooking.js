@@ -1,16 +1,7 @@
-import Header from "./Header.js";
 import ServicesPage from "./ServicesPage.js";
-
-function navigateTo(pageFunction) {
-	const root = document.getElementById("root");
-	root.innerHTML = "";
-	root.appendChild(pageFunction());
-}
+import navigateTo from "./NavigateTo.js";
 
 export default function StratYoutBooking() {
-	const root = document.getElementById("root");
-	root.style.width = "100%";
-
 	const container = document.createElement("div");
 
 	const urlParams = new URLSearchParams(window.location.search);
@@ -21,38 +12,14 @@ export default function StratYoutBooking() {
 		return container;
 	}
 
-	const apiUrl = "/api/customer/company";
 
-	fetch(apiUrl, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify({idCompany})
-	})
-		.then(response => response.json())
-		.then(data => {
-			if (data.result) {
-				const companyName = data.result;
-				const header = Header(companyName);
-				container.appendChild(header);
-				buildContent(container);
-			} else {
-				container.innerHTML = "Empresa não encontrada.";
-			}
-		})
-		.catch(error => {
-			console.error("Erro ao buscar o nome da empresa:", error.message);
-			container.innerHTML = "Erro ao buscar o nome da empresa.";
-		});
+	buildContent(container);
 
 	function buildContent(container) {
 		const content = document.createElement("div");
 		content.style.display = "flex";
 		content.style.alignItems = "center";
 		content.style.justifyContent = "space-around";
-		content.style.paddingTop = "30px";
-		content.style.flexWrap = "nowrap";
 		content.style.padding = "3rem";
 		content.style.gap = "2rem";
 		content.style.minHeight = "70vh";
@@ -76,13 +43,13 @@ export default function StratYoutBooking() {
 		subTilte.style.textAlign = "center";
 		subTilte.style.maxWidth = "70%";
 
-		const heading = document.createElement("div")
+		const heading = document.createElement("div");
 		heading.style.display = "flex";
 		heading.style.flexDirection = "column";
 		heading.style.alignItems = "center";
 		heading.style.gap = "1.5rem";
-		heading.appendChild(h1)
-		heading.appendChild(subTilte)
+		heading.appendChild(h1);
+		heading.appendChild(subTilte);
 
 		const list = document.createElement("ul");
 		list.style.listStyle = "none";
@@ -187,11 +154,7 @@ export default function StratYoutBooking() {
 		function applyResponsiveLayout() {
 			const isMobile = window.matchMedia("(max-width: 1200px)").matches;
 
-			if (isMobile) {
-				content.style.flexWrap = "wrap";
-			} else {
-				content.style.flexWrap = "nowrap";
-			}
+			content.style.flexWrap = isMobile ? "wrap" : "nowrap";
 		}
 
 		applyResponsiveLayout();

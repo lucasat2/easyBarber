@@ -67,7 +67,7 @@ export default async function StaffServicesSelection(staffId) {
 
 		services.forEach(service => {
 			const serviceRow = document.createElement("label");
-			(serviceRow.style.userSelect = "none"),
+			(serviceRow.style.userSelect = "none")
 				(serviceRow.style.display = "flex");
 			serviceRow.style.justifyContent = "space-between";
 			serviceRow.style.alignItems = "center";
