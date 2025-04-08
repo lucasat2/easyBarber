@@ -97,17 +97,6 @@ body {
   outline: none;
 }
 
-.loginForgotPassword {
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-.loginForgotPassword a {
-  color: #333;
-  text-decoration: none;
-  font-size: 12px;
-}
-
 .loginLoginButton {
   width: 100%;
   padding: 12px;
@@ -675,10 +664,10 @@ textarea.modalBoxStyles {
 /* ServiceDashboard */
 
 .serviceDashboardMainContainer {
-  min-height: 77vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  row-gap: 20px;
+  padding: 15px 50px;
 }
 
 .registerStaffButton {
@@ -702,10 +691,9 @@ textarea.modalBoxStyles {
 .noDataContainer {
   display: flex;
   flex-direction: column;
-  row-gap: 10px;
   justify-content: center;
   align-items: center;
-  min-height: 68vh;
+  height: 100%;
 }
 
 .noDataImage {
@@ -727,7 +715,7 @@ textarea.modalBoxStyles {
 .serviceCardContainer {
   display: flex;
   padding: 20px;
-  margin-bottom: 15px;
+  margin-top: 15px;
   background-color: #fff;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;

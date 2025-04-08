@@ -65,15 +65,6 @@ export default function login() {
 
   inputGroupPassword.appendChild(inputPassword);
 
-  const forgotPassword = document.createElement("div");
-  forgotPassword.classList.add("loginForgotPassword");
-
-  const forgotLink = document.createElement("a");
-  forgotLink.href = "#";
-  forgotLink.textContent = "Esqueceu sua senha?";
-
-  forgotPassword.appendChild(forgotLink);
-
   const loginButton = document.createElement("button");
   loginButton.type = "submit";
   loginButton.classList.add("loginLoginButton");
@@ -95,7 +86,6 @@ export default function login() {
 
   form.appendChild(inputGroupEmail);
   form.appendChild(inputGroupPassword);
-  form.appendChild(forgotPassword);
   form.appendChild(loginButton);
   form.appendChild(registerLink);
 

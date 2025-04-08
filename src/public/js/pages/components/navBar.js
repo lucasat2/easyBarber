@@ -48,10 +48,6 @@ export default function header() {
   titleHeader.id = "titleHeader";
   titleHeader.style.fontSize = "1.5rem";
 
-  const subTitleHeader = document.createElement("h2");
-  subTitleHeader.id = "subTitleHeader";
-  subTitleHeader.style.fontSize = "1rem";
-
   const divLinkAndProfile = document.createElement("div");
   divLinkAndProfile.style.display = "flex";
   divLinkAndProfile.style.columnGap = "20px";
@@ -96,6 +92,7 @@ export default function header() {
   contentUser.style.justifyContent = "space-around";
 
   const nameUser = document.createElement("div");
+  nameUser.id = "username";
   nameUser.innerText = "Usuário";
   nameUser.style.fontWeight = "900";
   nameUser.style.cursor = "pointer";
@@ -155,9 +152,6 @@ export default function header() {
   async function highlightActiveButton(activeItem) {
     const titleHeader = document.getElementById("titleHeader");
     titleHeader.innerText = activeItem.id;
-
-    const subTitleHeader = document.getElementById("subTitleHeader");
-    subTitleHeader.innerText = `Vamos ver sobre - ${activeItem.id}`;
 
     // Remove a cor de fundo de todos os itens da lista
     const allItems = document.querySelectorAll("#navBarListUl li");
@@ -271,7 +265,6 @@ export default function header() {
   navgation.appendChild(buttonLogout);
 
   divTitleHeader.appendChild(titleHeader);
-  divTitleHeader.appendChild(subTitleHeader);
 
   navBar.appendChild(navgation);
 

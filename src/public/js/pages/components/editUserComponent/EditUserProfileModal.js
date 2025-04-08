@@ -107,65 +107,68 @@ function EditUserProfileModal() {
   const saveButton = document.createElement("button");
   saveButton.innerText = "Salvar";
   saveButton.classList.add("editUserProfileModalSaveButton");
-  saveButton.addEventListener("click", updateUserData);
+  saveButton.addEventListener("click", async () => {
+    await updateUserData();
+  });
+
   modalBody.appendChild(saveButton);
 
-  function updateUserData() {
-    fetch("/api/users", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: companyNameInput.value,
-        cnpj: cnpjInput.value,
-        phoneNumber: phoneNumberInput.value,
-        state: stateInput.value,
-        city: cityInput.value,
-        street: addressInput.value,
-        number: numberInput.value,
-        postalCode: postalCodeInput.value,
-        email: emailInput.value,
-        password: passwordInput.value,
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((errorData) => {
-            throw new Error(errorData.error || "Falha Desconhecida");
-          });
-        }
-
-        return response.json();
-      })
-      .then((data) => {
-        companyNameInput.value = "";
-        cnpjInput.value = "";
-        phoneNumberInput.value = "";
-        stateInput.value = "";
-        cityInput.value = "";
-        addressInput.value = "";
-        numberInput.value = "";
-        postalCodeInput.value = "";
-        emailInput.value = "";
-        passwordInput.value = "";
-
-        MessageNotification(data.message, " #28a745");
-      })
-      .catch((error) => {
-        companyNameInput.value = "";
-        cnpjInput.value = "";
-        phoneNumberInput.value = "";
-        stateInput.value = "";
-        cityInput.value = "";
-        addressInput.value = "";
-        numberInput.value = "";
-        postalCodeInput.value = "";
-        emailInput.value = "";
-        passwordInput.value = "";
-
-        MessageNotification(error.message, "#ff6347");
+  async function updateUserData() {
+    try {
+      const response = await fetch("/api/users", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: companyNameInput.value,
+          cnpj: cnpjInput.value,
+          phoneNumber: phoneNumberInput.value,
+          state: stateInput.value,
+          city: cityInput.value,
+          street: addressInput.value,
+          number: numberInput.value,
+          postalCode: postalCodeInput.value,
+          email: emailInput.value,
+          password: passwordInput.value,
+        }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+
+        throw new Error(errorData.error || "Falha Desconhecida");
+      }
+
+      const data = await response.json();
+
+      companyNameInput.value = "";
+      cnpjInput.value = "";
+      phoneNumberInput.value = "";
+      stateInput.value = "";
+      cityInput.value = "";
+      addressInput.value = "";
+      numberInput.value = "";
+      postalCodeInput.value = "";
+      emailInput.value = "";
+      passwordInput.value = "";
+
+      MessageNotification(data.message, "#28a745");
+
+      const answer = await fetch("/api/users/company");
+
+      if (!answer.ok) {
+        throw new Error(
+          "Falha ao atualizar o nome da empresa no perfil superior"
+        );
+      }
+
+      const result = await answer.json();
+
+      document.getElementById("username").innerText = result.name;
+    } catch (error) {
+      MessageNotification(error.message, "#ff6347");
+    }
   }
 
   document.body.appendChild(containerModal);
