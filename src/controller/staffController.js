@@ -624,7 +624,18 @@ const getServiceStaff = async (req, res) => {
 
 		res.status(200).json(result);
 	} catch (error) {
-		res.status(500).json({error: "Falha ao deletar o funcionário"});
+		res.status(500).json({error: "Falha ao pegar serviços do funcionário"});
+	}
+};
+
+const getHoursStaff = async (req, res) => {
+	const id = req.params.id;
+	try {
+		const result = await staffServices.getStaffHoursById(id);
+
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(500).json({error: "Falha ao pegar horários do funcionário"});
 	}
 };
 
@@ -637,5 +648,6 @@ module.exports = {
 	update,
 	remove,
 	unassignServiceFromStaff,
-	getServiceStaff
+	getServiceStaff,
+	getHoursStaff
 };
