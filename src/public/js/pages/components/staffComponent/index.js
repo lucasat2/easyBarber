@@ -189,8 +189,7 @@ export default async function StaffManager() {
 
               root.appendChild(modal);
             } catch (err) {
-              console.error("Erro ao carregar funcionário:", err);
-              alert("Erro ao carregar os dados do funcionário.");
+              MessageNotification(err.message, "#ff6347");
             }
             break;
 
@@ -202,8 +201,7 @@ export default async function StaffManager() {
 
               root.appendChild(modal);
             } catch (err) {
-              console.error("Erro ao carregar serviço:", err);
-              alert("Erro ao carregar os dados do serviço.");
+              MessageNotification(err.message, "#ff6347");
             }
             break;
 
@@ -215,8 +213,7 @@ export default async function StaffManager() {
 
               root.appendChild(modal);
             } catch (err) {
-              console.error("Erro ao carregar deletar:", err);
-              alert("Erro ao deletar.");
+              MessageNotification(err.message, "#ff6347");
             }
             break;
         }
@@ -280,7 +277,6 @@ export default async function StaffManager() {
         staffList.appendChild(staffItem);
       });
     } catch (err) {
-      console.error("Erro ao buscar funcionários", err);
       MessageNotification(err.message, "#ff6347");
     }
   }
