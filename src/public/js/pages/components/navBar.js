@@ -96,6 +96,7 @@ export default function header() {
   contentUser.style.justifyContent = "space-around";
 
   const nameUser = document.createElement("div");
+  nameUser.id = "username";
   nameUser.innerText = "Usuário";
   nameUser.style.fontWeight = "900";
   nameUser.style.cursor = "pointer";
