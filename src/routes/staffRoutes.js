@@ -3,6 +3,7 @@ const staffController = require("../controller/staffController.js");
 const { verifyActiveSession } = require("../middleware");
 const router = express.Router();
 
+router.get("/hoursStaff/:id", verifyActiveSession, staffController.getHoursStaff);
 router.get("/serviceStaff/:id", verifyActiveSession, staffController.getServiceStaff);
 router.get("/:id", verifyActiveSession, staffController.getStaffData);
 router.get("/", verifyActiveSession, staffController.list);

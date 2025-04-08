@@ -123,7 +123,7 @@ const insertNewUser = async (
 
     const companyId = companyData.id;
 
-    const companyLinkPage = `http://localhost/client?idCompany=${companyId}`;
+    const companyLinkPage = `/client?idCompany=${companyId}`;
 
     const {
       rows: [updatedCompanyData],

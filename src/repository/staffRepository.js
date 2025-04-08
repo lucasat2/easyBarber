@@ -600,6 +600,41 @@ const getStaffServices = async staffId => {
 	}
 };
 
+const getStaffHours = async staffId => {
+	let client;
+	try {
+		client = await pool.connect();
+
+		const query = `SELECT schedule_id FROM schedules_staffs WHERE staff_id = $1`;
+
+		const {rows: servicesLinked} = await client.query(query, [staffId]);
+
+		const scheduleIds = servicesLinked.map(item => item.schedule_id);
+
+		const getHours = `SELECT * FROM schedules WHERE id = ANY($1)`;
+
+		const {rows: resultGetHours} = await client.query(getHours, [scheduleIds]);
+
+		const formatted = resultGetHours.map(item => ({
+			week_day: item.week_day,
+			start_time_1: item.start_time_1,
+			end_time_1: item.end_time_1,
+			status_1: item.status_1,
+			start_time_2: item.start_time_2,
+			end_time_2: item.end_time_2,
+			status_2: item.status_2
+		}));
+
+		return formatted;
+	} catch (error) {
+		throw error;
+	} finally {
+		if (client) {
+			client.release();
+		}
+	}
+};
+
 module.exports = {
 	getAllStaff,
 	findStaffInfo,
@@ -609,5 +644,6 @@ module.exports = {
 	updateStaff,
 	removeStaff,
 	unlinkServiceFromStaff,
-	getStaffServices
+	getStaffServices,
+	getStaffHours
 };

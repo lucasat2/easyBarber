@@ -1,326 +1,373 @@
-import { MessageNotification } from "../MessageNotification.js";
+import {MessageNotification} from "../MessageNotification.js";
+
+async function fetchData(id) {
+	const url = `/api/staff/hoursStaff/${id}`;
+	try {
+		const response = await fetch(url);
+
+		if (!response.ok) {
+			return;
+		}
+
+		const data = await response.json();
+
+		if (Array.isArray(data)) {
+			if (data.length === 0) {
+				return [];
+			} else {
+				return data;
+			}
+		} else {
+			return;
+		}
+	} catch (error) {
+		return;
+	}
+}
 
 export default async function StaffShiftEditor(staffId) {
-  const weekDays = [
-    "Domingo",
-    "Segunda-feira",
-    "Terça-feira",
-    "Quarta-feira",
-    "Quinta-feira",
-    "Sexta-feira",
-    "Sábado",
-  ];
+	const response = await fetchData(staffId);
 
-  const shifts = weekDays.map((dia, i) => ({
-    [`weekDay${i + 1}`]: dia,
-    [`firstShiftStartTime${i + 1}`]: "09:00",
-    [`firstShiftEndTime${i + 1}`]: "12:00",
-    [`firstShiftStatus${i + 1}`]: i === 0 ? false : true,
-    [`secondShiftStartTime${i + 1}`]: "13:00",
-    [`secondShiftEndTime${i + 1}`]: "18:00",
-    [`secondShiftStatus${i + 1}`]: i === 0 || i === 6 ? false : true,
-  }));
+	const diasSemana = [
+		"Domingo",
+		"Segunda-feira",
+		"Terça-feira",
+		"Quarta-feira",
+		"Quinta-feira",
+		"Sexta-feira",
+		"Sábado"
+	];
 
-  const div = document.createElement("div");
-  Object.assign(div.style, {
-    position: "fixed",
-    top: "0",
-    left: "0",
-    width: "100vw",
-    height: "100vh",
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: "100",
-  });
+	let shifts = diasSemana.map((dia, i) => ({
+		[`weekDay${i + 1}`]: dia,
+		[`firstShiftStartTime${i + 1}`]: "09:00",
+		[`firstShiftEndTime${i + 1}`]: "12:00",
+		[`firstShiftStatus${i + 1}`]: false,
+		[`secondShiftStartTime${i + 1}`]: "13:00",
+		[`secondShiftEndTime${i + 1}`]: "18:00",
+		[`secondShiftStatus${i + 1}`]: false
+	}));
 
-  const modal = document.createElement("div");
-  Object.assign(modal.style, {
-    backgroundColor: "#fff",
-    padding: "2rem",
-    borderRadius: "8px",
-    boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: "1rem",
-    minWidth: "500px",
-    maxHeight: "85vh",
-    overflowY: "auto",
-    position: "relative",
-  });
+	if (Array.isArray(response)) {
+		response.forEach(diaInfo => {
+			const index = diasSemana.findIndex(dia => dia === diaInfo.week_day);
+			if (index !== -1) {
+				shifts[index] = {
+					[`weekDay${index + 1}`]: diaInfo.week_day,
+					[`firstShiftStartTime${index + 1}`]:
+						diaInfo.start_time_1?.slice(0, 5) || "",
+					[`firstShiftEndTime${index + 1}`]:
+						diaInfo.end_time_1?.slice(0, 5) || "",
+					[`firstShiftStatus${index + 1}`]: diaInfo.status_1 ?? false,
+					[`secondShiftStartTime${index + 1}`]:
+						diaInfo.start_time_2?.slice(0, 5) || "",
+					[`secondShiftEndTime${index + 1}`]:
+						diaInfo.end_time_2?.slice(0, 5) || "",
+					[`secondShiftStatus${index + 1}`]: diaInfo.status_2 ?? false
+				};
+			}
+		});
+	}
 
-  const title = document.createElement("h2");
-  title.textContent = "Editar Turnos de Trabalho";
-  title.style.marginBottom = "1rem";
-  modal.appendChild(title);
+	const div = document.createElement("div");
+	Object.assign(div.style, {
+		position: "fixed",
+		top: "0",
+		left: "0",
+		width: "100vw",
+		height: "100vh",
+		backgroundColor: "rgba(0, 0, 0, 0.6)",
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+		zIndex: "100"
+	});
 
-  const tabWrapper = document.createElement("div");
-  tabWrapper.style.display = "flex";
-  tabWrapper.style.border = "1px solid #ccc";
-  tabWrapper.style.borderRadius = "6px";
-  tabWrapper.style.backgroundColor = "#f0f0f0";
-  tabWrapper.style.width = "fit-content";
+	const modal = document.createElement("div");
+	Object.assign(modal.style, {
+		backgroundColor: "#fff",
+		padding: "2rem",
+		borderRadius: "8px",
+		boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)",
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "center",
+		gap: "1rem",
+		minWidth: "500px",
+		maxHeight: "85vh",
+		overflowY: "auto",
+		position: "relative"
+	});
 
-  const tabContainer = document.createElement("div");
-  tabContainer.style.display = "flex";
-  tabContainer.style.gap = "0";
+	const title = document.createElement("h2");
+	title.textContent = "Editar Turnos de Trabalho";
+	title.style.marginBottom = "1rem";
+	modal.appendChild(title);
 
-  const shift1Tab = document.createElement("button");
-  shift1Tab.textContent = "Turno 1";
+	const tabWrapper = document.createElement("div");
+	tabWrapper.style.display = "flex";
+	tabWrapper.style.border = "1px solid #ccc";
+	tabWrapper.style.borderRadius = "6px";
+	tabWrapper.style.backgroundColor = "#f0f0f0";
+	tabWrapper.style.width = "fit-content";
 
-  const shift2Tab = document.createElement("button");
-  shift2Tab.textContent = "Turno 2";
+	const tabContainer = document.createElement("div");
+	tabContainer.style.display = "flex";
+	tabContainer.style.gap = "0";
 
-  [shift1Tab, shift2Tab].forEach((btn) => {
-    Object.assign(btn.style, {
-      padding: "0.5rem 1rem",
-      cursor: "pointer",
-      border: "none",
-      background: "transparent",
-      transition: "background-color 0.2s",
-      fontWeight: "bold",
-    });
-  });
+	const shift1Tab = document.createElement("button");
+	shift1Tab.textContent = "Turno 1";
 
-  tabContainer.append(shift1Tab, shift2Tab);
-  tabWrapper.appendChild(tabContainer);
-  modal.appendChild(tabWrapper);
+	const shift2Tab = document.createElement("button");
+	shift2Tab.textContent = "Turno 2";
 
-  const shift1Container = document.createElement("div");
-  const shift2Container = document.createElement("div");
+	[shift1Tab, shift2Tab].forEach(btn => {
+		Object.assign(btn.style, {
+			padding: "0.5rem 1rem",
+			cursor: "pointer",
+			border: "none",
+			background: "transparent",
+			transition: "background-color 0.2s",
+			fontWeight: "bold"
+		});
+	});
 
-  [shift1Container, shift2Container].forEach((container) => {
-    container.style.display = "none";
-    container.style.flexDirection = "column";
-    container.style.gap = "0.5rem";
-    modal.appendChild(container);
-  });
+	tabContainer.append(shift1Tab, shift2Tab);
+	tabWrapper.appendChild(tabContainer);
+	modal.appendChild(tabWrapper);
 
-  const toggleTab = (index) => {
-    shift1Container.style.display = index === 0 ? "flex" : "none";
-    shift2Container.style.display = index === 1 ? "flex" : "none";
+	const turno1Container = document.createElement("div");
+	const turno2Container = document.createElement("div");
 
-    if (index === 0) {
-      shift1Tab.style.backgroundColor = "#dee33e";
-      shift2Tab.style.backgroundColor = "#f0f0f0";
-    } else {
-      shift2Tab.style.backgroundColor = "#dee33e";
-      shift1Tab.style.backgroundColor = "#f0f0f0";
-    }
-  };
+	[turno1Container, turno2Container].forEach(container => {
+		container.style.display = "none";
+		container.style.flexDirection = "column";
+		container.style.gap = "0.5rem";
+		modal.appendChild(container);
+	});
 
-  toggleTab(0);
-  shift1Tab.onclick = () => toggleTab(0);
-  shift2Tab.onclick = () => toggleTab(1);
+	const toggleTab = index => {
+		turno1Container.style.display = index === 0 ? "flex" : "none";
+		turno2Container.style.display = index === 1 ? "flex" : "none";
 
-  function createShiftHeader() {
-    const header = document.createElement("div");
-    header.style.display = "flex";
-    header.style.alignItems = "center";
-    header.style.justifyContent = "space-between";
-    header.style.gap = "0.5rem";
-    header.style.fontWeight = "bold";
+		if (index === 0) {
+			shift1Tab.style.backgroundColor = "#dee33e";
+			shift2Tab.style.backgroundColor = "#f0f0f0";
+		} else {
+			shift2Tab.style.backgroundColor = "#dee33e";
+			shift1Tab.style.backgroundColor = "#f0f0f0";
+		}
+	};
 
-    const empty = document.createElement("span");
-    empty.style.width = "90px";
-    const enter = document.createElement("span");
-    enter.textContent = "Entrada";
-    const exit = document.createElement("span");
-    exit.textContent = "Saída";
-    const status = document.createElement("span");
-    status.textContent = "";
-    status.style.width = "30px";
+	toggleTab(0);
+	shift1Tab.onclick = () => toggleTab(0);
+	shift2Tab.onclick = () => toggleTab(1);
 
-    header.append(empty, enter, exit, status);
-    return header;
-  }
+	function createShiftHeader() {
+		const header = document.createElement("div");
+		header.style.display = "flex";
+		header.style.alignItems = "center";
+		header.style.justifyContent = "space-between";
+		header.style.gap = "0.5rem";
+		header.style.fontWeight = "bold";
 
-  function createShiftRow(index, tipo) {
-    const prefix = tipo === "first" ? "firstShift" : "secondShift";
-    const startKey = `${prefix}StartTime${index + 1}`;
-    const endKey = `${prefix}EndTime${index + 1}`;
-    const statusKey = `${prefix}Status${index + 1}`;
-    const weekDayKey = `weekDay${index + 1}`;
+		const empty = document.createElement("span");
+		empty.style.width = "90px";
+		const entrada = document.createElement("span");
+		entrada.textContent = "Entrada";
+		const saida = document.createElement("span");
+		saida.textContent = "Saída";
+		const status = document.createElement("span");
+		status.textContent = "";
+		status.style.width = "30px";
 
-    const row = document.createElement("div");
-    row.style.display = "flex";
-    row.style.alignItems = "center";
-    row.style.justifyContent = "space-between";
-    row.style.gap = "0.5rem";
+		header.append(empty, entrada, saida, status);
+		return header;
+	}
 
-    const label = document.createElement("span");
-    label.textContent = weekDays[index];
-    label.style.width = "120px";
-    label.style.fontWeight = "bold";
+	function createShiftRow(index, tipo) {
+		const prefix = tipo === "first" ? "firstShift" : "secondShift";
+		const startKey = `${prefix}StartTime${index + 1}`;
+		const endKey = `${prefix}EndTime${index + 1}`;
+		const statusKey = `${prefix}Status${index + 1}`;
+		const weekDayKey = `weekDay${index + 1}`;
 
-    const inputStyle = {
-      width: "fix-content",
-      padding: "6px",
-      borderRadius: "6px",
-      border: "1px solid #ccc",
-      fontSize: "1rem",
-      outline: "none",
-      transition: "border-color 0.2s ease",
-      backgroundColor: "#f9f9f9",
-    };
+		const row = document.createElement("div");
+		row.style.display = "flex";
+		row.style.alignItems = "center";
+		row.style.justifyContent = "space-between";
+		row.style.gap = "0.5rem";
 
-    const inputStart = document.createElement("input");
-    inputStart.type = "time";
-    inputStart.value = shifts[index][startKey];
-    Object.assign(inputStart.style, inputStyle);
-    inputStart.onfocus = () => (inputStart.style.borderColor = "#dee33e");
-    inputStart.onblur = () => (inputStart.style.borderColor = "#ccc");
+		const label = document.createElement("span");
+		label.textContent = diasSemana[index];
+		label.style.width = "120px";
+		label.style.fontWeight = "bold";
 
-    const inputEnd = document.createElement("input");
-    inputEnd.type = "time";
-    inputEnd.value = shifts[index][endKey];
-    Object.assign(inputEnd.style, inputStyle);
-    inputEnd.onfocus = () => (inputEnd.style.borderColor = "#dee33e");
-    inputEnd.onblur = () => (inputEnd.style.borderColor = "#ccc");
+		const inputStyle = {
+			width: "fix-content",
+			padding: "6px",
+			borderRadius: "6px",
+			border: "1px solid #ccc",
+			fontSize: "1rem",
+			outline: "none",
+			transition: "border-color 0.2s ease",
+			backgroundColor: "#f9f9f9"
+		};
 
-    const toggle = document.createElement("button");
-    const icon = document.createElement("img");
+		const inputStart = document.createElement("input");
+		inputStart.type = "time";
+		inputStart.value = shifts[index][startKey];
+		Object.assign(inputStart.style, inputStyle);
+		inputStart.onfocus = () => (inputStart.style.borderColor = "#dee33e");
+		inputStart.onblur = () => (inputStart.style.borderColor = "#ccc");
 
-    const ativo = shifts[index][statusKey];
-    icon.src = ativo
-      ? "../../assets/staff/check.svg"
-      : "../../assets/staff/close.svg";
-    toggle.style.backgroundColor = ativo ? "#dee33e" : "#e74c3c";
+		const inputEnd = document.createElement("input");
+		inputEnd.type = "time";
+		inputEnd.value = shifts[index][endKey];
+		Object.assign(inputEnd.style, inputStyle);
+		inputEnd.onfocus = () => (inputEnd.style.borderColor = "#dee33e");
+		inputEnd.onblur = () => (inputEnd.style.borderColor = "#ccc");
 
-    inputStart.disabled = !ativo;
-    inputEnd.disabled = !ativo;
+		const toggle = document.createElement("button");
+		const icon = document.createElement("img");
 
-    icon.alt = "status";
-    icon.style.padding = "5px 10px";
+		const ativo = shifts[index][statusKey];
+		icon.src = ativo
+			? "../../assets/staff/check.svg"
+			: "../../assets/staff/close.svg";
+		toggle.style.backgroundColor = ativo ? "#dee33e" : "#e74c3c";
 
-    toggle.appendChild(icon);
-    Object.assign(toggle.style, {
-      backgroundColor: ativo ? "#dee33e" : "#dc3545",
-      border: "none",
-      borderRadius: "8px",
-      cursor: "pointer",
-    });
+		inputStart.disabled = !ativo;
+		inputEnd.disabled = !ativo;
 
-    shifts[index][weekDayKey] = weekDays[index];
+		icon.alt = "status";
+		icon.style.padding = "5px 10px";
 
-    inputStart.addEventListener("input", () => {
-      shifts[index][startKey] = inputStart.value;
-    });
-    inputEnd.addEventListener("input", () => {
-      shifts[index][endKey] = inputEnd.value;
-    });
-    toggle.addEventListener("click", () => {
-      const atual = shifts[index][statusKey];
-      const novo = !atual;
+		toggle.appendChild(icon);
+		Object.assign(toggle.style, {
+			backgroundColor: ativo ? "#dee33e" : "#e74c3c",
+			border: "none",
+			borderRadius: "8px",
+			cursor: "pointer"
+		});
 
-      shifts[index][statusKey] = novo;
-      icon.src = novo
-        ? "../../assets/staff/check.svg"
-        : "../../assets/staff/close.svg";
-      toggle.style.backgroundColor = novo ? "#dee33e" : "#e74c3c";
+		shifts[index][weekDayKey] = diasSemana[index];
 
-      inputStart.disabled = !novo;
-      inputEnd.disabled = !novo;
-    });
+		inputStart.addEventListener("input", () => {
+			const value = inputStart.value;
 
-    row.append(label, inputStart, inputEnd, toggle);
-    return row;
-  }
+			if (tipo === "first" && (value < "00:00" || value > "12:59")) {
+				inputStart.value = "00:00";
+			}
+			if (tipo === "second" && (value < "13:00" || value > "23:59")) {
+				inputStart.value = "13:00";
+			}
 
-  // Headers
-  shift1Container.appendChild(createShiftHeader());
-  shift2Container.appendChild(createShiftHeader());
+			shifts[index][startKey] = inputStart.value;
+		});
 
-  for (let i = 0; i < weekDays.length; i++) {
-    shift1Container.appendChild(createShiftRow(i, "first"));
-    shift2Container.appendChild(createShiftRow(i, "second"));
-  }
+		inputEnd.addEventListener("input", () => {
+			const value = inputEnd.value;
 
-  const btnContainer = document.createElement("div");
-  btnContainer.style.display = "flex";
-  btnContainer.style.gap = "1rem";
+			if (tipo === "first" && (value < "00:00" || value > "12:59")) {
+				inputEnd.value = "00:00";
+			}
+			if (tipo === "second" && (value < "13:00" || value > "23:59")) {
+				inputEnd.value = "13:00";
+			}
 
-  const cancel = document.createElement("button");
-  cancel.textContent = "Cancelar";
-  Object.assign(cancel.style, {
-    padding: "10px 0px",
-    width: "150px",
-    border: "none",
-    cursor: "pointer",
-    borderRadius: "5px",
-    fontSize: "16px",
-    backgroundColor: "#dc3545",
-    transition: "all 0.1s ease",
-    color: "#fff",
-  });
+			shifts[index][endKey] = inputEnd.value;
+		});
 
-  cancel.addEventListener("mouseenter", () => {
-    cancel.style.backgroundColor = "#c82333";
-  });
+		toggle.addEventListener("click", () => {
+			const atual = shifts[index][statusKey];
+			const novo = !atual;
 
-  cancel.addEventListener("mouseout", () => {
-    cancel.style.backgroundColor = "#dc3545";
-  });
+			shifts[index][statusKey] = novo;
+			icon.src = novo
+				? "../../assets/staff/check.svg"
+				: "../../assets/staff/close.svg";
+			toggle.style.backgroundColor = novo ? "#dee33e" : "#e74c3c";
 
-  cancel.onclick = () => div.remove();
+			inputStart.disabled = !novo;
+			inputEnd.disabled = !novo;
+		});
 
-  const save = document.createElement("button");
-  save.textContent = "Salvar";
-  Object.assign(save.style, {
-    padding: "10px 0px",
-    width: "150px",
-    border: "none",
-    cursor: "pointer",
-    borderRadius: "5px",
-    fontSize: "16px",
-    backgroundColor: "#dee33e",
-    transition: "all 0.1s ease",
-    color: "#fff",
-  });
+		row.append(label, inputStart, inputEnd, toggle);
+		return row;
+	}
 
-  save.addEventListener("mouseenter", () => {
-    save.style.backgroundColor = "#c1c638";
-  });
+	// Headers
+	turno1Container.appendChild(createShiftHeader());
+	turno2Container.appendChild(createShiftHeader());
 
-  save.addEventListener("mouseout", () => {
-    save.style.backgroundColor = "#dee33e";
-  });
+	for (let i = 0; i < diasSemana.length; i++) {
+		turno1Container.appendChild(createShiftRow(i, "first"));
+		turno2Container.appendChild(createShiftRow(i, "second"));
+	}
 
-  save.onclick = async () => {
-    const payload = { staffId };
-    shifts.forEach((shift) => Object.assign(payload, shift));
+	const btnContainer = document.createElement("div");
+	btnContainer.style.display = "flex";
+	btnContainer.style.gap = "1rem";
 
-    try {
-      const res = await fetch("/api/staff/associateShifts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+	const cancelar = document.createElement("button");
+	cancelar.textContent = "Cancelar";
+	Object.assign(cancelar.style, {
+		padding: "10px 20px",
+		fontSize: "1rem",
+		backgroundColor: "#6c757d",
+		color: "#fff",
+		border: "none",
+		borderRadius: "4px",
+		cursor: "pointer",
+		width: "7rem"
+	});
+	cancelar.onclick = () => div.remove();
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Falha Desconhecida");
-      }
+	const salvar = document.createElement("button");
+	salvar.textContent = "Salvar";
+	Object.assign(salvar.style, {
+		padding: "10px 20px",
+		backgroundColor: "#dee33e",
+		border: "none",
+		borderRadius: "4px",
+		cursor: "pointer",
+		fontSize: "1rem",
+		width: "7rem"
+	});
+	salvar.onclick = async () => {
+		const payload = {staffId};
+		shifts.forEach(shift => Object.assign(payload, shift));
 
-      const responseData = await res.json();
+		try {
+			const res = await fetch("/api/staff/associateShifts", {
+				method: "POST",
+				headers: {"Content-Type": "application/json"},
+				body: JSON.stringify(payload)
+			});
 
-      MessageNotification(responseData.message, "#28a745");
-    } catch (e) {
-      MessageNotification(e.message, "#ff6347");
-    } finally {
-      div.remove();
-    }
-  };
+			if (!res.ok) {
+				const errorData = await res.json();
+				throw new Error(errorData.error || "Falha Desconhecida");
+			}
 
-  btnContainer.append(save, cancel);
-  modal.appendChild(btnContainer);
+			const responseData = await res.json();
 
-  div.onclick = (e) => {
-    if (e.target === div) div.remove();
-  };
+			MessageNotification(responseData.message, "#28a745");
+		} catch (e) {
+			MessageNotification(e.message, "#ff6347");
+		} finally {
+			div.remove();
+		}
+	};
 
-  div.appendChild(modal);
-  return div;
+	btnContainer.append(salvar, cancelar);
+	modal.appendChild(btnContainer);
+
+	div.onclick = e => {
+		if (e.target === div) div.remove();
+	};
+
+	div.appendChild(modal);
+	return div;
 }

@@ -138,6 +138,16 @@ const getStaffServicesById = async id => {
 	}
 };
 
+const getStaffHoursById = async id => {
+	try {
+		const response = await staffRepository.getStaffHours(id);
+
+		return response;
+	} catch (error) {
+		throw error;
+	}
+};
+
 module.exports = {
 	listAllStaff,
 	getEmployeeDetails,
@@ -147,5 +157,6 @@ module.exports = {
 	updateStaff,
 	deleteStaff,
 	detachServiceFromStaff,
-	getStaffServicesById
+	getStaffServicesById,
+	getStaffHoursById
 };
