@@ -47,27 +47,90 @@ export default function ConfirmScheduling(obj) {
 	div.style.justifyContent = "center";
 
 	const containerCheck = document.createElement("div");
-	containerCheck.style.marginBottom = "0";
-	containerCheck.style.border = "1px solid #ccc";
-	containerCheck.style.borderRadius = "8px";
-	containerCheck.style.padding = "20px";
-	containerCheck.style.backgroundColor = "#f9f9f9";
 	containerCheck.style.flex = "1";
+	containerCheck.style.maxWidth = "500px";
 	containerCheck.style.minWidth = "300px";
+	containerCheck.style.display = "flex";
+	containerCheck.style.flexDirection = "column";
+	containerCheck.style.justifyContent = "space-between";
 
 	const pStaff = document.createElement("h3");
-	pStaff.style.fontWeight = "bold";
-	pStaff.style.marginBottom = "10px";
 	pStaff.innerHTML = `Profissional: ${obj.objStaff.name}`;
+	pStaff.style.fontWeight = "bold";
+	pStaff.style.textAlign = "center";
 
 	const divDate = document.createElement("div");
-	divDate.style.marginBottom = "10px";
-	divDate.innerHTML = `<p>Data: ${obj.dateDaySelected
-		.split("-")
-		.reverse()
-		.join("/")}</p> <p>Hora: ${obj.hourSelected}</p>`;
+	divDate.style.height = "49%";
+	divDate.style.display = "flex";
+	divDate.style.flexDirection = "column";
+	divDate.style.gap = "0.5rem";
+	divDate.style.border = "1px solid #ccc";
+	divDate.style.borderRadius = "8px";
+	divDate.style.backgroundColor = "#fbfbfe";
+	divDate.style.textAlign = "start";
+	divDate.style.display = "flex";
+	divDate.style.flexDirection = "column";
+	divDate.style.justifyContent = "center";
+	divDate.style.alignItems = "center";
+	divDate.style.padding = "1rem";
+
+	// Formatando a data
+	const formattedDate = obj.dateDaySelected.split("-").reverse().join("/");
+
+	// Item da data
+	const dateItem = document.createElement("div");
+	dateItem.style.display = "flex";
+	dateItem.style.alignItems = "center";
+	dateItem.style.gap = "0.5rem";
+
+	const dateIcon = document.createElement("img");
+	dateIcon.src = "../assets/externalSchedulingPage/calendar.svg";
+	dateIcon.alt = "Ícone de calendário";
+	dateIcon.style.width = "24px";
+
+	const dateText = document.createElement("p");
+	dateText.textContent = `Data: ${formattedDate}`;
+	dateText.style.margin = "0";
+
+	dateItem.appendChild(dateIcon);
+	dateItem.appendChild(dateText);
+
+	// Item da hora
+	const timeItem = document.createElement("div");
+	timeItem.style.display = "flex";
+	timeItem.style.alignItems = "center";
+	timeItem.style.gap = "0.5rem";
+
+	const timeSvg = document.createElement("img");
+	timeSvg.src = "../assets/externalSchedulingPage/time.svg";
+	timeSvg.alt = "Ícone de horário";
+	timeSvg.style.width = "24px";
+
+	const timeContent = document.createElement("p");
+	timeContent.textContent = `Hora: ${obj.hourSelected}`;
+	timeContent.style.margin = "0";
+
+	timeItem.appendChild(timeSvg);
+	timeItem.appendChild(timeContent);
+
+	// Junta tudo
+	divDate.appendChild(pStaff);
+	divDate.appendChild(dateItem);
+	divDate.appendChild(timeItem);
 
 	const divService = document.createElement("div");
+	divService.style.border = "1px solid #ccc";
+	divService.style.height = "49%";
+	divService.style.gap = "0.5rem";
+	divService.style.borderRadius = "8px";
+	divService.style.backgroundColor = "#fbfbfe";
+	divService.style.textAlign = "start";
+	divService.style.display = "flex";
+	divService.style.flexDirection = "column";
+	divService.style.justifyContent = "center";
+	divService.style.alignItems = "center";
+
+	divService.style.padding = "1rem";
 
 	// Serviço (nome)
 	const nameWrapper = document.createElement("div");
@@ -76,6 +139,7 @@ export default function ConfirmScheduling(obj) {
 
 	const nameText = document.createElement("h3");
 	nameText.textContent = obj.objService.name;
+	nameText.style.textAlign = "center";
 
 	nameWrapper.style.display = "flex";
 	nameWrapper.style.alignItems = "center";
@@ -87,7 +151,7 @@ export default function ConfirmScheduling(obj) {
 	timeWrapper.style.gap = "0.5rem";
 
 	const timeIcon = document.createElement("img");
-	timeIcon.src = "../assets/externalSchedulingPage/time.svg";
+	timeIcon.src = "../assets/externalSchedulingPage/hour.svg";
 	timeIcon.alt = "Ícone tempo";
 	timeIcon.style.width = "24px";
 
@@ -124,7 +188,6 @@ export default function ConfirmScheduling(obj) {
 	divService.appendChild(timeWrapper);
 	divService.appendChild(costWrapper);
 
-	containerCheck.appendChild(pStaff);
 	containerCheck.appendChild(divDate);
 	containerCheck.appendChild(divService);
 
@@ -132,7 +195,8 @@ export default function ConfirmScheduling(obj) {
 	containerConfirm.style.border = "1px solid #ccc";
 	containerConfirm.style.borderRadius = "8px";
 	containerConfirm.style.padding = "20px";
-	containerConfirm.style.backgroundColor = "#f9f9f9";
+	containerConfirm.style.backgroundColor = "#fbfbfe";
+
 	containerConfirm.style.flex = "1";
 	containerConfirm.style.minWidth = "300px";
 
@@ -141,13 +205,11 @@ export default function ConfirmScheduling(obj) {
 	const phoneInput = createInput("Celular:", "tel", "phone");
 
 	const obsWrapper = document.createElement("div");
-	obsWrapper.style.marginBottom = "15px";
 
 	const obsLabel = document.createElement("label");
 	obsLabel.textContent = "Observação:";
 	obsLabel.setAttribute("for", "obs");
 	obsLabel.style.display = "block";
-	obsLabel.style.marginBottom = "5px";
 
 	const obsInput = document.createElement("textarea");
 	obsInput.id = "obs";

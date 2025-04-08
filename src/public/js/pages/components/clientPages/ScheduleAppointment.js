@@ -9,42 +9,58 @@ function formatDateToBR(dateStr) {
 	container.style.width = "100%";
 	container.style.border = "1px solid #c2c2c2";
 	container.style.padding = "1rem";
+	container.style.background = "#fbfbfe";
 	container.style.borderRadius = "0.5rem";
 
-	// Título
 	const title = document.createElement("p");
 	title.textContent = "Data selecionada";
 	title.style.fontWeight = "600";
 	title.style.marginBottom = "0.2rem";
 
-	// Verifica e formata a data
 	let formattedDate;
+	let dayOfWeek;
+
 	if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
 		const [year, month, day] = dateStr.split("-");
+		const date = new Date(`${year}-${month}-${day}T00:00:00`);
 		formattedDate = `${day}/${month}/${year}`;
+		dayOfWeek = date.toLocaleDateString("pt-BR", {weekday: "long"});
 	} else {
 		const date = new Date(dateStr);
 		const day = String(date.getDate()).padStart(2, "0");
 		const month = String(date.getMonth() + 1).padStart(2, "0");
 		const year = date.getFullYear();
 		formattedDate = `${day}/${month}/${year}`;
+		dayOfWeek = date.toLocaleDateString("pt-BR", {weekday: "long"});
 	}
 
-	// Elemento com a data
+	const dateWrapper = document.createElement("div");
+	dateWrapper.style.display = "flex";
+	dateWrapper.style.alignItems = "center";
+	dateWrapper.style.gap = "0.5rem";
+
 	const dateEl = document.createElement("p");
-	dateEl.textContent = formattedDate;
+	dateEl.textContent = `${dayOfWeek} - ${formattedDate}`;
 	dateEl.style.fontSize = "1rem";
 	dateEl.style.color = "#222";
+	dateEl.style.margin = "0";
+	dateEl.style.textTransform = "capitalize"; // Deixa "terça-feira" com a primeira letra maiúscula
 
-	// Adiciona ao container
+	const dateIcon = document.createElement("img");
+	dateIcon.src = "../assets/externalSchedulingPage/calendar.svg";
+	dateIcon.alt = "Ícone de calendário";
+	dateIcon.style.width = "25px";
+	dateIcon.style.height = "25px";
+
+	dateWrapper.appendChild(dateIcon);
+	dateWrapper.appendChild(dateEl);
 	container.appendChild(title);
-	container.appendChild(dateEl);
+	container.appendChild(dateWrapper);
 
 	return container;
 }
 
 function showStaffUnavailable(texto, svg) {
-	// Container principal
 	const wrapper = document.createElement("div");
 	wrapper.style.width = "100%";
 	wrapper.style.display = "flex";
@@ -53,21 +69,18 @@ function showStaffUnavailable(texto, svg) {
 	wrapper.style.alignItems = "center";
 	wrapper.style.gap = "1rem";
 
-	// Imagem SVG
 	const img = document.createElement("img");
 	img.src = svg;
 	img.alt = texto;
 	img.style.width = "120px";
 	img.style.height = "120px";
 
-	// Mensagem
 	const text = document.createElement("p");
 	text.innerText = texto;
 	text.style.fontSize = "1.25rem";
 	text.style.fontWeight = "500";
 	text.style.color = "#333";
 
-	// Monta o componente
 	wrapper.appendChild(img);
 	wrapper.appendChild(text);
 
@@ -285,6 +298,7 @@ let objCompany = null;
 
 export default function ScheduleAppointment() {
 	const mainDiv = document.createElement("div");
+
 	const urlParams = new URLSearchParams(window.location.search);
 	const idCompany = urlParams.get("idCompany");
 	const idService = urlParams.get("idService");
@@ -358,7 +372,7 @@ export default function ScheduleAppointment() {
 				mainDiv.style.minHeight = "calc(100vh - 6rem - 6rem)";
 
 				const confirm = document.createElement("div");
-				confirm.style.width = "300px";
+				confirm.style.width = "320px";
 				confirm.style.display = "flex";
 				confirm.style.flexDirection = "column";
 				confirm.style.padding = "1.5rem";
@@ -390,6 +404,7 @@ export default function ScheduleAppointment() {
 				containerContent.style.padding = "2rem";
 
 				const contentServiceInformation = document.createElement("div");
+				contentServiceInformation.style.background = "#fbfbfe"
 
 				const nameWrapper = document.createElement("div");
 				nameWrapper.style.display = "flex";
@@ -433,7 +448,7 @@ export default function ScheduleAppointment() {
 				costWrapper.appendChild(costIcon);
 				costWrapper.appendChild(costText);
 
-				const spanData = document.createElement("span");
+				const divData = document.createElement("div");
 
 				contentServiceInformation.appendChild(nameWrapper);
 				contentServiceInformation.appendChild(timeWrapper);
@@ -445,7 +460,7 @@ export default function ScheduleAppointment() {
 
 				chosenService.appendChild(imageService);
 				chosenService.appendChild(contentServiceInformation);
-				chosenService.appendChild(spanData);
+				chosenService.appendChild(divData);
 
 				const back = document.createElement("div");
 				back.innerText = "Alterar serviço";
@@ -532,8 +547,8 @@ export default function ScheduleAppointment() {
 						confirm.style.minHeight = "auto";
 						containerContent.style.width = "100%";
 					} else {
-						confirm.style.width = "300px";
-						containerContent.style.width = "calc(100% - 316px)";
+						confirm.style.width = "320px";
+						containerContent.style.width = "calc(100% - 336px)";
 					}
 				}
 
@@ -574,6 +589,7 @@ export default function ScheduleAppointment() {
 					cardDiv.style.borderRadius = "0.5rem";
 					cardDiv.style.cursor = "pointer";
 					cardDiv.style.border = "1px solid #c2c2c2";
+					cardDiv.style.background = "#fbfbfe";
 					cardDiv.style.display = "flex";
 					cardDiv.style.flexDirection = "column";
 					cardDiv.style.justifyContent = "center";
@@ -610,7 +626,7 @@ export default function ScheduleAppointment() {
 						dot.style.height = "15px";
 						dot.style.borderRadius = "50%";
 
-						dot.style.backgroundColor = "#fff";
+						dot.style.backgroundColor = "#fbfbfe";
 						cfm.appendChild(dot);
 					}
 					divHeader.appendChild(cfm);
@@ -705,17 +721,17 @@ export default function ScheduleAppointment() {
 				const today = `${year}-${month}-${day}`;
 				dateInput.min = today;
 				dateInput.value = today;
-				spanData.innerHTML = "";
-				spanData.appendChild(formatDateToBR(today));
+				divData.innerHTML = "";
+				divData.appendChild(formatDateToBR(today));
 
 				dateInput.addEventListener("change", async () => {
 					const dataDay = dateInput.value;
-					spanData.innerHTML = "";
-					spanData.appendChild(formatDateToBR(dataDay));
+					divData.innerHTML = "";
+					divData.appendChild(formatDateToBR(dataDay));
 
 					if (!lastIdStaff) {
 						const hoursToWork = document.getElementById("hoursToWork");
-						hoursToWork.innerHTML = ""
+						hoursToWork.innerHTML = "";
 						hoursToWork.appendChild(
 							showStaffUnavailable(
 								"Selecione um funcionário",
