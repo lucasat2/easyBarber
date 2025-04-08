@@ -9,7 +9,6 @@ export default async function StaffManager() {
   mainContainer.style.flexDirection = "column";
   mainContainer.style.height = "100%";
   mainContainer.style.padding = "15px 50px";
-  mainContainer.style.backgroundColor = "transparent";
 
   // Botão de cadastro
   const createButton = document.createElement("button");
@@ -273,6 +272,8 @@ export default async function StaffManager() {
         staffList.appendChild(div);
         return;
       }
+
+      mainContainer.style.backgroundColor = "transparent";
 
       data.response.forEach((staff) => {
         const staffItem = createStaffItem(staff);
