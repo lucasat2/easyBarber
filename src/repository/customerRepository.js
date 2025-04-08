@@ -5,15 +5,29 @@ const getCompanyId = async company => {
 	try {
 		client = await pool.connect();
 
-		const query = "SELECT * FROM companies WHERE id = $1";
+		const queryCompany = "SELECT * FROM companies WHERE id = $1";
+		const resultCompany = await client.query(queryCompany, [company]);
 
-		const result = await client.query(query, [company]);
-
-		if (result.rows.length > 0) {
-			return result.rows[0].name;
-		} else {
+		if (resultCompany.rows.length === 0) {
 			return null;
 		}
+
+		const queryAddress = "SELECT * FROM users WHERE company_id = $1";
+		const resultAddress = await client.query(queryAddress, [
+			resultCompany.rows[0].id
+		]);
+
+		if (resultAddress.rows.length === 0) {
+			return null;
+		}
+
+		const objResult = {
+			name: resultCompany.rows[0].name,
+			phone: resultCompany.rows[0].phone_number,
+			email: resultAddress.rows[0].email
+		};
+
+		return objResult;
 	} catch (e) {
 		return null;
 	} finally {
@@ -68,7 +82,8 @@ const getServicesByStaff = async idService => {
 		const staffObj = [];
 
 		for (const e of resultObj) {
-			const queryGetStaff = "SELECT * FROM staffs WHERE id = $1 AND status = true";
+			const queryGetStaff =
+				"SELECT * FROM staffs WHERE id = $1 AND status = true";
 			const resultGet = await client.query(queryGetStaff, [e.staff_id]);
 
 			if (resultGet.rows.length <= 0) {
@@ -772,45 +787,41 @@ const insertNewAppointment = async (
 		}
 
 		if (countAppointments === allAppointmentsFilteredByEmployee.length) {
-			let clientId;
-
 			const {
 				rows: [clientData]
-			} = await client.query(getClientDataQuery, [
+			} = await client.query(createClientQuery, [
 				clientName,
 				clientEmail,
 				clientPhoneNumber
 			]);
-
-			if (clientData) {
-				clientId = clientData.id;
-			} else {
-				await client.query(createClientQuery, [
-					clientName,
-					clientEmail,
-					clientPhoneNumber
-				]);
-
-				const {
-					rows: [dataClient]
-				} = await client.query(getClientDataQuery, [
-					clientName,
-					clientEmail,
-					clientPhoneNumber
-				]);
-
-				clientId = dataClient.id;
+			console.log(clientData);
+			if (!clientData) {
+				return {
+					statusCode: 404,
+					statusMessage: "Falha ao armazenar as informações do cliente"
+				};
 			}
 
-			await client.query(createAppointmentQuery, [
+			const clientId = clientData.id;
+
+			const {
+				rows: [appointmentData]
+			} = await client.query(createAppointmentQuery, [
 				clientId,
-				idStaff,
-				idService,
+				employeeId,
+				serviceId,
 				serviceStartTime,
 				serviceEndTime,
 				"AGENDADO",
 				observation
 			]);
+
+			if (!appointmentData) {
+				return {
+					statusCode: 404,
+					statusMessage: "Falha ao criar o agendamento"
+				};
+			}
 
 			await client.query("COMMIT");
 
@@ -829,7 +840,7 @@ const insertNewAppointment = async (
 	} catch (error) {
 		await client.query("ROLLBACK");
 
-		return;
+		throw error;
 	} finally {
 		if (client) {
 			client.release();
