@@ -97,17 +97,6 @@ body {
   outline: none;
 }
 
-.loginForgotPassword {
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-.loginForgotPassword a {
-  color: #333;
-  text-decoration: none;
-  font-size: 12px;
-}
-
 .loginLoginButton {
   width: 100%;
   padding: 12px;
