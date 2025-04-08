@@ -4,7 +4,46 @@ import {MessageNotification} from "../MessageNotification.js";
 import navigateTo from "./NavigateTo.js";
 import NotFound from "./NotFound.js";
 
-function showStaffUnavailable() {
+function formatDateToBR(dateStr) {
+	const container = document.createElement("div");
+	container.style.width = "100%";
+	container.style.border = "1px solid #c2c2c2";
+	container.style.padding = "1rem";
+	container.style.borderRadius = "0.5rem";
+
+	// Título
+	const title = document.createElement("p");
+	title.textContent = "Data selecionada";
+	title.style.fontWeight = "600";
+	title.style.marginBottom = "0.2rem";
+
+	// Verifica e formata a data
+	let formattedDate;
+	if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+		const [year, month, day] = dateStr.split("-");
+		formattedDate = `${day}/${month}/${year}`;
+	} else {
+		const date = new Date(dateStr);
+		const day = String(date.getDate()).padStart(2, "0");
+		const month = String(date.getMonth() + 1).padStart(2, "0");
+		const year = date.getFullYear();
+		formattedDate = `${day}/${month}/${year}`;
+	}
+
+	// Elemento com a data
+	const dateEl = document.createElement("p");
+	dateEl.textContent = formattedDate;
+	dateEl.style.fontSize = "1rem";
+	dateEl.style.color = "#222";
+
+	// Adiciona ao container
+	container.appendChild(title);
+	container.appendChild(dateEl);
+
+	return container;
+}
+
+function showStaffUnavailable(texto, svg) {
 	// Container principal
 	const wrapper = document.createElement("div");
 	wrapper.style.width = "100%";
@@ -12,17 +51,18 @@ function showStaffUnavailable() {
 	wrapper.style.flexDirection = "column";
 	wrapper.style.justifyContent = "center";
 	wrapper.style.alignItems = "center";
+	wrapper.style.gap = "1rem";
 
 	// Imagem SVG
 	const img = document.createElement("img");
-	img.src = "../../../../../assets/externalSchedulingPage/person_off.svg";
-	img.alt = "Funcionário indisponível";
-	img.style.width = "130px";
-	img.style.height = "130px";
+	img.src = svg;
+	img.alt = texto;
+	img.style.width = "120px";
+	img.style.height = "120px";
 
 	// Mensagem
 	const text = document.createElement("p");
-	text.innerText = "Funcionário indisponível";
+	text.innerText = texto;
 	text.style.fontSize = "1.25rem";
 	text.style.fontWeight = "500";
 	text.style.color = "#333";
@@ -114,7 +154,12 @@ async function updateAvailableTimes(
 		);
 
 		if (!response.ok) {
-			hoursToWork.appendChild(showStaffUnavailable());
+			hoursToWork.appendChild(
+				showStaffUnavailable(
+					"Funcionário indispoíveis",
+					"../../../../../assets/externalSchedulingPage/person_off.svg"
+				)
+			);
 			setHourSelected(null);
 			setDateDaySelected(null);
 			return;
@@ -125,7 +170,12 @@ async function updateAvailableTimes(
 		const data = await response.json();
 
 		if (!data.getSchedules || !data.getSchedules.availableTimes) {
-			hoursToWork.appendChild(showStaffUnavailable());
+			hoursToWork.appendChild(
+				showStaffUnavailable(
+					"Funcionário indispoíveis",
+					"../../../../../assets/externalSchedulingPage/person_off.svg"
+				)
+			);
 			setHourSelected(null);
 			setDateDaySelected(null);
 			return;
@@ -174,7 +224,12 @@ async function updateAvailableTimes(
 		}
 
 		if (availableTimes.length === 0) {
-			hoursToWork.appendChild(showStaffUnavailable());
+			hoursToWork.appendChild(
+				showStaffUnavailable(
+					"Funcionário indispoíveis",
+					"../../../../../assets/externalSchedulingPage/person_off.svg"
+				)
+			);
 			setHourSelected(null);
 			setDateDaySelected(null);
 			return;
@@ -214,7 +269,12 @@ async function updateAvailableTimes(
 			hoursToWork.style.width = "100%";
 		});
 	} catch (error) {
-		hoursToWork.appendChild(showStaffUnavailable());
+		hoursToWork.appendChild(
+			showStaffUnavailable(
+				"Funcionário indispoíveis",
+				"../../../../../assets/externalSchedulingPage/person_off.svg"
+			)
+		);
 		setHourSelected(null);
 		setDateDaySelected(null);
 		console.error("Erro no fetch:", error);
@@ -290,7 +350,7 @@ export default function ScheduleAppointment() {
 
 		fetchStaffServices(idCompany, idService)
 			.then(staffs => {
-				const maxWidth = "1000px";
+				const maxWidth = "800px";
 
 				mainDiv.style.display = "flex";
 				mainDiv.style.flexWrap = "wrap";
@@ -298,7 +358,7 @@ export default function ScheduleAppointment() {
 				mainDiv.style.minHeight = "calc(100vh - 6rem - 6rem)";
 
 				const confirm = document.createElement("div");
-				confirm.style.width = "270px";
+				confirm.style.width = "300px";
 				confirm.style.display = "flex";
 				confirm.style.flexDirection = "column";
 				confirm.style.padding = "1.5rem";
@@ -306,12 +366,14 @@ export default function ScheduleAppointment() {
 				confirm.style.alignItems = "center";
 
 				const contentService = document.createElement("div");
+				contentService.style.width = "100%";
 				contentService.style.display = "flex";
 				contentService.style.flexDirection = "column";
 				contentService.style.alignItems = "center";
 				contentService.style.gap = "1rem";
 
 				const chosenService = document.createElement("div");
+				chosenService.style.width = "100%";
 				chosenService.style.display = "flex";
 				chosenService.style.flexDirection = "column";
 				chosenService.style.gap = "1rem";
@@ -371,12 +433,19 @@ export default function ScheduleAppointment() {
 				costWrapper.appendChild(costIcon);
 				costWrapper.appendChild(costText);
 
+				const spanData = document.createElement("span");
+
 				contentServiceInformation.appendChild(nameWrapper);
 				contentServiceInformation.appendChild(timeWrapper);
 				contentServiceInformation.appendChild(costWrapper);
 
+				contentServiceInformation.style.border = "1px solid #c2c2c2";
+				contentServiceInformation.style.padding = "1rem";
+				contentServiceInformation.style.borderRadius = "0.5rem";
+
 				chosenService.appendChild(imageService);
 				chosenService.appendChild(contentServiceInformation);
+				chosenService.appendChild(spanData);
 
 				const back = document.createElement("div");
 				back.innerText = "Alterar serviço";
@@ -463,8 +532,8 @@ export default function ScheduleAppointment() {
 						confirm.style.minHeight = "auto";
 						containerContent.style.width = "100%";
 					} else {
-						confirm.style.width = "270px";
-						containerContent.style.width = "calc(100% - 300px)";
+						confirm.style.width = "300px";
+						containerContent.style.width = "calc(100% - 316px)";
 					}
 				}
 
@@ -481,6 +550,12 @@ export default function ScheduleAppointment() {
 				const hoursToWork = document.createElement("div");
 				hoursToWork.id = "hoursToWork";
 				hoursToWork.style.width = "100%";
+				hoursToWork.appendChild(
+					showStaffUnavailable(
+						"Selecione um funcionário",
+						"../../../../../assets/externalSchedulingPage/select_staff.svg"
+					)
+				);
 
 				staffs.forEach(staff => {
 					const div = document.createElement("div");
@@ -498,23 +573,47 @@ export default function ScheduleAppointment() {
 					cardDiv.style.height = "100px";
 					cardDiv.style.borderRadius = "0.5rem";
 					cardDiv.style.cursor = "pointer";
-					cardDiv.style.border = "1px solid #d3d3d3";
+					cardDiv.style.border = "1px solid #c2c2c2";
 					cardDiv.style.display = "flex";
 					cardDiv.style.flexDirection = "column";
 					cardDiv.style.justifyContent = "center";
 					cardDiv.style.alignItems = "center";
 					cardDiv.style.fontWeight = "700";
 					cardDiv.style.position = "relative";
+					cardDiv.style.overflow = "hidden";
 
 					const divHeader = document.createElement("div");
 					divHeader.style.position = "absolute";
 					divHeader.style.bottom = "0";
 					divHeader.style.width = "50%";
 					divHeader.style.height = "0.4rem";
-					divHeader.style.background = "#d3d3d3";
+					divHeader.style.background = "#e0e0e0";
 					divHeader.style.borderRadius = "0.5rem 0.5rem 0 0";
 					divHeader.style.overflow = "hidden";
 					divHeader.style.transition = "all 0.3s";
+					divHeader.style.display = "flex";
+					divHeader.style.justifyContent = "end";
+
+					const cfm = document.createElement("div");
+					cfm.style.width = "100%";
+					cfm.style.height = "25px";
+					cfm.style.position = "absolute";
+					cfm.style.display = "none";
+					cfm.style.justifyContent = "end";
+					cfm.style.alignItems = "center";
+					cfm.style.gap = "0.5rem";
+					cfm.style.padding = "0.5rem";
+
+					for (let i = 0; i < 1; i++) {
+						const dot = document.createElement("div");
+						dot.style.width = "15px";
+						dot.style.height = "15px";
+						dot.style.borderRadius = "50%";
+
+						dot.style.backgroundColor = "#fff";
+						cfm.appendChild(dot);
+					}
+					divHeader.appendChild(cfm);
 
 					const paragraph = document.createElement("p");
 					paragraph.textContent = `${staff.name} ${staff.surname}`;
@@ -526,19 +625,6 @@ export default function ScheduleAppointment() {
 					paragraph.style.width = "100%";
 					paragraph.style.textAlign = "center";
 					paragraph.style.zIndex = "2";
-
-					// animação de hover
-					div.addEventListener("mouseover", () => {
-						// cardDiv.style.width = "310px";
-						// cardDiv.style.height = "110px";
-						// paragraph.style.fontSize = "1.1rem";
-					});
-
-					div.addEventListener("mouseout", () => {
-						// cardDiv.style.width = "300px";
-						// cardDiv.style.height = "100px";
-						// paragraph.style.fontSize = "1rem";
-					});
 
 					cardDiv.appendChild(divHeader);
 					cardDiv.appendChild(paragraph);
@@ -568,13 +654,18 @@ export default function ScheduleAppointment() {
 
 						document.querySelectorAll(".selected-staff").forEach(el => {
 							el.classList.remove("selected-staff");
-							el.querySelector("div").style.height = "0.4rem";
-							el.querySelector("div").style.width = "50%";
+							const headerDiv = el.querySelector(":scope > div");
+							headerDiv.style.height = "0.4rem";
+							headerDiv.style.width = "50%";
+
+							const cfmDiv = headerDiv.querySelector("div");
+							cfmDiv.style.display = "none";
 						});
 
 						cardDiv.classList.add("selected-staff");
 						divHeader.style.width = "100%";
 						divHeader.style.height = "100%";
+						cfm.style.display = "flex";
 					});
 
 					selectStaff.appendChild(div);
@@ -614,13 +705,23 @@ export default function ScheduleAppointment() {
 				const today = `${year}-${month}-${day}`;
 				dateInput.min = today;
 				dateInput.value = today;
+				spanData.innerHTML = "";
+				spanData.appendChild(formatDateToBR(today));
 
 				dateInput.addEventListener("change", async () => {
 					const dataDay = dateInput.value;
+					spanData.innerHTML = "";
+					spanData.appendChild(formatDateToBR(dataDay));
 
 					if (!lastIdStaff) {
 						const hoursToWork = document.getElementById("hoursToWork");
-						hoursToWork.innerHTML = "Selecione um funcionário";
+						hoursToWork.innerHTML = ""
+						hoursToWork.appendChild(
+							showStaffUnavailable(
+								"Selecione um funcionário",
+								"../../../../../assets/externalSchedulingPage/select_staff.svg"
+							)
+						);
 						hoursToWork.style.width = "100%";
 						return;
 					}

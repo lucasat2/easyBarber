@@ -6,7 +6,6 @@ import NotFound from "./NotFound.js";
 export default function ServicesPage() {
 	const container = document.createElement("div");
 
-	// Pegando o id da empresa da URL
 	const urlParams = new URLSearchParams(window.location.search);
 	const idCompany = urlParams.get("idCompany");
 
@@ -16,7 +15,6 @@ export default function ServicesPage() {
 		return container;
 	}
 
-	// Buscar e construir o conteúdo da página
 	buildContent(container, idCompany);
 
 	return container;
@@ -81,14 +79,29 @@ function buildContent(container, idCompany) {
 				div.style.width = "400px";
 				div.style.height = "270px";
 				div.style.borderRadius = "10px";
-				div.style.overflow = "hidden"; // Importante para esconder o zoom fora da borda
+				div.style.overflow = "hidden";
 				div.style.position = "relative";
 				div.style.display = "flex";
 				div.style.flexDirection = "column";
 				div.style.justifyContent = "end";
 				div.style.padding = "1.3rem 1rem";
 
-				// Imagem de fundo com zoom e blur
+				const arrow = document.createElement("div");
+				arrow.style.height = "35px";
+				arrow.style.width = "35px";
+				arrow.style.position = "absolute";
+				arrow.style.right = "1.4rem";
+				arrow.style.bottom = "1rem";
+				arrow.style.zIndex = "2";
+				arrow.style.transition = "all 0.3s";
+				arrow.style.backgroundImage =
+					"url('../../../../../assets/externalSchedulingPage/arrow.svg')";
+				arrow.style.backgroundPosition = "center";
+				arrow.style.backgroundRepeat = "no-repeat";
+				arrow.style.backgroundSize = "contain";
+				arrow.style.opacity = "0";
+				div.appendChild(arrow);
+
 				const bgEffect = document.createElement("div");
 				bgEffect.style.position = "absolute";
 				bgEffect.style.inset = "0";
@@ -103,7 +116,6 @@ function buildContent(container, idCompany) {
 				bgEffect.style.pointerEvents = "none";
 				div.appendChild(bgEffect);
 
-				// Overlay gradiente
 				const overlay = document.createElement("div");
 				overlay.style.position = "absolute";
 				overlay.style.inset = "0";
@@ -116,7 +128,6 @@ function buildContent(container, idCompany) {
 				overlay.style.zIndex = "1";
 				div.appendChild(overlay);
 
-				// Evento de clique
 				div.addEventListener("click", () => {
 					const idService = service.id;
 					const url = `/client?idCompany=${idCompany}&idService=${idService}`;
@@ -124,21 +135,23 @@ function buildContent(container, idCompany) {
 					navigateTo(ScheduleAppointment);
 				});
 
-				// Evento de hover
 				div.addEventListener("mouseover", () => {
 					overlay.style.opacity = "1";
-					descriptionWrapper.style.maxHeight = "9em"; // Expande
+					descriptionWrapper.style.maxHeight = "9em";
 					bgEffect.style.transform = "scale(1.1)";
 					bgEffect.style.filter = "blur(2px)";
+					arrow.style.right = "1rem";
+					arrow.style.opacity = "1";
 				});
 				div.addEventListener("mouseout", () => {
 					overlay.style.opacity = "0";
-					descriptionWrapper.style.maxHeight = "4.5em"; // Volta ao normal
+					descriptionWrapper.style.maxHeight = "4.5em";
 					bgEffect.style.transform = "scale(1)";
 					bgEffect.style.filter = "blur(0)";
+					arrow.style.right = "1.4rem";
+					arrow.style.opacity = "0";
 				});
 
-				// Conteúdo do serviço
 				const serviceDiv = document.createElement("div");
 				serviceDiv.style.color = "white";
 				serviceDiv.style.display = "flex";
@@ -182,7 +195,7 @@ function buildContent(container, idCompany) {
 				title.textContent = "Descrição:";
 
 				const descriptionWrapper = document.createElement("div");
-				descriptionWrapper.style.maxHeight = "4.5em"; // Altura inicial (com "...")
+				descriptionWrapper.style.maxHeight = "4.5em";
 				descriptionWrapper.style.overflow = "hidden";
 				descriptionWrapper.style.transition = "max-height 0.3s ease-in-out";
 
