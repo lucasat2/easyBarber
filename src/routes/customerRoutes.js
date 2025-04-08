@@ -20,7 +20,7 @@ router.post("/company/services/staff", customerController.listStaffByService);
 // Retorna o serviços que a EMPRESA faz passando o ID da EMPRESA
 router.post("/company/services", customerController.listServicesByCompany);
 
-// Retorna o ID da EMPRESA passando o nome da EMPRESA
+// Retorna o nome da EMPRESA passando o ID da EMPRESA
 router.post("/company", customerController.listCompanyId);
 
 module.exports = router;
