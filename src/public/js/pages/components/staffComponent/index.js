@@ -4,10 +4,12 @@ import StaffServicesSelection from "./StaffServicesSelection.js";
 import StaffDelete from "./StaffDelete.js";
 
 export default async function StaffManager() {
-  const div = document.createElement("div");
-  div.style.display = "flex";
-  div.style.flexDirection = "column";
-  div.style.gap = "2rem";
+  const mainContainer = document.createElement("div");
+  mainContainer.style.display = "flex";
+  mainContainer.style.flexDirection = "column";
+  mainContainer.style.height = "100%";
+  mainContainer.style.padding = "15px 50px";
+  mainContainer.style.backgroundColor = "transparent";
 
   // Botão de cadastro
   const createButton = document.createElement("button");
@@ -43,32 +45,34 @@ export default async function StaffManager() {
     root.appendChild(section);
   });
 
-  div.appendChild(createButton);
+  mainContainer.appendChild(createButton);
 
   // Lista de funcionários
   const staffList = document.createElement("div");
   staffList.style.display = "flex";
   staffList.style.flexDirection = "column";
-  staffList.style.gap = "10px";
-  staffList.style.background = "white";
-  staffList.style.padding = "1rem 2rem";
+  staffList.style.height = "100%";
 
-  div.appendChild(staffList);
+  mainContainer.appendChild(staffList);
 
   // Função para criar um item de funcionário
   function createStaffItem({ id, name, surname }) {
     const item = document.createElement("div");
     Object.assign(item.style, {
       display: "flex",
+      padding: "20px",
+      marginTop: "15px",
+      backgroundColor: "#fff",
+      boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+      borderRadius: "8px",
       alignItems: "center",
-      justifyContent: "space-between",
       flexWrap: "wrap",
-      padding: "10px",
     });
 
     const nameDiv = document.createElement("div");
     nameDiv.textContent = `${name} ${surname}`;
     nameDiv.style.fontWeight = "bold";
+    nameDiv.style.flex = "1";
 
     const buttonGroup = document.createElement("div");
     buttonGroup.style.display = "flex";
@@ -241,6 +245,8 @@ export default async function StaffManager() {
       staffList.innerHTML = "";
 
       if (data.response.length === 0) {
+        mainContainer.style.backgroundColor = "#fff";
+
         const div = document.createElement("div");
         Object.assign(div.style, {
           display: "flex",
@@ -248,10 +254,9 @@ export default async function StaffManager() {
           rowGap: "10px",
           justifyContent: "center",
           alignItems: "center",
-          fontFamily: "'Fredoka', sans-serif",
           fontSize: "50px",
           color: "#9fa324",
-          height: "calc(77vh - 108px)",
+          height: "100%",
         });
 
         const svg = document.createElement("img");
@@ -281,5 +286,5 @@ export default async function StaffManager() {
 
   loadStaff();
 
-  return div;
+  return mainContainer;
 }
