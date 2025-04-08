@@ -1,4 +1,4 @@
-import { MessageNotification } from "./MessageNotification.js";
+import { MessageNotification } from "../MessageNotification.js";
 import { ServicesCard } from "./ServiceCard.js";
 import { ServiceModal } from "./ServiceModal.js";
 

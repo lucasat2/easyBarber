@@ -1,4 +1,4 @@
-import { MessageNotification } from "./MessageNotification.js";
+import { MessageNotification } from "../MessageNotification.js";
 import { ServiceDashboard } from "./ServiceDashboard.js";
 
 function ServiceModal(isEdit, serviceData) {
@@ -32,7 +32,7 @@ function ServiceModal(isEdit, serviceData) {
 
   const nameInput = document.createElement("input");
   nameInput.placeholder = "Nome";
-  nameInput.classList.add("serviceModalInputs");
+  nameInput.classList.add("serviceNameModalInput");
   modalBody.appendChild(nameInput);
 
   const priceAndDurationFields = document.createElement("div");
@@ -41,12 +41,12 @@ function ServiceModal(isEdit, serviceData) {
 
   const priceInput = document.createElement("input");
   priceInput.placeholder = "Preço";
-  priceInput.classList.add("serviceModalInputs");
+  priceInput.classList.add("servicePriceAndDurationModalInputs");
   priceAndDurationFields.appendChild(priceInput);
 
   const durationInput = document.createElement("input");
   durationInput.placeholder = "Duração (minutos)";
-  durationInput.classList.add("serviceModalInputs");
+  durationInput.classList.add("servicePriceAndDurationModalInputs");
   priceAndDurationFields.appendChild(durationInput);
 
   const descriptionInput = document.createElement("textarea");

@@ -129,14 +129,11 @@ const insertNewAppointment = async (
 
     const getEmployeeShiftsQuery = "SELECT * FROM schedules WHERE id = $1";
 
-    const getClientDataQuery =
-      "SELECT * FROM clients WHERE name = $1 AND email = $2 AND phone_number = $3";
-
     const createClientQuery =
-      "INSERT INTO clients (name, email, phone_number) VALUES ($1, $2, $3)";
+      "INSERT INTO clients (name, email, phone_number) VALUES ($1, $2, $3) RETURNING *";
 
     const createAppointmentQuery =
-      "INSERT INTO appointments (client_id, staff_id, service_id, date_hour_begin, date_hour_end, status, observation) VALUES ($1, $2, $3, $4, $5, $6, $7)";
+      "INSERT INTO appointments (client_id, staff_id, service_id, date_hour_begin, date_hour_end, status, observation) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *";
 
     const {
       rows: [userData],
@@ -527,37 +524,26 @@ const insertNewAppointment = async (
     }
 
     if (countAppointments === allAppointmentsFilteredByEmployee.length) {
-      let clientId;
-
       const {
         rows: [clientData],
-      } = await client.query(getClientDataQuery, [
+      } = await client.query(createClientQuery, [
         clientName,
         clientEmail,
         clientPhoneNumber,
       ]);
 
-      if (clientData) {
-        clientId = clientData.id;
-      } else {
-        await client.query(createClientQuery, [
-          clientName,
-          clientEmail,
-          clientPhoneNumber,
-        ]);
-
-        const {
-          rows: [dataClient],
-        } = await client.query(getClientDataQuery, [
-          clientName,
-          clientEmail,
-          clientPhoneNumber,
-        ]);
-
-        clientId = dataClient.id;
+      if (!clientData) {
+        return {
+          statusCode: 404,
+          statusMessage: "Falha ao armazenar as informações do cliente",
+        };
       }
 
-      await client.query(createAppointmentQuery, [
+      const clientId = clientData.id;
+
+      const {
+        rows: [appointmentData],
+      } = await client.query(createAppointmentQuery, [
         clientId,
         employeeId,
         serviceId,
@@ -566,6 +552,13 @@ const insertNewAppointment = async (
         "AGENDADO",
         observation,
       ]);
+
+      if (!appointmentData) {
+        return {
+          statusCode: 404,
+          statusMessage: "Falha ao criar o agendamento",
+        };
+      }
 
       await client.query("COMMIT");
 

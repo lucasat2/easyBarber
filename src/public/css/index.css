@@ -327,7 +327,7 @@ body {
 /* schedulingTimelineSection */
 
 .initialSchedulingTimelineSection {
-  height: 77vh;
+  height: 100%;
   padding: 15px 50px;
   border-radius: 5px;
   display: flex;
@@ -342,7 +342,6 @@ body {
   row-gap: 10px;
   justify-content: center;
   align-items: center;
-  font-family: "Fredoka", sans-serif;
   font-size: 50px;
   color: #9fa324;
 }
@@ -364,6 +363,7 @@ body {
   padding-bottom: 10px;
   border-radius: 5px;
   background-color: #fff;
+  height: 100%;
 }
 
 .employeeSchedulingTimelineHeader {
@@ -372,12 +372,10 @@ body {
   align-items: center;
   width: 900px;
   height: 70px;
-  font-family: "Fredoka", sans-serif;
   font-size: 16px;
 }
 
 .employeeSchedulingTimelineHeaderManagementButton {
-  font-family: "Fredoka", sans-serif;
   font-size: 14px;
   padding: 10px 20px;
   border-radius: 5px;
@@ -407,7 +405,6 @@ body {
   background-color: #f5f5f5;
   border: 1px solid #f5f5f5;
   border-radius: 12px;
-  font-family: "Fredoka", sans-serif;
   font-size: 14px;
   appearance: none;
   cursor: pointer;
@@ -509,7 +506,6 @@ body {
   place-items: center;
   gap: 15px;
   width: 800px;
-  font-family: "Fredoka", sans-serif;
 }
 
 .schedulingTimelineMainHeader {
@@ -522,7 +518,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: "Fredoka", sans-serif;
   border-radius: 10px;
   transition: all 0.2s ease;
   font-size: 14px;
@@ -550,12 +545,11 @@ body {
 }
 
 .appointmentModal {
-  font-family: "Segoe UI", sans-serif;
   background-color: #ffffff;
   padding: 2rem;
   border-radius: 12px;
   width: 500px;
-  min-height: 550px;
+  min-height: 525px;
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
@@ -563,20 +557,16 @@ body {
   margin: 2rem;
 }
 
-.modalAppointTitle {
-  text-align: center;
-  margin-bottom: 0.5rem;
-}
-
 .modalFormRows {
   display: flex;
-  gap: 1rem;
+  column-gap: 10px;
 }
 
 .modalLabel {
   flex: 1;
   display: flex;
   flex-direction: column;
+  margin-bottom: 10px;
   font-weight: 500;
   font-size: 0.95rem;
   color: #333;
@@ -597,6 +587,7 @@ textarea.modalBoxStyles {
   min-height: 5px;
   resize: vertical;
   box-sizing: border-box;
+  resize: none;
 }
 
 .appointmentModalButtons {
@@ -619,13 +610,23 @@ textarea.modalBoxStyles {
 #modalButtonSaveAppointment,
 #modalButtonSaveBlock {
   background-color: #e2e200;
-  color: #000;
+  color: #fff;
+}
+
+#modalButtonSaveAppointment:hover,
+#modalButtonSaveBlock:hover {
+  background-color: #c1c638;
 }
 
 #modalButtonCancelAppointment,
 #modalButtonCancelBlock {
-  background-color: #e63946;
+  background-color: #dc3545;
   color: #fff;
+}
+
+#modalButtonCancelAppointment:hover,
+#modalButtonCancelBlock:hover {
+  background-color: #c82333;
 }
 
 .appointmentToggleContainer {
@@ -693,7 +694,9 @@ textarea.modalBoxStyles {
 }
 
 .registerStaffButton:hover {
-  background-color: #8a8a15;
+  background-color: transparent;
+  color: #9fa324;
+  border: 1px solid #9fa324;
 }
 
 .noDataContainer {
@@ -715,7 +718,6 @@ textarea.modalBoxStyles {
 }
 
 .noDataTitle {
-  font-family: "Fredoka", sans-serif;
   font-size: 50px;
   color: #9fa324;
 }
@@ -836,12 +838,11 @@ textarea.modalBoxStyles {
   padding: 0px 60px;
 }
 
-.serviceModalInputs {
+.serviceNameModalInput {
   border: none;
   background-color: #f5f5f5;
   padding: 15px 10px;
   border-radius: 5px;
-  font-family: "Fredoka", sans-serif;
 }
 
 .serviceModalPriceAndDurationFields {
@@ -849,12 +850,19 @@ textarea.modalBoxStyles {
   justify-content: space-between;
 }
 
+.servicePriceAndDurationModalInputs {
+  border: none;
+  background-color: #f5f5f5;
+  padding: 15px 10px;
+  border-radius: 5px;
+  width: 48%;
+}
+
 .serviceModalTextArea {
   border: none;
   background-color: #f5f5f5;
   padding: 15px 10px;
   border-radius: 5px;
-  font-family: "Fredoka", sans-serif;
   resize: none;
 }
 
@@ -866,11 +874,106 @@ textarea.modalBoxStyles {
   border-radius: 5px;
   font-size: 16px;
   background-color: #dee33e;
-  font-family: "Fredoka", sans-serif;
   transition: all 0.3s ease;
   align-self: center;
+  color: #fff;
 }
 
 .serviceModalSaveButton:hover {
+  background-color: #c1c638;
+}
+
+/* EditUserProfileModal*/
+
+.editUserProfileModalMainContainer {
+  z-index: 100;
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.editUserProfileModalContent {
+  width: 600px;
+  max-width: 80%;
+  height: auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 40px;
+}
+
+.editUserProfileModalHeader {
+  padding: 20px 0;
+  position: relative;
+}
+
+.editUserProfileModalCloseButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #eb4335;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.editUserProfileModalBody {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 15px;
+  padding: 0px 60px;
+}
+
+.editUserProfileModalTitle {
+  font-size: 25px;
+  margin-bottom: 10px;
+}
+
+.editUserProfileModalFields {
+  display: flex;
+  column-gap: 20px;
+}
+
+.editUserProfileModalInputs {
+  border: none;
+  width: 200px;
+  background-color: #f5f5f5;
+  padding: 15px 10px;
+  border-radius: 5px;
+}
+
+.editUserProfileModalSaveButton {
+  padding: 10px 0px;
+  width: 150px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #dee33e;
+  transition: all 0.3s ease;
+  align-self: center;
+  color: #fff;
+}
+
+.editUserProfileModalSaveButton:hover {
   background-color: #c1c638;
 }

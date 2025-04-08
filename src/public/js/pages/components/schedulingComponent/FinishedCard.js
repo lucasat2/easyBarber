@@ -1,8 +1,12 @@
-import { MessageNotification } from "./MessageNotification.js";
+import { MessageNotification } from "../MessageNotification.js";
 import { AppointmentCard, updateAppointmentStatus } from "./AppointmentCard.js";
-import { getEditedCurrentTime, getSelectedEmployeeId, setGlobalAppointments } from "./setAndGetGlobalVariables.js";
+import {
+  getEditedCurrentTime,
+  getSelectedEmployeeId,
+  setGlobalAppointments,
+} from "../setAndGetGlobalVariables.js";
 import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
-import { fetchAppointmentsByEmployee } from "./fetchData.js";
+import { fetchAppointmentsByEmployee } from "../fetchData.js";
 
 function FinishedCard(date, appointmentData) {
   const cardContainer = document.createElement("div");
@@ -19,9 +23,12 @@ function FinishedCard(date, appointmentData) {
   cardContainer.style.width = "60vw";
 
   const infoContainer = document.createElement("div");
-  cardContainer.appendChild(infoContainer);
+  infoContainer.style.display = "flex";
+  infoContainer.style.flexDirection = "column";
+  infoContainer.style.rowGap = "10px";
   infoContainer.style.flex = "1";
   infoContainer.style.marginRight = "20px";
+  cardContainer.appendChild(infoContainer);
 
   const serviceNameArea = document.createElement("h3");
   infoContainer.appendChild(serviceNameArea);
@@ -45,10 +52,10 @@ function FinishedCard(date, appointmentData) {
   infoContainer.appendChild(observationArea);
 
   const buttonArea = document.createElement("div");
-  buttonArea.style.display = "flex"
-  buttonArea.style.flexDirection = "column"
-  buttonArea.style.rowGap = "10px"
-  cardContainer.appendChild(buttonArea)
+  buttonArea.style.display = "flex";
+  buttonArea.style.flexDirection = "column";
+  buttonArea.style.rowGap = "10px";
+  cardContainer.appendChild(buttonArea);
 
   const statusArea = document.createElement("div");
   statusArea.textContent = "Finalizado";
@@ -101,36 +108,36 @@ function FinishedCard(date, appointmentData) {
   }
 
   const undoButton = document.createElement("button");
-  undoButton.innerText = "Desfazer"
+  undoButton.innerText = "Desfazer";
   undoButton.style.padding = "10px 0px";
   undoButton.style.width = "150px";
-  undoButton.style.backgroundColor = "#A6A6A6";
-  undoButton.style.color = "#fff";
+  undoButton.style.backgroundColor = "#fff";
+  undoButton.style.color = "#9FA324";
   undoButton.style.border = "none";
   undoButton.style.cursor = "pointer";
   undoButton.style.borderRadius = "5px";
   undoButton.style.marginBottom = "10px";
-  undoButton.style.fontSize = "20px"
+  undoButton.style.fontSize = "20px";
   buttonArea.appendChild(undoButton);
 
   undoButton.addEventListener("mouseover", function () {
-    undoButton.style.backgroundColor = "#7F7F7F";
+    undoButton.style.backgroundColor = "#f0f0f0";
   });
   undoButton.addEventListener("mouseout", function () {
-    undoButton.style.backgroundColor = "#A6A6A6";
+    undoButton.style.backgroundColor = "#fff";
   });
 
-  undoButton.addEventListener("click", async function (){
+  undoButton.addEventListener("click", async function () {
     updateAppointmentStatus(
       "AGENDADO",
-      "Serviço atualizado com sucesso",
+      "Status do serviço alterado com sucesso",
       date,
       appointmentData
-    )
-    const newAppointment = AppointmentCard(date, appointmentData)
-    console.log(date, appointmentData)
+    );
+    const newAppointment = AppointmentCard(date, appointmentData);
+    console.log(date, appointmentData);
     cardContainer.innerHTML = "";
-    cardContainer.appendChild(newAppointment)
+    cardContainer.appendChild(newAppointment);
 
     const employeeId = getSelectedEmployeeId();
     if (employeeId) {
@@ -144,15 +151,15 @@ function FinishedCard(date, appointmentData) {
       }
     }
 
-
-    const {month, year} = getEditedCurrentTime()
+    const { month, year } = getEditedCurrentTime();
     const employeeScheduleTimeline = SchedulingTimelineDiv(month, year);
 
-    const employeeScheduleTimelineContainer = document.getElementById("employeeScheduleTimelineContainer");
+    const employeeScheduleTimelineContainer = document.getElementById(
+      "employeeScheduleTimelineContainer"
+    );
     employeeScheduleTimelineContainer.innerHTML = "";
     employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline);
-
-  })
+  });
 
   fillRequiredFields();
 

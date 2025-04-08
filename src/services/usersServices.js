@@ -1,6 +1,16 @@
 const { hashPassword } = require("../utils/hashPassword.js");
 const usersRepository = require("../repository/usersRepository.js");
 
+const getAuthenticatedCompanyData = async (userId) => {
+  try {
+    const response = await usersRepository.retrieveCompanyData(userId);
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const createUser = async (
   name,
   cnpj,
@@ -90,6 +100,7 @@ const updateUser = async (
 };
 
 module.exports = {
+  getAuthenticatedCompanyData,
   createUser,
   updateUser,
 };

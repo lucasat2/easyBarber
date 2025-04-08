@@ -1,13 +1,17 @@
-import { fetchStaff, fetchServices } from "./fetchData.js";
-import { MessageNotification } from "./MessageNotification.js";
-import { fetchAppointmentsByEmployee } from "./fetchData.js";
-import { setGlobalAppointments } from "./setAndGetGlobalVariables.js";
+import {
+  fetchStaff,
+  fetchServices,
+  fetchAppointmentsByEmployee,
+} from "../fetchData.js";
+import { MessageNotification } from "../MessageNotification.js";
+import {
+  setGlobalAppointments,
+  getEditedCurrentTime,
+  getSelectedEmployeeId,
+} from "../setAndGetGlobalVariables.js";
 import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
-import { getEditedCurrentTime, getSelectedEmployeeId } from "./setAndGetGlobalVariables.js";
 
 function createModal() {
-  const title = document.createElement("h2");
-  title.classList.add("modalAppointTitle");
   //Cria a estrutura do modal
   const overlay = document.createElement("div");
   overlay.classList.add("appointmentModalOverlay");
@@ -73,10 +77,7 @@ function createModal() {
   toggleContainer.appendChild(btnAppoint);
   toggleContainer.appendChild(btnBlock);
 
-  title.textContent = "Agendamento";
-
   modal.appendChild(toggleContainer);
-  modal.appendChild(title);
   modal.appendChild(formContainer);
 
   renderForm("agendar");
@@ -102,10 +103,6 @@ function createField(labelText, element) {
 
 //Função para criar o formulário de agendamento
 async function createApointForm() {
-  const title = document.createElement("h2");
-  title.classList.add("modalAppointTitle");
-  title.textContent = "Agendamento";
-
   const { selectStaff, selectService } = await populateSelects();
 
   const form = document.createElement("form");
@@ -135,7 +132,7 @@ async function createApointForm() {
 
   const inputClientEmail = document.createElement("input");
   inputClientEmail.type = "email";
-  inputClientEmail.placeholder = "Email do cliente";
+  inputClientEmail.placeholder = "E-mail do cliente";
   inputClientEmail.required = true;
   inputClientEmail.classList.add("modalBoxStyles");
   inputClientEmail.name = "clientEmail";
@@ -143,10 +140,9 @@ async function createApointForm() {
   // Horário inicial
   const selectDateTime = document.createElement("input");
   selectDateTime.type = "time";
-  selectDateTime.placeholder = "Email do cliente";
   selectDateTime.required = true;
   selectDateTime.classList.add("modalBoxStyles");
-  selectDateTime.name = "appointmentTime"
+  selectDateTime.name = "appointmentTime";
 
   // Observações
   const textareaObs = document.createElement("textarea");
@@ -175,7 +171,7 @@ async function createApointForm() {
   const line1 = document.createElement("div");
   line1.classList.add("modalFormRows");
 
-  line1.appendChild(createField("Funcionário", selectStaff));
+  line1.appendChild(createField("Profissional", selectStaff));
   line1.appendChild(createField("Nome do Cliente", inputClientName));
 
   const line2 = document.createElement("div");
@@ -186,7 +182,7 @@ async function createApointForm() {
   const line3 = document.createElement("div");
   line3.classList.add("modalFormRows");
   line3.appendChild(createField("Data", inputData));
-  line3.appendChild(createField("Email do cliente", inputClientEmail));
+  line3.appendChild(createField("E-mail do cliente", inputClientEmail));
 
   const line4 = document.createElement("div");
   line4.classList.add("modalFormRows");
@@ -245,15 +241,14 @@ async function createApointForm() {
         }
       }
 
-
-      const {month, year} = getEditedCurrentTime()
+      const { month, year } = getEditedCurrentTime();
       const employeeScheduleTimeline = SchedulingTimelineDiv(month, year);
 
-      const employeeScheduleTimelineContainer = document.getElementById("employeeScheduleTimelineContainer");
+      const employeeScheduleTimelineContainer = document.getElementById(
+        "employeeScheduleTimelineContainer"
+      );
       employeeScheduleTimelineContainer.innerHTML = "";
       employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline);
-
-
 
       MessageNotification(result.message, " #28a745");
     } catch (error) {
@@ -266,12 +261,7 @@ async function createApointForm() {
 
 //Função para gerar formulário de bloquear horário
 async function createBlockForm() {
-  const title = document.createElement("h2");
-  title.classList.add("modalAppointTitle");
-  title.textContent = "Bloqueio";
-
   const form = document.createElement("form");
-  form.id = "form-bloqueio";
 
   // Select Profissional
   const selectStaff = document.createElement("select");
@@ -321,7 +311,7 @@ async function createBlockForm() {
   // Botões
   const btnSave = document.createElement("button");
   btnSave.id = "modalButtonSaveBlock";
-  btnSave.textContent = "Salvar bloqueio";
+  btnSave.textContent = "Salvar";
   btnSave.type = "submit";
 
   const btnCancel = document.createElement("button");
@@ -401,14 +391,14 @@ async function createBlockForm() {
         }
       }
 
-
-      const {month, year} = getEditedCurrentTime()
+      const { month, year } = getEditedCurrentTime();
       const employeeScheduleTimeline = SchedulingTimelineDiv(month, year);
 
-      const employeeScheduleTimelineContainer = document.getElementById("employeeScheduleTimelineContainer");
+      const employeeScheduleTimelineContainer = document.getElementById(
+        "employeeScheduleTimelineContainer"
+      );
       employeeScheduleTimelineContainer.innerHTML = "";
       employeeScheduleTimelineContainer.appendChild(employeeScheduleTimeline);
-
 
       MessageNotification(result.message, " #28a745");
     } catch (error) {

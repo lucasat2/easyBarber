@@ -1,8 +1,8 @@
-import { InitialSchedulingTimelineSection } from "./InitialSchedulingTimelineSection.js";
+import { InitialSchedulingTimelineSection } from "./schedulingComponent/InitialSchedulingTimelineSection.js";
 import { MessageNotification } from "./MessageNotification.js";
 import StaffManager from "./staffComponent/index.js";
-import { ServiceDashboard } from "./ServiceDashboard.js";
-
+import { ServiceDashboard } from "./serviceComponent/ServiceDashboard.js";
+import { EditUserProfileModal } from "./editUserComponent/EditUserProfileModal.js";
 
 export default function header() {
   const root = document.getElementById("root");
@@ -52,6 +52,26 @@ export default function header() {
   subTitleHeader.id = "subTitleHeader";
   subTitleHeader.style.fontSize = "1rem";
 
+  const divLinkAndProfile = document.createElement("div");
+  divLinkAndProfile.style.display = "flex";
+  divLinkAndProfile.style.columnGap = "20px";
+  divLinkAndProfile.style.alignItems = "center";
+  divLinkAndProfile.style.cursor = "pointer";
+
+  const linkExternalPageField = document.createElement("a");
+  linkExternalPageField.target = "_blank";
+  linkExternalPageField.innerText = "Ir para a página de agendamento";
+  linkExternalPageField.style.textDecoration = "none";
+  linkExternalPageField.style.color = "#000";
+
+  linkExternalPageField.addEventListener("mouseenter", () => {
+    linkExternalPageField.style.color = "#DEE33E";
+  });
+
+  linkExternalPageField.addEventListener("mouseleave", () => {
+    linkExternalPageField.style.color = "#000";
+  });
+
   // container do perfil do usuário
   const divProfile = document.createElement("div");
   divProfile.style.maxWidth = "186px";
@@ -78,6 +98,19 @@ export default function header() {
   const nameUser = document.createElement("div");
   nameUser.innerText = "Usuário";
   nameUser.style.fontWeight = "900";
+  nameUser.style.cursor = "pointer";
+
+  nameUser.addEventListener("mouseenter", () => {
+    nameUser.style.color = "#DEE33E";
+  });
+
+  nameUser.addEventListener("mouseleave", () => {
+    nameUser.style.color = "#000";
+  });
+
+  nameUser.addEventListener("click", () => {
+    EditUserProfileModal();
+  });
 
   contentUser.appendChild(nameUser);
 
@@ -138,9 +171,9 @@ export default function header() {
     activeItem.style.color = "#fff";
 
     // arrumando main
-    const main = document.getElementById("main");
     main.innerHTML = "";
     main.style.padding = "30px";
+    main.style.height = "calc(100% - 6rem)";
 
     if (activeItem.id == "Agendamentos") {
       main.innerHTML = "";
@@ -151,10 +184,12 @@ export default function header() {
     } else if (activeItem.id == "Equipe") {
       main.innerHTML = "";
 
-			const section = await StaffManager();
+      const section = await StaffManager();
 
-			main.appendChild(section);
+      main.appendChild(section);
     } else if (activeItem.id == "Serviço") {
+      main.innerHTML = "";
+
       const section = ServiceDashboard();
 
       main.appendChild(section);
@@ -239,8 +274,12 @@ export default function header() {
   divTitleHeader.appendChild(subTitleHeader);
 
   navBar.appendChild(navgation);
+
   header.appendChild(divTitleHeader);
-  header.appendChild(divProfile);
+  header.appendChild(divLinkAndProfile);
+
+  divLinkAndProfile.appendChild(linkExternalPageField);
+  divLinkAndProfile.appendChild(divProfile);
 
   containerMain.appendChild(header);
   containerMain.appendChild(main);
@@ -254,6 +293,25 @@ export default function header() {
       highlightActiveButton(liAppointments);
     }
   }, 0);
+
+  fetch("/api/users/company")
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((errorData) => {
+          throw new Error(errorData.error || "Falha Desconhecida");
+        });
+      }
+
+      return response.json();
+    })
+    .then((data) => {
+      linkExternalPageField.href = data.link_client;
+
+      nameUser.innerText = data.name;
+    })
+    .catch((error) => {
+      MessageNotification(error.message, "#ff6347");
+    });
 
   return divContainerNav;
 }

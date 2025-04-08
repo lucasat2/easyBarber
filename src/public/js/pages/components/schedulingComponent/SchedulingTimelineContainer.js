@@ -1,5 +1,5 @@
 import { SchedulingTimelineCard } from "./SchedulingTimelineCard.js";
-import { getGlobalAppointments } from "./setAndGetGlobalVariables.js";
+import { getGlobalAppointments } from "../setAndGetGlobalVariables.js";
 
 function SchedulingTimelineDiv(month, year) {
   const cardReferences = [];
@@ -72,12 +72,12 @@ async function GenerateCards(
       "70px"
     );
     schedulingTimelineCard.classList.add("schedulingTimelineMainCard");
-    schedulingTimelineCard.classList.add(`Card-${k}`);
+    schedulingTimelineCard.classList.add(`Card-${k}-${month}-${year}`);
     schedulingTimelineContainer.appendChild(schedulingTimelineCard);
 
     cardReferences.push({
       date: date.toLocaleString("pt-BR"),
-      selector: `Card-${k}`,
+      selector: `Card-${k}-${month}-${year}`,
     });
   }
 }
@@ -100,15 +100,14 @@ async function ColorCardAppointments(
   cardReferences.forEach(({ date, selector }) => {
     const foundPendindgAppointments = appointments.filter(
       (appointment) =>
-        appointment.appointmentStart === date &&
-        ( appointment.status === "AGENDADO")
+        appointment.status === "AGENDADO"
     );
 
     const foundBlockedAppointments = appointments.filter(
       (appointment) =>
-        appointment.appointmentStart === date &&
         appointment.status === "BLOQUEADO"
     );
+
     const classNames = getCardClassesForAppointments(foundBlockedAppointments);
     const foundElements = [];
 
@@ -162,8 +161,10 @@ const getCardClassesForAppointments = function (appointments) {
 
     for (const dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
       const dayIndex = dt.getDate() - 1;
-      classesArray.push(`Card-${dayIndex}`);
-    }
+      const monthIndex = dt.getMonth();
+      const yearIndex = dt.getFullYear()
+      classesArray.push(`Card-${dayIndex}-${monthIndex}-${yearIndex}`);    }
+
 
     result.push({
       appointmentStart,
@@ -176,7 +177,6 @@ const getCardClassesForAppointments = function (appointments) {
 
 function getPendentAppointment(foundPendindgAppointments) {
   const classesArray = [];
-
   foundPendindgAppointments.forEach(({ appointmentStart }) => {
     const [startDate, startTime] = appointmentStart.split(", ");
     const [startDay, startMonth, startYear] = startDate.split("/");
@@ -184,7 +184,7 @@ function getPendentAppointment(foundPendindgAppointments) {
       new Date(
         `${startYear}-${startMonth}-${startDay}T${startTime}`
       ).getDate() - 1
-    }`;
+    }-${startMonth-1}-${startYear}`;
     classesArray.push(className);
   });
 

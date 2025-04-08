@@ -122,10 +122,14 @@ const createAppointment = async (req, res) => {
       return res.status(400).json({ error: "Horário inválido" });
     }
 
-    if (!validator.isAlpha(observation, "pt-BR", { ignore: " " })) {
-      return res
-        .status(400)
-        .json({ error: "Campo de observação deve conter apenas letras" });
+    if (
+      !validator.matches(observation, /^[a-zA-Z0-9À-ÿ\s.,]*$/) ||
+      !validator.isLength(observation, { min: 0, max: 100 })
+    ) {
+      return res.status(400).json({
+        error:
+          "O campo de observação deve conter no máximo 100 caracteres e apenas letras, números, vírgulas, espaços e/ou pontos",
+      });
     }
 
     const result = await appointmentsServices.createAppointment(
@@ -204,10 +208,14 @@ const blockTimeForStaff = async (req, res) => {
         .json({ error: "Formato inválido de horário de fim" });
     }
 
-    if (!validator.isAlpha(observation, "pt-BR", { ignore: " " })) {
-      return res
-        .status(400)
-        .json({ error: "Campo de observação deve conter apenas letras" });
+    if (
+      !validator.matches(observation, /^[a-zA-Z0-9À-ÿ\s.,]*$/) ||
+      !validator.isLength(observation, { min: 0, max: 100 })
+    ) {
+      return res.status(400).json({
+        error:
+          "O campo de observação deve conter no máximo 100 caracteres e apenas letras, números, vírgulas, espaços e/ou pontos",
+      });
     }
 
     const result = await appointmentsServices.blockEmployeeSchedule(
