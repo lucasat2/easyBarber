@@ -325,7 +325,7 @@ export default function ScheduleAppointment() {
 				containerContent.style.display = "flex";
 				containerContent.style.flexDirection = "column";
 				containerContent.style.gap = "2rem";
-				containerContent.style.paddingBottom = "2rem";
+				containerContent.style.padding = "2rem";
 
 				const contentServiceInformation = document.createElement("div");
 
@@ -454,7 +454,7 @@ export default function ScheduleAppointment() {
 				selectStaff.style.alignItems = "center";
 				selectStaff.style.flexWrap = "wrap";
 				selectStaff.style.gap = "1rem";
-				selectStaff.style.padding = "1.5rem";
+				selectStaff.style.padding = "0 1.5rem";
 
 				function handleScreenChange(e) {
 					if (e.matches) {
@@ -497,24 +497,24 @@ export default function ScheduleAppointment() {
 					cardDiv.style.width = "300px";
 					cardDiv.style.height = "100px";
 					cardDiv.style.borderRadius = "0.5rem";
-					cardDiv.style.background = "#D9D9D9";
-					cardDiv.style.display = "flex";
 					cardDiv.style.cursor = "pointer";
+					cardDiv.style.border = "1px solid #d3d3d3";
+					cardDiv.style.display = "flex";
 					cardDiv.style.flexDirection = "column";
 					cardDiv.style.justifyContent = "center";
 					cardDiv.style.alignItems = "center";
 					cardDiv.style.fontWeight = "700";
 					cardDiv.style.position = "relative";
-					cardDiv.style.transition = "all 0.3s";
 
 					const divHeader = document.createElement("div");
 					divHeader.style.position = "absolute";
 					divHeader.style.bottom = "0";
 					divHeader.style.width = "50%";
-					divHeader.style.height = "0.7rem";
-					divHeader.style.background = "#eeeeee";
+					divHeader.style.height = "0.4rem";
+					divHeader.style.background = "#d3d3d3";
 					divHeader.style.borderRadius = "0.5rem 0.5rem 0 0";
 					divHeader.style.overflow = "hidden";
+					divHeader.style.transition = "all 0.3s";
 
 					const paragraph = document.createElement("p");
 					paragraph.textContent = `${staff.name} ${staff.surname}`;
@@ -525,18 +525,19 @@ export default function ScheduleAppointment() {
 					paragraph.style.overflow = "hidden";
 					paragraph.style.width = "100%";
 					paragraph.style.textAlign = "center";
+					paragraph.style.zIndex = "2";
 
 					// animação de hover
 					div.addEventListener("mouseover", () => {
-						cardDiv.style.width = "310px";
-						cardDiv.style.height = "110px";
-						paragraph.style.fontSize = "1.1rem";
+						// cardDiv.style.width = "310px";
+						// cardDiv.style.height = "110px";
+						// paragraph.style.fontSize = "1.1rem";
 					});
 
 					div.addEventListener("mouseout", () => {
-						cardDiv.style.width = "300px";
-						cardDiv.style.height = "100px";
-						paragraph.style.fontSize = "1rem";
+						// cardDiv.style.width = "300px";
+						// cardDiv.style.height = "100px";
+						// paragraph.style.fontSize = "1rem";
 					});
 
 					cardDiv.appendChild(divHeader);
@@ -546,7 +547,6 @@ export default function ScheduleAppointment() {
 					div.addEventListener("click", async () => {
 						const calendar = document.getElementById("calendar-input");
 						const idStaff = staff.id;
-						console.log(staff);
 						objStaff = {
 							id: staff.id,
 							name: `${staff.name} ${staff.surname}`
@@ -568,11 +568,13 @@ export default function ScheduleAppointment() {
 
 						document.querySelectorAll(".selected-staff").forEach(el => {
 							el.classList.remove("selected-staff");
-							el.style.background = "#D9D9D9";
+							el.querySelector("div").style.height = "0.4rem";
+							el.querySelector("div").style.width = "50%";
 						});
 
 						cardDiv.classList.add("selected-staff");
-						cardDiv.style.background = "#DEE33E";
+						divHeader.style.width = "100%";
+						divHeader.style.height = "100%";
 					});
 
 					selectStaff.appendChild(div);
