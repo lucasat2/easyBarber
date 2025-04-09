@@ -16,7 +16,7 @@ export default function landing() {
   const div = document.createElement("div");
 
   // Cabeçalho
-  const loadingPageHeader = createElement("header", "", "loadingPageHeader");
+  const loadingPageHeader = createElement("header", "", "headerLandingPage");
   const loadingLogoDiv = createElement("div", "", "logo");
 
   // Logotipo
@@ -142,7 +142,7 @@ aboutDescriptionContainer.appendChild(aboutList)
   div.appendChild(objectivesSection);
 
   // Rodapé (Footer)
-  const footer = createElement("footer", "", "contato");
+  const footer = createElement("footer", "", "footerLandingPage");
   const contactTitle = createElement("h3", "Contato", "contact-title");
   const contactInfo = createElement(
     "p",
@@ -157,7 +157,7 @@ aboutDescriptionContainer.appendChild(aboutList)
 }
 
 window.addEventListener("scroll", () => {
-    const header = document.querySelector("header");
+    const header = document.querySelector(".headerLandingPage");
     if (window.scrollY > 0) {
       header.style.backgroundColor = "black";
     } else {
