@@ -1,0 +1,309 @@
+openapi: 3.0.0
+info:
+  title: EasyBarber API
+  version: 1.0.0
+  description: API RESTful para gerenciamento de agendamentos, clientes, serviços e usuários no sistema EasyBarber.
+
+paths:
+  /appointments/employee/{id}:
+    get:
+      summary: Listar agendamentos por funcionário
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID do funcionário
+      responses:
+        '200':
+          description: Lista de agendamentos
+
+  /appointments/{id}:
+    get:
+      summary: Obter detalhes do agendamento
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID do agendamento
+      responses:
+        '200':
+          description: Dados do agendamento
+
+  /appointments:
+    post:
+      summary: Criar novo agendamento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customerId:
+                  type: integer
+                serviceId:
+                  type: integer
+                employeeId:
+                  type: integer
+                date:
+                  type: string
+                  format: date-time
+                duration:
+                  type: integer
+              required: [customerId, serviceId, employeeId, date]
+      responses:
+        '201':
+          description: Agendamento criado
+
+  /appointments/blockSchedule:
+    post:
+      summary: Bloquear horário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                employeeId:
+                  type: integer
+                startTime:
+                  type: string
+                  format: date-time
+                endTime:
+                  type: string
+                  format: date-time
+              required: [employeeId, startTime, endTime]
+      responses:
+        '200':
+          description: Horário bloqueado
+
+  /appointments/updateStatus:
+    put:
+      summary: Atualizar status do agendamento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                appointmentId:
+                  type: integer
+                status:
+                  type: string
+              required: [appointmentId, status]
+      responses:
+        '200':
+          description: Status atualizado
+
+  /company:
+    post:
+      summary: Obter nome da empresa
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                companyId:
+                  type: integer
+              required: [companyId]
+      responses:
+        '200':
+          description: Nome da empresa retornado
+
+  /company/services:
+    post:
+      summary: Listar serviços da empresa
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                companyId:
+                  type: integer
+              required: [companyId]
+      responses:
+        '200':
+          description: Lista de serviços
+
+  /company/services/staff:
+    post:
+      summary: Listar funcionários de um serviço
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                companyId:
+                  type: integer
+                serviceId:
+                  type: integer
+              required: [companyId, serviceId]
+      responses:
+        '200':
+          description: Lista de funcionários
+
+  /company/services/staff/schedule:
+    post:
+      summary: Listar horários disponíveis
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                staffId:
+                  type: integer
+                date:
+                  type: string
+                  format: date
+              required: [staffId, date]
+      responses:
+        '200':
+          description: Horários disponíveis
+
+  /company/services/staff/schedule/appointments:
+    post:
+      summary: Criar agendamento (cliente)
+      responses:
+        '201':
+          description: Agendamento criado
+
+  /login:
+    post:
+      summary: Login de usuário
+      responses:
+        '200':
+          description: Login realizado com sucesso
+
+  /login/checkLogin:
+    get:
+      summary: Verificar sessão ativa
+      responses:
+        '200':
+          description: Sessão válida
+
+  /logout:
+    post:
+      summary: Logout do usuário
+      responses:
+        '200':
+          description: Logout realizado
+
+  /services:
+    get:
+      summary: Listar serviços da empresa
+      responses:
+        '200':
+          description: Lista de serviços
+    post:
+      summary: Criar serviço
+      responses:
+        '201':
+          description: Serviço criado
+    put:
+      summary: Atualizar serviço
+      responses:
+        '200':
+          description: Serviço atualizado
+  /services/remove:
+    put:
+      summary: Remover serviço
+      responses:
+        '200':
+          description: Serviço removido
+
+  /staff:
+    get:
+      summary: Listar funcionários
+      responses:
+        '200':
+          description: Lista de funcionários
+    post:
+      summary: Criar funcionário
+      responses:
+        '201':
+          description: Funcionário criado
+    put:
+      summary: Atualizar funcionário
+      responses:
+        '200':
+          description: Funcionário atualizado
+  /staff/remove:
+    put:
+      summary: Remover funcionário
+      responses:
+        '200':
+          description: Funcionário removido
+  /staff/hoursStaff/{id}:
+    get:
+      summary: Horários do funcionário
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Horários obtidos
+  /staff/serviceStaff/{id}:
+    get:
+      summary: Serviços de um funcionário
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Serviços listados
+  /staff/associateServices:
+    post:
+      summary: Associar serviços a funcionário
+      responses:
+        '200':
+          description: Serviços associados
+  /staff/associateShifts:
+    post:
+      summary: Associar turnos a funcionário
+      responses:
+        '200':
+          description: Turnos associados
+  /staff/disassociateServices:
+    delete:
+      summary: Remover associação de serviços
+      responses:
+        '200':
+          description: Serviços desassociados
+
+  /users:
+    post:
+      summary: Criar usuário
+      responses:
+        '201':
+          description: Usuário criado
+    put:
+      summary: Atualizar usuário
+      responses:
+        '200':
+          description: Usuário atualizado
+  /users/company:
+    get:
+      summary: Obter dados da empresa do usuário
+      responses:
+        '200':
+          description: Dados da empresa retornados
