@@ -2,7 +2,7 @@ import landing from"./pages/landingPage.js";
 import login from "./pages/login.js";
 import signup from "./pages/signUp.js";
 import dashboard from "./pages/components/navBar.js";
-import client from "./pages/components/clientPages/StartYoutBooking.js";
+import client from "./pages/components/clientPages/index.js";
 
 function router() {
   const routes = {

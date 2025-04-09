@@ -38,7 +38,7 @@ export default function signup() {
     { id: "street", placeholder: "Endereço", type: "text" },
     { id: "number", placeholder: "Número", type: "text" },
     { id: "postalCode", placeholder: "CEP", type: "text" },
-    { id: "email", placeholder: "Email", type: "email" },
+    { id: "email", placeholder: "E-mail", type: "email" },
     { id: "password", placeholder: "Senha", type: "password" },
   ];
 
@@ -78,7 +78,7 @@ export default function signup() {
   const linkLogin = document.createElement("a");
   linkLogin.href = "#";
   linkLogin.id = "goToLogin";
-  linkLogin.textContent = "Faça o login aqui.";
+  linkLogin.textContent = "Faça o login";
   loginLink.appendChild(textLogin);
   loginLink.appendChild(linkLogin);
   form.appendChild(loginLink);

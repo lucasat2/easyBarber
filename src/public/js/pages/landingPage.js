@@ -65,32 +65,11 @@ export default function landing() {
   contentDiv.appendChild(description);
   contentDiv.appendChild(button);
 
-  // Seção Secundária com Lista de Benefícios
-  const secondContenDiv = createElement("div", "", "hero-secondary");
-  const list = createElement("ul", "", "secondary-list");
-  const benefits = [
-    { text: "Interface moderna e intuitiva",img: "/assets/landingPage/sparkle.png"},
-    { text: "Gestão prática e eficiente", img: "/assets/landingPage/sparkle.png" },
-    { text: "Controle rápido", img: "/assets/landingPage/sparkle.png" },
-    { text: "Suporte para clientes", img: "/assets/landingPage/sparkle.png"}
-  ];
-  benefits.forEach((benefit) => {
-    const listItem = createElement("li", "", "benefit-item");
-    const icon = createElement("img", "", "benefit-icon");
-    icon.src = benefit.img;
-    const text = createElement("span", benefit.text);
-    listItem.appendChild(icon);
-    listItem.appendChild(text);
-    list.appendChild(listItem);
-  });
-  secondContenDiv.appendChild(list);
-
   // Div para imagem
   const imageDiv = createElement("div", "", "hero-background");
 
   loadinMainDisplay.appendChild(imageDiv);
   loadinMainDisplay.appendChild(contentDiv);
-  loadinMainDisplay.appendChild(secondContenDiv);
   div.appendChild(loadinMainDisplay);
 
   // Seção Sobre

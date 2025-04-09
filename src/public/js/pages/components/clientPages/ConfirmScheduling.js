@@ -1,11 +1,6 @@
 import ServicesPage from "./ServicesPage.js";
 import {MessageNotification} from "../MessageNotification.js";
-
-function navigateTo(pageFunction) {
-	const root = document.getElementById("root");
-	root.innerHTML = "";
-	root.appendChild(pageFunction());
-}
+import navigateTo from "./NavigateTo.js";
 
 function createInput(labelText, type, id) {
 	const wrapper = document.createElement("div");
@@ -40,49 +35,159 @@ function isValidEmail(email) {
 	return emailRegex.test(email);
 }
 
-function isValidPhoneNumber(phoneNumber) {
-	// Phone number regex for (XX) XXXXX-XXXX format
-	const phoneRegex = /^\(\d{2}\) \d{4,5}-\d{4}$/;
-	return phoneRegex.test(phoneNumber);
-}
-
 export default function ConfirmScheduling(obj) {
 	const div = document.createElement("div");
 	div.style.width = "100%";
 	div.style.maxWidth = "1200px";
 	div.style.margin = "0 auto";
 	div.style.padding = "20px";
-	div.style.fontFamily = "Arial, sans-serif";
 	div.style.display = "flex";
 	div.style.flexWrap = "wrap";
 	div.style.gap = "20px";
 	div.style.justifyContent = "center";
 
 	const containerCheck = document.createElement("div");
-	containerCheck.style.marginBottom = "0";
-	containerCheck.style.border = "1px solid #ccc";
-	containerCheck.style.borderRadius = "8px";
-	containerCheck.style.padding = "20px";
-	containerCheck.style.backgroundColor = "#f9f9f9";
 	containerCheck.style.flex = "1";
+	containerCheck.style.maxWidth = "500px";
 	containerCheck.style.minWidth = "300px";
+	containerCheck.style.display = "flex";
+	containerCheck.style.flexDirection = "column";
+	containerCheck.style.justifyContent = "space-between";
 
-	const pStaff = document.createElement("p");
-	pStaff.style.fontWeight = "bold";
-	pStaff.style.marginBottom = "10px";
+	const pStaff = document.createElement("h3");
 	pStaff.innerHTML = `Profissional: ${obj.objStaff.name}`;
+	pStaff.style.fontWeight = "bold";
+	pStaff.style.textAlign = "center";
 
 	const divDate = document.createElement("div");
-	divDate.style.marginBottom = "10px";
-	divDate.innerHTML = `<p>Data: ${obj.dateDaySelected
-		.split("-")
-		.reverse()
-		.join("/")}</p> <p>Hora: ${obj.hourSelected}</p>`;
+	divDate.style.height = "49%";
+	divDate.style.display = "flex";
+	divDate.style.flexDirection = "column";
+	divDate.style.gap = "0.5rem";
+	divDate.style.border = "1px solid #ccc";
+	divDate.style.borderRadius = "8px";
+	divDate.style.backgroundColor = "#fbfbfe";
+	divDate.style.textAlign = "start";
+	divDate.style.display = "flex";
+	divDate.style.flexDirection = "column";
+	divDate.style.justifyContent = "center";
+	divDate.style.alignItems = "center";
+	divDate.style.padding = "1rem";
+
+	// Formatando a data
+	const formattedDate = obj.dateDaySelected.split("-").reverse().join("/");
+
+	// Item da data
+	const dateItem = document.createElement("div");
+	dateItem.style.display = "flex";
+	dateItem.style.alignItems = "center";
+	dateItem.style.gap = "0.5rem";
+
+	const dateIcon = document.createElement("img");
+	dateIcon.src = "../assets/externalSchedulingPage/calendar.svg";
+	dateIcon.alt = "Ícone de calendário";
+	dateIcon.style.width = "24px";
+
+	const dateText = document.createElement("p");
+	dateText.textContent = `Data: ${formattedDate}`;
+	dateText.style.margin = "0";
+
+	dateItem.appendChild(dateIcon);
+	dateItem.appendChild(dateText);
+
+	// Item da hora
+	const timeItem = document.createElement("div");
+	timeItem.style.display = "flex";
+	timeItem.style.alignItems = "center";
+	timeItem.style.gap = "0.5rem";
+
+	const timeSvg = document.createElement("img");
+	timeSvg.src = "../assets/externalSchedulingPage/time.svg";
+	timeSvg.alt = "Ícone de horário";
+	timeSvg.style.width = "24px";
+
+	const timeContent = document.createElement("p");
+	timeContent.textContent = `Hora: ${obj.hourSelected}`;
+	timeContent.style.margin = "0";
+
+	timeItem.appendChild(timeSvg);
+	timeItem.appendChild(timeContent);
+
+	// Junta tudo
+	divDate.appendChild(pStaff);
+	divDate.appendChild(dateItem);
+	divDate.appendChild(timeItem);
 
 	const divService = document.createElement("div");
-	divService.innerHTML = `<h3>${obj.objService.name}</h3> <p>Tempo: ${obj.objService.time} min</p> <p>R$ ${obj.objService.cost}</p>`;
+	divService.style.border = "1px solid #ccc";
+	divService.style.height = "49%";
+	divService.style.gap = "0.5rem";
+	divService.style.borderRadius = "8px";
+	divService.style.backgroundColor = "#fbfbfe";
+	divService.style.textAlign = "start";
+	divService.style.display = "flex";
+	divService.style.flexDirection = "column";
+	divService.style.justifyContent = "center";
+	divService.style.alignItems = "center";
 
-	containerCheck.appendChild(pStaff);
+	divService.style.padding = "1rem";
+
+	// Serviço (nome)
+	const nameWrapper = document.createElement("div");
+	nameWrapper.style.display = "flex";
+	nameWrapper.style.gap = "0.5rem";
+
+	const nameText = document.createElement("h3");
+	nameText.textContent = obj.objService.name;
+	nameText.style.textAlign = "center";
+
+	nameWrapper.style.display = "flex";
+	nameWrapper.style.alignItems = "center";
+	nameWrapper.appendChild(nameText);
+
+	// Tempo
+	const timeWrapper = document.createElement("div");
+	timeWrapper.style.display = "flex";
+	timeWrapper.style.gap = "0.5rem";
+
+	const timeIcon = document.createElement("img");
+	timeIcon.src = "../assets/externalSchedulingPage/hour.svg";
+	timeIcon.alt = "Ícone tempo";
+	timeIcon.style.width = "24px";
+
+	const timeText = document.createElement("p");
+	timeText.textContent = `Tempo: ${obj.objService.time} min`;
+
+	timeWrapper.style.display = "flex";
+	timeWrapper.style.alignItems = "center";
+	timeWrapper.appendChild(timeIcon);
+	timeWrapper.appendChild(timeText);
+
+	// Custo
+	const costWrapper = document.createElement("div");
+	costWrapper.style.display = "flex";
+	costWrapper.style.gap = "0.5rem";
+
+	const costIcon = document.createElement("img");
+	costIcon.src = "../assets/externalSchedulingPage/payments.svg";
+	costIcon.alt = "Ícone custo";
+	costIcon.style.width = "24px";
+
+	const costText = document.createElement("p");
+	costText.textContent = `R$ ${obj.objService.cost
+		.toString()
+		.replace(".", ",")}`;
+
+	costWrapper.style.display = "flex";
+	costWrapper.style.alignItems = "center";
+	costWrapper.appendChild(costIcon);
+	costWrapper.appendChild(costText);
+
+	// Junta tudo no divService
+	divService.appendChild(nameWrapper);
+	divService.appendChild(timeWrapper);
+	divService.appendChild(costWrapper);
+
 	containerCheck.appendChild(divDate);
 	containerCheck.appendChild(divService);
 
@@ -90,7 +195,8 @@ export default function ConfirmScheduling(obj) {
 	containerConfirm.style.border = "1px solid #ccc";
 	containerConfirm.style.borderRadius = "8px";
 	containerConfirm.style.padding = "20px";
-	containerConfirm.style.backgroundColor = "#f9f9f9";
+	containerConfirm.style.backgroundColor = "#fbfbfe";
+
 	containerConfirm.style.flex = "1";
 	containerConfirm.style.minWidth = "300px";
 
@@ -99,13 +205,11 @@ export default function ConfirmScheduling(obj) {
 	const phoneInput = createInput("Celular:", "tel", "phone");
 
 	const obsWrapper = document.createElement("div");
-	obsWrapper.style.marginBottom = "15px";
 
 	const obsLabel = document.createElement("label");
 	obsLabel.textContent = "Observação:";
 	obsLabel.setAttribute("for", "obs");
 	obsLabel.style.display = "block";
-	obsLabel.style.marginBottom = "5px";
 
 	const obsInput = document.createElement("textarea");
 	obsInput.id = "obs";
@@ -116,6 +220,7 @@ export default function ConfirmScheduling(obj) {
 	obsInput.style.borderRadius = "5px";
 	obsInput.style.height = "80px";
 	obsInput.style.boxSizing = "border-box";
+	obsInput.style.resize = "vertical";
 
 	obsWrapper.appendChild(obsLabel);
 	obsWrapper.appendChild(obsInput);
@@ -166,20 +271,6 @@ export default function ConfirmScheduling(obj) {
 		buttonConfirm.style.background = "#DEE33E";
 	});
 
-	// --- Error Message Container ---
-	const errorContainer = document.createElement("div");
-	errorContainer.style.color = "red";
-	errorContainer.style.marginTop = "10px";
-	errorContainer.style.display = "none"; // Initially hidden
-	containerConfirm.appendChild(errorContainer);
-
-	// --- Success Message Container ---
-	const successContainer = document.createElement("div");
-	successContainer.style.color = "green";
-	successContainer.style.marginTop = "10px";
-	successContainer.style.display = "none";
-	containerConfirm.appendChild(successContainer);
-
 	buttonConfirm.addEventListener("click", () => {
 		const nameValue = nameInput.querySelector("input").value.trim();
 		const emailValue = emailInput.querySelector("input").value.trim();
@@ -198,19 +289,14 @@ export default function ConfirmScheduling(obj) {
 		}
 		if (!phoneValue) {
 			errors.push("Celular");
-		} else if (!isValidPhoneNumber(phoneValue)) {
-			errors.push("Celular inválido");
 		}
 
 		if (errors.length > 0) {
-			errorContainer.textContent = `Preencha os campos corretamente: ${errors.join(
-				", "
-			)}.`;
-			errorContainer.style.display = "block";
-			successContainer.style.display = "none"; // Hide success message if there are errors
+			MessageNotification(
+				`Preencha os campos corretamente: ${errors.join(", ")}.`,
+				"#ff6347"
+			);
 		} else {
-			errorContainer.style.display = "none";
-			// --- Data to be sent ---
 			const dataToSend = {
 				idCompany: obj.objCompany.idCompany,
 				idStaff: obj.objStaff.id,
@@ -225,7 +311,6 @@ export default function ConfirmScheduling(obj) {
 
 			// --- Fetch ---
 			fetch("/api/customer/company/services/staff/schedule/appointments", {
-				// Replace with your API endpoint
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"

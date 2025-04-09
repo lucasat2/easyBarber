@@ -1,63 +1,151 @@
-import Header from "./Header.js";
 import ServicesPage from "./ServicesPage.js";
 import ConfirmScheduling from "./ConfirmScheduling.js";
+import {MessageNotification} from "../MessageNotification.js";
+import navigateTo from "./NavigateTo.js";
+import NotFound from "./NotFound.js";
 
-function navigateTo(pageFunction, obj) {
-	const root = document.getElementById("root");
-	root.innerHTML = "";
-	root.appendChild(Header(objCompany.companyName));
-	root.appendChild(pageFunction(obj));
+function formatDateToBR(dateStr) {
+	const container = document.createElement("div");
+	container.style.width = "100%";
+	container.style.border = "1px solid #c2c2c2";
+	container.style.padding = "1rem";
+	container.style.background = "#fbfbfe";
+	container.style.borderRadius = "0.5rem";
+
+	const title = document.createElement("p");
+	title.textContent = "Data selecionada";
+	title.style.fontWeight = "600";
+	title.style.marginBottom = "0.2rem";
+
+	let formattedDate;
+	let dayOfWeek;
+
+	if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+		const [year, month, day] = dateStr.split("-");
+		const date = new Date(`${year}-${month}-${day}T00:00:00`);
+		formattedDate = `${day}/${month}/${year}`;
+		dayOfWeek = date.toLocaleDateString("pt-BR", {weekday: "long"});
+	} else {
+		const date = new Date(dateStr);
+		const day = String(date.getDate()).padStart(2, "0");
+		const month = String(date.getMonth() + 1).padStart(2, "0");
+		const year = date.getFullYear();
+		formattedDate = `${day}/${month}/${year}`;
+		dayOfWeek = date.toLocaleDateString("pt-BR", {weekday: "long"});
+	}
+
+	const dateWrapper = document.createElement("div");
+	dateWrapper.style.display = "flex";
+	dateWrapper.style.alignItems = "center";
+	dateWrapper.style.gap = "0.5rem";
+
+	const dateEl = document.createElement("p");
+	dateEl.textContent = `${dayOfWeek} - ${formattedDate}`;
+	dateEl.style.fontSize = "1rem";
+	dateEl.style.color = "#222";
+	dateEl.style.margin = "0";
+	dateEl.style.textTransform = "capitalize"; // Deixa "terça-feira" com a primeira letra maiúscula
+
+	const dateIcon = document.createElement("img");
+	dateIcon.src = "../assets/externalSchedulingPage/calendar.svg";
+	dateIcon.alt = "Ícone de calendário";
+	dateIcon.style.width = "25px";
+	dateIcon.style.height = "25px";
+
+	dateWrapper.appendChild(dateIcon);
+	dateWrapper.appendChild(dateEl);
+	container.appendChild(title);
+	container.appendChild(dateWrapper);
+
+	return container;
 }
 
-function fetchStaffServices(idCompany, idService) {
+function showStaffUnavailable(texto, svg) {
+	const wrapper = document.createElement("div");
+	wrapper.style.width = "100%";
+	wrapper.style.display = "flex";
+	wrapper.style.flexDirection = "column";
+	wrapper.style.justifyContent = "center";
+	wrapper.style.alignItems = "center";
+	wrapper.style.gap = "1rem";
+
+	const img = document.createElement("img");
+	img.src = svg;
+	img.alt = texto;
+	img.style.width = "120px";
+	img.style.height = "120px";
+
+	const text = document.createElement("p");
+	text.innerText = texto;
+	text.style.fontSize = "1.25rem";
+	text.style.fontWeight = "500";
+	text.style.color = "#333";
+
+	wrapper.appendChild(img);
+	wrapper.appendChild(text);
+
+	return wrapper;
+}
+
+async function fetchStaffServices(idCompany, idService) {
 	const apiUrl = "/api/customer/company/services/staff";
 
-	return fetch(apiUrl, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify({idCompany, idService})
-	})
-		.then(response => response.json())
-		.then(data => {
-			if (data.result) {
-				return data.result;
-			} else {
-				throw new Error("Serviços não encontrados.");
-			}
-		})
-		.catch(error => {
-			console.error("Erro ao buscar os serviços da empresa:", error.message);
-			throw error;
+	try {
+		const res = await fetch(apiUrl, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({idCompany, idService})
 		});
+
+		if (!res.ok) {
+			const errorData = await res.json();
+			throw new Error(errorData.error || "Serviços não encontrados.");
+		}
+
+		const data = await res.json();
+
+		if (data.result) {
+			return data.result;
+		} else {
+			throw new Error("Serviços não encontrados.");
+		}
+	} catch (e) {
+		MessageNotification(e.message, "#ff6347");
+	}
 }
 
-function fetchCompanyServices(idCompany) {
+async function fetchCompanyServices(idCompany) {
 	const apiUrl = "/api/customer/company/services";
 
-	return fetch(apiUrl, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify({idCompany})
-	})
-		.then(response => response.json())
-		.then(data => {
-			if (data.result) {
-				return data.result;
-			} else {
-				throw new Error("Serviços não encontrados.");
-			}
-		})
-		.catch(error => {
-			console.error("Erro ao buscar os serviços da empresa:", error.message);
-			throw error;
+	try {
+		const res = await fetch(apiUrl, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({idCompany})
 		});
+
+		if (!res.ok) {
+			const errorData = await res.json();
+			throw new Error(errorData.error || "Erro ao buscar os serviços.");
+		}
+
+		const data = await res.json();
+
+		if (data.result) {
+			return data.result;
+		} else {
+			throw new Error("Serviços não encontrados.");
+		}
+	} catch (e) {
+		MessageNotification(e.message, "#ff6347");
+		return null;
+	}
 }
 
-// Função para buscar e exibir os horários disponíveis
 async function updateAvailableTimes(
 	idStaff,
 	date,
@@ -79,23 +167,39 @@ async function updateAvailableTimes(
 		);
 
 		if (!response.ok) {
-			hoursToWork.innerHTML = "Funcionário não trabalha esse dia";
+			hoursToWork.appendChild(
+				showStaffUnavailable(
+					"Funcionário indispoíveis",
+					"../../../../../assets/externalSchedulingPage/person_off.svg"
+				)
+			);
 			setHourSelected(null);
 			setDateDaySelected(null);
 			return;
 		}
 
 		hoursToWork.innerHTML = "";
+
 		const data = await response.json();
 
 		if (!data.getSchedules || !data.getSchedules.availableTimes) {
-			hoursToWork.innerHTML = "Funcionário não trabalha esse dia";
+			hoursToWork.appendChild(
+				showStaffUnavailable(
+					"Funcionário indispoíveis",
+					"../../../../../assets/externalSchedulingPage/person_off.svg"
+				)
+			);
 			setHourSelected(null);
 			setDateDaySelected(null);
 			return;
 		}
 
-		const availableTimes = data.getSchedules.availableTimes.flatMap(
+		const now = new Date();
+		const todayString = `${now.getFullYear()}-${String(
+			now.getMonth() + 1
+		).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+
+		let availableTimes = data.getSchedules.availableTimes.flatMap(
 			({start, end}) => {
 				const slots = [];
 				let startTime = new Date(`2000-01-01T${start}`);
@@ -115,9 +219,30 @@ async function updateAvailableTimes(
 			}
 		);
 
-		// Se o array de horários estiver vazio, então ele trabalha, mas está com agenda cheia
+		if (date === todayString) {
+			availableTimes = availableTimes.filter(timeSlot => {
+				const [startTimeStr] = timeSlot.split(" - ");
+				const [hours, minutes] = startTimeStr.split(":").map(Number);
+
+				const slotTime = new Date(
+					now.getFullYear(),
+					now.getMonth(),
+					now.getDate(),
+					hours,
+					minutes
+				);
+
+				return slotTime >= now;
+			});
+		}
+
 		if (availableTimes.length === 0) {
-			hoursToWork.innerHTML = "Funcionário indisponível";
+			hoursToWork.appendChild(
+				showStaffUnavailable(
+					"Funcionário indispoíveis",
+					"../../../../../assets/externalSchedulingPage/person_off.svg"
+				)
+			);
 			setHourSelected(null);
 			setDateDaySelected(null);
 			return;
@@ -142,15 +267,27 @@ async function updateAvailableTimes(
 				});
 				setHourSelected(listItem.textContent.split(" - ")[0]);
 				listItem.style.background = "#DEE33E";
+				const btn = document.getElementById("btnConfirm");
+				if (btn) {
+					btn.style.display = "block";
+					btn.scrollIntoView({behavior: "smooth", block: "center"});
+				}
 			});
 
 			hoursToWork.appendChild(listItem);
 			hoursToWork.style.display = "flex";
 			hoursToWork.style.gap = "1rem";
 			hoursToWork.style.flexWrap = "wrap";
+			hoursToWork.style.justifyContent = "center";
+			hoursToWork.style.width = "100%";
 		});
 	} catch (error) {
-		hoursToWork.innerHTML = "Funcionário não trabalha esse dia";
+		hoursToWork.appendChild(
+			showStaffUnavailable(
+				"Funcionário indispoíveis",
+				"../../../../../assets/externalSchedulingPage/person_off.svg"
+			)
+		);
 		setHourSelected(null);
 		setDateDaySelected(null);
 		console.error("Erro no fetch:", error);
@@ -160,18 +297,14 @@ async function updateAvailableTimes(
 let objCompany = null;
 
 export default function ScheduleAppointment() {
-	const root = document.getElementById("root");
-	root.style.width = "100%";
-
-	const container = document.createElement("div");
+	const mainDiv = document.createElement("div");
 
 	const urlParams = new URLSearchParams(window.location.search);
 	const idCompany = urlParams.get("idCompany");
-	const idService = urlParams.get("idService"); // Pegar o idService aqui
+	const idService = urlParams.get("idService");
 
 	if (!idCompany) {
-		container.innerHTML = "ID da empresa não encontrado na URL.";
-		return container;
+		throw new Error("ID da empresa não informado");
 	}
 
 	const apiUrl = "/api/customer/company";
@@ -187,22 +320,18 @@ export default function ScheduleAppointment() {
 		.then(data => {
 			if (data.result) {
 				const companyName = data.result;
-				const header = Header(companyName);
 				objCompany = {idCompany, companyName};
-
-				container.appendChild(header);
-				buildContent(container, idService); // Passar o idService para buildContent
+				buildContent(mainDiv, idService);
 			} else {
-				container.innerHTML = "Empresa não encontrada.";
+				throw new Error("Empresa não encontrada.");
 			}
 		})
 		.catch(error => {
-			console.error("Erro ao buscar o nome da empresa:", error.message);
-			container.innerHTML = "Erro ao buscar o nome da empresa.";
+			MessageNotification(error.message, "#ff6347");
+			mainDiv.innerHTML = "Erro ao buscar o nome da empresa.";
 		});
 
-	async function buildContent(container, idService) {
-		const content = document.createElement("div");
+	async function buildContent(mainDiv, idService) {
 		let serviceNames = "";
 		let time = "";
 		let cost = "";
@@ -211,12 +340,10 @@ export default function ScheduleAppointment() {
 		let dateDaySelected = null;
 		let hourSelected = null;
 		let objStaff = null;
-		let objService = null; // Inicializa como null
+		let objService = null;
 
-		// Buscar os dados do serviço sempre que buildContent for chamado
 		const services = await fetchCompanyServices(idCompany);
 
-		// Encontrar o serviço correto e definir objService
 		const selectedService = services.find(service => service.id == idService);
 
 		if (selectedService) {
@@ -230,38 +357,40 @@ export default function ScheduleAppointment() {
 				cost: selectedService.price
 			};
 		} else {
-			console.error("Serviço não encontrado com o ID:", idService);
-			// Trate o caso em que o serviço não é encontrado, por exemplo, exibindo uma mensagem de erro
-			container.innerHTML = "Serviço não encontrado.";
+			mainDiv.innerHTML = "Serviço não encontrado.";
+			MessageNotification("Serviço não encontrado", "#ff6347");
 			return;
 		}
 
 		fetchStaffServices(idCompany, idService)
 			.then(staffs => {
 				const maxWidth = "800px";
-				const div = document.createElement("div");
-				div.style.display = "flex";
-				div.style.flexWrap = "wrap";
-				div.style.gap = "1rem";
+
+				mainDiv.style.display = "flex";
+				mainDiv.style.flexWrap = "wrap";
+				mainDiv.style.gap = "1rem";
+				mainDiv.style.minHeight = "calc(100vh - 6rem - 6rem)";
 
 				const confirm = document.createElement("div");
-				confirm.style.width = "270px";
-				confirm.style.minHeight = "500px";
-				confirm.style.borderRight = "1px solid black";
+				confirm.style.width = "320px";
 				confirm.style.display = "flex";
 				confirm.style.flexDirection = "column";
-				confirm.style.justifyContent = "space-between";
-				confirm.style.alignItems = "center";
 				confirm.style.padding = "1.5rem";
+				confirm.style.gap = "2rem";
+				confirm.style.alignItems = "center";
 
 				const contentService = document.createElement("div");
+				contentService.style.width = "100%";
 				contentService.style.display = "flex";
 				contentService.style.flexDirection = "column";
-				contentService.style.gap = "0.8rem";
+				contentService.style.alignItems = "center";
+				contentService.style.gap = "1rem";
+
 				const chosenService = document.createElement("div");
+				chosenService.style.width = "100%";
 				chosenService.style.display = "flex";
 				chosenService.style.flexDirection = "column";
-				chosenService.style.gap = "0.8rem";
+				chosenService.style.gap = "1rem";
 
 				const imageService = document.createElement("img");
 				imageService.src =
@@ -271,21 +400,71 @@ export default function ScheduleAppointment() {
 				const containerContent = document.createElement("div");
 				containerContent.style.display = "flex";
 				containerContent.style.flexDirection = "column";
-				containerContent.style.gap = "1rem";
+				containerContent.style.gap = "2rem";
+				containerContent.style.padding = "2rem";
 
 				const contentServiceInformation = document.createElement("div");
-				contentServiceInformation.innerHTML = `
-            <h3>${serviceNames.trim()}</h3>
-            <p>${time} min</p>
-            <p>R$ ${cost.toString().replace(".", ",")}</p>
-            `;
+				contentServiceInformation.style.background = "#fbfbfe"
+
+				const nameWrapper = document.createElement("div");
+				nameWrapper.style.display = "flex";
+				nameWrapper.style.gap = "0.5rem";
+				nameWrapper.style.alignItems = "center";
+
+				const nameText = document.createElement("h3");
+				nameText.textContent = serviceNames.trim();
+
+				nameWrapper.appendChild(nameText);
+
+				const timeWrapper = document.createElement("div");
+				timeWrapper.style.display = "flex";
+				timeWrapper.style.gap = "0.5rem";
+				timeWrapper.style.alignItems = "center";
+
+				const timeIcon = document.createElement("img");
+				timeIcon.src = "../assets/externalSchedulingPage/time.svg";
+				timeIcon.alt = "Ícone tempo";
+				timeIcon.style.width = "24px";
+
+				const timeText = document.createElement("p");
+				timeText.textContent = `Tempo: ${time} min`;
+
+				timeWrapper.appendChild(timeIcon);
+				timeWrapper.appendChild(timeText);
+
+				const costWrapper = document.createElement("div");
+				costWrapper.style.display = "flex";
+				costWrapper.style.gap = "0.5rem";
+				costWrapper.style.alignItems = "center";
+
+				const costIcon = document.createElement("img");
+				costIcon.src = "../assets/externalSchedulingPage/payments.svg";
+				costIcon.alt = "Ícone custo";
+				costIcon.style.width = "24px";
+
+				const costText = document.createElement("p");
+				costText.textContent = `R$ ${cost.toString().replace(".", ",")}`;
+
+				costWrapper.appendChild(costIcon);
+				costWrapper.appendChild(costText);
+
+				const divData = document.createElement("div");
+
+				contentServiceInformation.appendChild(nameWrapper);
+				contentServiceInformation.appendChild(timeWrapper);
+				contentServiceInformation.appendChild(costWrapper);
+
+				contentServiceInformation.style.border = "1px solid #c2c2c2";
+				contentServiceInformation.style.padding = "1rem";
+				contentServiceInformation.style.borderRadius = "0.5rem";
 
 				chosenService.appendChild(imageService);
 				chosenService.appendChild(contentServiceInformation);
+				chosenService.appendChild(divData);
 
 				const back = document.createElement("div");
-				back.innerText = "Alterar corte";
-				back.style.background = "#DEE33E";
+				back.innerText = "Alterar serviço";
+				back.style.background = "#d9d9d9";
 				back.style.padding = "10px 20px";
 				back.style.fontWeight = "700";
 				back.style.textAlign = "center";
@@ -295,15 +474,15 @@ export default function ScheduleAppointment() {
 				back.style.width = "fit-content";
 
 				back.addEventListener("mouseover", () => {
-					back.style.background = "#ffd700";
+					back.style.background = "#c0c0c0";
 				});
 
 				back.addEventListener("mouseout", () => {
-					back.style.background = "#DEE33E";
+					back.style.background = "#d9d9d9";
 				});
 
 				back.addEventListener("click", () => {
-					navigateTo(ServicesPage, objCompany); // Passar objCompany
+					navigateTo(ServicesPage, objCompany);
 				});
 
 				contentService.appendChild(chosenService);
@@ -311,8 +490,10 @@ export default function ScheduleAppointment() {
 
 				const button = document.createElement("div");
 				button.innerText = "Confirmar";
+				button.id = "btnConfirm";
+				button.style.display = "none";
 				button.style.background = "#DEE33E";
-				button.style.padding = "10px 20px";
+				button.style.padding = "1rem 1.4rem";
 				button.style.fontSize = "1.5rem";
 				button.style.fontWeight = "700";
 				button.style.textAlign = "center";
@@ -327,11 +508,9 @@ export default function ScheduleAppointment() {
 						dateDaySelected == null ||
 						hourSelected == null
 					) {
-						document.getElementById("errorMessage").innerHTML =
-							"Preencha todos os campos";
+						MessageNotification("Preencha todos os campos", "#ff6347");
 						return;
 					}
-					document.getElementById("errorMessage").innerHTML = "";
 					const scheduler = {
 						objStaff,
 						dateDaySelected,
@@ -351,6 +530,7 @@ export default function ScheduleAppointment() {
 				});
 				containerContent.style.display = "flex";
 				containerContent.style.flexDirection = "column";
+				containerContent.style.alignItems = "center";
 
 				const selectStaff = document.createElement("div");
 				selectStaff.style.display = "flex";
@@ -358,27 +538,17 @@ export default function ScheduleAppointment() {
 				selectStaff.style.alignItems = "center";
 				selectStaff.style.flexWrap = "wrap";
 				selectStaff.style.gap = "1rem";
-				selectStaff.style.padding = "1.5rem";
+				selectStaff.style.padding = "0 1.5rem";
 
 				function handleScreenChange(e) {
 					if (e.matches) {
-						button.style.position = "fixed";
-						button.style.bottom = "20px";
-						button.style.left = "50%";
-						button.style.transform = "translateX(-50%)";
 						confirm.style.width = "100%";
 						confirm.style.border = "none";
 						confirm.style.minHeight = "auto";
 						containerContent.style.width = "100%";
 					} else {
-						button.style.position = "relative";
-						button.style.bottom = "auto";
-						button.style.left = "auto";
-						button.style.transform = "none";
-						confirm.style.width = "270px";
-						confirm.style.borderRight = "1px solid black";
-						confirm.style.minHeight = "500px";
-						containerContent.style.width = "calc(100% - 300px)";
+						confirm.style.width = "320px";
+						containerContent.style.width = "calc(100% - 336px)";
 					}
 				}
 
@@ -389,47 +559,100 @@ export default function ScheduleAppointment() {
 
 				confirm.appendChild(contentService);
 
-				const errorMessage = document.createElement("div");
-				errorMessage.id = "errorMessage";
-
 				confirm.appendChild(button);
-				confirm.appendChild(errorMessage);
-				div.appendChild(confirm);
+				mainDiv.appendChild(confirm);
 
 				const hoursToWork = document.createElement("div");
 				hoursToWork.id = "hoursToWork";
+				hoursToWork.style.width = "100%";
+				hoursToWork.appendChild(
+					showStaffUnavailable(
+						"Selecione um funcionário",
+						"../../../../../assets/externalSchedulingPage/select_staff.svg"
+					)
+				);
+
 				staffs.forEach(staff => {
 					const div = document.createElement("div");
-					div.id = staff.id;
-					div.style.width = "200px";
-					div.style.height = "150px";
-					div.style.background = "#D9D9D9";
-					div.style.borderRadius = "1.3rem";
-					div.style.border = "1px solid #000";
+					div.style.borderRadius = "0.5rem";
+					div.style.overflow = "hidden";
+					div.style.width = "310px";
+					div.style.height = "110px";
 					div.style.display = "flex";
-					div.style.cursor = "pointer";
-					div.style.flexDirection = "column";
-					div.style.justifyContent = "space-between";
+					div.style.justifyContent = "center";
 					div.style.alignItems = "center";
-					div.style.padding = "0.5rem";
-					div.style.fontWeight = "700";
 
-					const img = document.createElement("img");
-					img.src = "../../../../../assets/externalSchedulingPage/person.png";
-					img.style.height = "70%";
-					img.style.width = "70%";
-					img.style.objectFit = "cover";
+					const cardDiv = document.createElement("div");
+					cardDiv.id = staff.id;
+					cardDiv.style.width = "300px";
+					cardDiv.style.height = "100px";
+					cardDiv.style.borderRadius = "0.5rem";
+					cardDiv.style.cursor = "pointer";
+					cardDiv.style.border = "1px solid #c2c2c2";
+					cardDiv.style.background = "#fbfbfe";
+					cardDiv.style.display = "flex";
+					cardDiv.style.flexDirection = "column";
+					cardDiv.style.justifyContent = "center";
+					cardDiv.style.alignItems = "center";
+					cardDiv.style.fontWeight = "700";
+					cardDiv.style.position = "relative";
+					cardDiv.style.overflow = "hidden";
+
+					const divHeader = document.createElement("div");
+					divHeader.style.position = "absolute";
+					divHeader.style.bottom = "0";
+					divHeader.style.width = "50%";
+					divHeader.style.height = "0.4rem";
+					divHeader.style.background = "#e0e0e0";
+					divHeader.style.borderRadius = "0.5rem 0.5rem 0 0";
+					divHeader.style.overflow = "hidden";
+					divHeader.style.transition = "all 0.3s";
+					divHeader.style.display = "flex";
+					divHeader.style.justifyContent = "end";
+
+					const cfm = document.createElement("div");
+					cfm.style.width = "100%";
+					cfm.style.height = "25px";
+					cfm.style.position = "absolute";
+					cfm.style.display = "none";
+					cfm.style.justifyContent = "end";
+					cfm.style.alignItems = "center";
+					cfm.style.gap = "0.5rem";
+					cfm.style.padding = "0.5rem";
+
+					for (let i = 0; i < 1; i++) {
+						const dot = document.createElement("div");
+						dot.style.width = "15px";
+						dot.style.height = "15px";
+						dot.style.borderRadius = "50%";
+
+						dot.style.backgroundColor = "#fbfbfe";
+						cfm.appendChild(dot);
+					}
+					divHeader.appendChild(cfm);
 
 					const paragraph = document.createElement("p");
 					paragraph.textContent = `${staff.name} ${staff.surname}`;
+					paragraph.style.fontSize = "1rem";
+					paragraph.style.transition = "all 0.3s";
+					paragraph.style.whiteSpace = "nowrap";
+					paragraph.style.textOverflow = "ellipsis";
+					paragraph.style.overflow = "hidden";
+					paragraph.style.width = "100%";
+					paragraph.style.textAlign = "center";
+					paragraph.style.zIndex = "2";
 
-					div.appendChild(img);
-					div.appendChild(paragraph);
+					cardDiv.appendChild(divHeader);
+					cardDiv.appendChild(paragraph);
+					div.appendChild(cardDiv);
 
 					div.addEventListener("click", async () => {
 						const calendar = document.getElementById("calendar-input");
 						const idStaff = staff.id;
-						objStaff = {id: staff.id, name: `${staff.name} ${staff.surname}`};
+						objStaff = {
+							id: staff.id,
+							name: `${staff.name} ${staff.surname}`
+						};
 						lastIdStaff = idStaff;
 						const dateDay = calendar.value;
 
@@ -447,11 +670,18 @@ export default function ScheduleAppointment() {
 
 						document.querySelectorAll(".selected-staff").forEach(el => {
 							el.classList.remove("selected-staff");
-							el.style.background = "#D9D9D9";
+							const headerDiv = el.querySelector(":scope > div");
+							headerDiv.style.height = "0.4rem";
+							headerDiv.style.width = "50%";
+
+							const cfmDiv = headerDiv.querySelector("div");
+							cfmDiv.style.display = "none";
 						});
 
-						div.classList.add("selected-staff");
-						div.style.background = "#DEE33E";
+						cardDiv.classList.add("selected-staff");
+						divHeader.style.width = "100%";
+						divHeader.style.height = "100%";
+						cfm.style.display = "flex";
 					});
 
 					selectStaff.appendChild(div);
@@ -462,6 +692,27 @@ export default function ScheduleAppointment() {
 				dateInput.type = "date";
 				dateInput.id = "calendar-input";
 
+				dateInput.style.padding = "8px 12px";
+				dateInput.style.border = "1px solid #ccc";
+				dateInput.style.borderRadius = "8px";
+				dateInput.style.backgroundColor = "#f9f9f9";
+				dateInput.style.fontSize = "16px";
+				dateInput.style.color = "#333";
+				dateInput.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.1)";
+				dateInput.style.outline = "none";
+				dateInput.style.transition = "border-color 0.3s, box-shadow 0.3s";
+				dateInput.style.width = "fit-content";
+
+				dateInput.addEventListener("focus", () => {
+					dateInput.style.borderColor = "#5c9ded";
+					dateInput.style.boxShadow = "0 0 0 3px rgba(92, 157, 237, 0.3)";
+				});
+
+				dateInput.addEventListener("blur", () => {
+					dateInput.style.borderColor = "#ccc";
+					dateInput.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.1)";
+				});
+
 				const now = new Date();
 				const year = now.getFullYear();
 				const month = String(now.getMonth() + 1).padStart(2, "0");
@@ -470,14 +721,24 @@ export default function ScheduleAppointment() {
 				const today = `${year}-${month}-${day}`;
 				dateInput.min = today;
 				dateInput.value = today;
-				dateInput.style.width = "fit-content";
+				divData.innerHTML = "";
+				divData.appendChild(formatDateToBR(today));
 
 				dateInput.addEventListener("change", async () => {
 					const dataDay = dateInput.value;
+					divData.innerHTML = "";
+					divData.appendChild(formatDateToBR(dataDay));
 
 					if (!lastIdStaff) {
 						const hoursToWork = document.getElementById("hoursToWork");
-						hoursToWork.innerHTML = "Selecione um funcionário";
+						hoursToWork.innerHTML = "";
+						hoursToWork.appendChild(
+							showStaffUnavailable(
+								"Selecione um funcionário",
+								"../../../../../assets/externalSchedulingPage/select_staff.svg"
+							)
+						);
+						hoursToWork.style.width = "100%";
 						return;
 					}
 
@@ -495,19 +756,22 @@ export default function ScheduleAppointment() {
 				});
 
 				containerContent.appendChild(dateInput);
-				containerContent.appendChild(hoursToWork);
 
-				div.appendChild(containerContent);
+				const containerHoursToWork = document.createElement("div");
+				containerHoursToWork.style.width = "100%";
+				containerHoursToWork.style.height = "100%";
 
-				content.appendChild(div);
+				containerHoursToWork.appendChild(hoursToWork);
+				containerContent.appendChild(containerHoursToWork);
+
+				mainDiv.appendChild(containerContent);
 			})
 			.catch(error => {
-				console.log("Erro ao buscar os serviços:", error);
-				location.reload();
+				console.error("Erro ao buscar os serviços:", error);
+				MessageNotification(error.message, "#ff6347");
+				NotFound();
 			});
-
-		container.appendChild(content);
 	}
 
-	return container;
+	return mainDiv;
 }

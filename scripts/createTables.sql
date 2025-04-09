@@ -22,6 +22,10 @@ created_at TIMESTAMP DEFAULT NOW(),
 updated_at TIMESTAMP DEFAULT NOW()
 );
 
+
+
+
+
 CREATE TABLE IF NOT EXISTS users (
 id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 company_id UUID REFERENCES companies(id) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL,
@@ -41,6 +45,7 @@ email VARCHAR(255) NOT NULL UNIQUE,
 phone_number VARCHAR(16) NOT NULL,
 birthdate DATE NOT NULL,
 postal_code VARCHAR(9) NOT NULL,
+status BOOLEAN NOT NULL,
 created_at TIMESTAMP DEFAULT NOW(),
 updated_at TIMESTAMP DEFAULT NOW()
 );
@@ -52,6 +57,7 @@ name VARCHAR(255) NOT NULL,
 description TEXT NOT NULL,
 price DECIMAL(10, 2) NOT NULL,
 average_duration INTEGER NOT NULL,
+status BOOLEAN NOT NULL,
 created_at TIMESTAMP DEFAULT NOW(),
 updated_at TIMESTAMP DEFAULT NOW()
 );
@@ -72,7 +78,7 @@ updated_at TIMESTAMP DEFAULT NOW()
 CREATE TABLE IF NOT EXISTS clients (
 id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 name VARCHAR(255) NOT NULL,
-email VARCHAR(255) NOT NULL UNIQUE,
+email VARCHAR(255) NOT NULL,
 phone_number VARCHAR(16) NOT NULL,
 created_at TIMESTAMP DEFAULT NOW(),
 updated_at TIMESTAMP DEFAULT NOW()

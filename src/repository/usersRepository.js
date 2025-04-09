@@ -1,5 +1,49 @@
 const pool = require("../db");
 
+const retrieveCompanyData = async (userId) => {
+  let client;
+
+  try {
+    const findUserDataQuery = "SELECT * FROM users WHERE id = $1";
+
+    const getCompanyDataQuery = "SELECT * FROM companies WHERE id = $1";
+
+    client = await pool.connect();
+
+    const {
+      rows: [userData],
+    } = await client.query(findUserDataQuery, [userId]);
+
+    if (!userData) {
+      return {
+        errorCode: 404,
+        errorMessage: "Falha ao encontrar os dados do usuário",
+      };
+    }
+
+    const companyId = userData.company_id;
+
+    const {
+      rows: [companyData],
+    } = await client.query(getCompanyDataQuery, [companyId]);
+
+    if (!companyData) {
+      return {
+        errorCode: 404,
+        errorMessage: "Falha ao encontrar os dados da empresa",
+      };
+    }
+
+    return companyData;
+  } catch (error) {
+    throw error;
+  } finally {
+    if (client) {
+      client.release();
+    }
+  }
+};
+
 const insertNewUser = async (
   name,
   cnpj,
@@ -79,7 +123,7 @@ const insertNewUser = async (
 
     const companyId = companyData.id;
 
-    const companyLinkPage = `http://localhost/${companyId}`;
+    const companyLinkPage = `http://localhost/client?idCompany=${companyId}`;
 
     const {
       rows: [updatedCompanyData],
@@ -255,6 +299,7 @@ const updateUser = async (
 };
 
 module.exports = {
+  retrieveCompanyData,
   insertNewUser,
   updateUser,
 };
