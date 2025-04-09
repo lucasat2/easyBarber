@@ -1004,7 +1004,7 @@ header {
 }
 
 .external-nav a {
-	background-color: #FAFAFA;
+	background-color: #fafafa;
 	color: #131313;
 	padding: 10px 20px;
 	font-size: 1rem;
@@ -1231,7 +1231,6 @@ header {
 	height: 60px;
 	object-fit: contain;
 	margin-bottom: 10px;
-	color: blue;
 }
 
 /* Título do card */
