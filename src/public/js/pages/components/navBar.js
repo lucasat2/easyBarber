@@ -246,7 +246,7 @@ export default function header() {
       })
       .then((res) => {
         // Aqui você pode redirecionar ou fazer alguma outra ação após o logout
-        window.location.href = "/";
+        window.location.href = "/login";
       })
       .catch((error) => {
         MessageNotification(error.message, "#ff6347");
