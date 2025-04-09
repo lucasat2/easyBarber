@@ -24,7 +24,7 @@ export default function landing() {
 
   // Nav interno (links internos da página)
   const internalNav = createElement("nav", "", "internal-nav");
-  ["Home","Sobre", "Objetivos"].forEach((text) => {
+  ["Início","Sobre", "Objetivos"].forEach((text) => {
     const navLink = createElement("a", text, "nav-link");
     navLink.href = text === "Home" ? "#" : `#${text.toLowerCase()}`;
     internalNav.appendChild(navLink);
