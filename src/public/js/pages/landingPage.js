@@ -107,9 +107,9 @@ aboutDescriptionContainer.appendChild(aboutList)
   const objectivesTitle = createElement("h2", "Objetivos", "objective-title");
   const objectivesList = createElement("ul", "", "objectives-list");
   [
-    {name:"Otimizar seu Tempo", description: "Organize sua agenda e estimule mais agendamentos através do aplicativo", img: "/assets/landingPage/calendar_month.svg"},
-    {name:"Fidelizar seu Cliente", description: "Fidelize através do Agendamento On-line, Programa de Fidelidade, Envio de Promoções e Mensagens de Retorno automáticas.",img: "/assets/landingPage/person.svg"},
-    {name:"Aumentar seu Faturamento",description:"Aumente seu movimento em até 40% e tenha um maior faturamento em sua barbearia.",img: "/assets/landingPage/account.svg"}
+    {name:"Otimizar seu Tempo", description: "Organize sua agenda e estimule mais agendamentos através do nosso site.", img: "/assets/landingPage/calendar_month.svg"},
+    {name:"Fidelizar seu Cliente", description: "Fidelize através do Agendamento On-line de qualquer lugar.",img: "/assets/landingPage/person.svg"},
+    {name:"Aumentar seu Faturamento",description:"Aumente seu movimento e tenha um maior faturamento em sua barbearia.",img: "/assets/landingPage/account.svg"}
   ].forEach((objective) => {
     const card = createElement("li", "", "objective-benefit-item");
 
