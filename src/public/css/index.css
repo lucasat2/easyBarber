@@ -979,7 +979,7 @@ textarea.modalBoxStyles {
 
 /*landingPage*/
 
-header {
+header.loadingPageHeader {
 	background-color: transparent;
 	transition: background-color 0.3s ease;
 	padding: 20px;
@@ -1247,7 +1247,7 @@ header {
 	line-height: 1.4;
 }
 
-footer {
+footer.contato {
 	background-color: black;
 	color: #fff;
 	text-align: center;
