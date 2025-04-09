@@ -1,3 +1,6 @@
+import onNavigate from "../event.js";
+
+
 export default function landing() {
   function createElement(tag, textContent = "", className = "") {
     const element = document.createElement(tag);
@@ -34,7 +37,12 @@ export default function landing() {
   const externalNav = createElement("nav", "", "external-nav");
   ["Entrar"].forEach((text) => {
     const navLink = createElement("a", text, "nav-link");
-    navLink.href = `/${text.toLowerCase()}`;
+
+    navLink.addEventListener("click", function (e) {
+      e.preventDefault();
+      const event = onNavigate("/login");
+      document.dispatchEvent(event);
+    })
     externalNav.appendChild(navLink);
   });
 
@@ -60,7 +68,11 @@ export default function landing() {
     "hero-description"
   );
   const button = createElement("button", "Comece Agora", "hero-button");
-  button.onclick = () => (window.location.href = "/signup");
+  button.addEventListener("click", (e) => {
+    e.preventDefault();
+    const event = onNavigate("/signup");
+    document.dispatchEvent(event);
+  })
   contentDiv.appendChild(title);
   contentDiv.appendChild(description);
   contentDiv.appendChild(button);

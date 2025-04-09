@@ -1015,6 +1015,7 @@ header {
 
 .external-nav a:hover {
 	transform: scale(2.05);
+	cursor: pointer;
 }
 
 .logo-img {
