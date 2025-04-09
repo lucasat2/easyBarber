@@ -979,7 +979,7 @@ textarea.modalBoxStyles {
 
 /*landingPage*/
 
-header {
+.headerLandingPage {
 	background-color: transparent;
 	transition: background-color 0.3s ease;
 	padding: 20px;
@@ -1015,6 +1015,7 @@ header {
 
 .external-nav a:hover {
 	transform: scale(2.05);
+	cursor: pointer;
 }
 
 .logo-img {
@@ -1247,7 +1248,7 @@ header {
 	line-height: 1.4;
 }
 
-footer {
+.footerLandingPage {
 	background-color: black;
 	color: #fff;
 	text-align: center;
