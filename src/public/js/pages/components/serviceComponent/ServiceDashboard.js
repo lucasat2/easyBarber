@@ -15,9 +15,6 @@ function ServiceDashboard() {
     ServiceModal(false, {});
   });
 
-  const cardsContainer = document.createElement("div");
-  mainContainer.appendChild(cardsContainer);
-
   fetch("/api/services")
     .then((response) => {
       if (!response.ok) {
@@ -30,9 +27,11 @@ function ServiceDashboard() {
     })
     .then((data) => {
       if (data.length === 0) {
+        mainContainer.style.backgroundColor = "#fff";
+
         const noDataContainer = document.createElement("div");
         noDataContainer.classList.add("noDataContainer");
-        cardsContainer.appendChild(noDataContainer);
+        mainContainer.appendChild(noDataContainer);
 
         const noDataImage = document.createElement("div");
         noDataImage.classList.add("noDataImage");
@@ -46,7 +45,7 @@ function ServiceDashboard() {
 
       for (let j = 0; j < data.length; j++) {
         const serviceCard = ServicesCard(data[j]);
-        cardsContainer.appendChild(serviceCard);
+        mainContainer.appendChild(serviceCard);
       }
     })
     .catch((error) => {
