@@ -1,0 +1,1051 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: Arial, sans-serif;
+}
+
+body {
+	background-color: #f5f5f5;
+}
+
+.loginPrincipalContainer {
+	display: flex;
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+	background-color: #fff;
+}
+
+.loginLeftSideStyle {
+	flex: 1;
+	background-color: #333;
+	position: relative;
+	overflow: hidden;
+}
+
+.loginBarberPoleStyle {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: right center;
+	transform: scale(1.3) translate(-25px, -18px);
+	opacity: 70%;
+	z-index: 0;
+}
+
+.loginBackButton {
+	position: absolute;
+	width: 100px;
+	padding: 12px;
+	right: 30px;
+	bottom: 20px;
+	background-color: #a3a31a;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	font-size: 15px;
+	cursor: pointer;
+	margin-bottom: 15px;
+	z-index: 1;
+	opacity: 200%;
+}
+
+.loginRightSideStyle {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	justify-content: center;
+	align-items: center;
+}
+
+.loginLogoContainer {
+	width: 130px;
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	z-index: 2;
+}
+
+.loginLogoStyle {
+	width: 100%;
+}
+
+.loginSecondContainer {
+	width: 350px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 40px;
+	background-color: #dee33e;
+	border-radius: 15px;
+	margin: 0;
+}
+
+.loginTitleStyle {
+	font-size: 25px;
+	margin-bottom: 25px;
+	color: #333;
+	text-align: center;
+}
+
+.loginFormStyle {
+	width: 100%;
+}
+
+.loginInputGroupStyle {
+	position: relative;
+	margin-bottom: 15px;
+}
+
+.loginInputStyle {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  background-color: #fff;
+  font-size: 15px;
+  outline: none;
+  margin-top: 10px;
+}
+
+.loginLoginButton {
+	width: 100%;
+	padding: 12px;
+	background-color: #a3a31a;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	font-size: 15px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+	margin-bottom: 15px;
+}
+
+.loginLoginButton:hover {
+	background-color: #8a8a15;
+}
+
+.loginRegisterLink {
+	text-align: center;
+	font-size: 12px;
+	color: #333;
+}
+
+.loginRegisterLink a {
+	color: #333;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+@media (max-width: 768px) {
+	.loginPrincipalContainer {
+		flex-direction: column;
+		width: 90%;
+		height: auto;
+	}
+
+	.loginLeftSideStyle {
+		display: none;
+	}
+
+	.loginRightSideStyle {
+		width: 100%;
+	}
+
+	.loginSecondContainer {
+		width: 90%;
+		margin: 10px auto;
+		padding: 20px;
+	}
+}
+
+/*signUpSection*/
+
+.signupPrincipalContainer {
+	display: flex;
+	width: 100vw;
+	height: 100vh;
+	border-radius: 0px;
+	overflow: hidden;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+	background-color: #fff;
+}
+
+.signupFormContainer {
+	width: 50%;
+	max-width: 90%;
+	background: white;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.signupLogoImage {
+	width: 130px;
+	position: absolute;
+	top: 20px;
+	left: 15px;
+	z-index: 2;
+}
+
+.signupLogoImage img {
+	width: 100%;
+}
+
+.signupFormBox {
+  width: 500px;
+  background: #dee33e;
+  padding: 40px;
+  border-radius: 15px;
+  margin-top: 0px;
+}
+
+.signupInputLabel {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.signupFieldContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-right: 10px;
+}
+
+.signupTitleStyle {
+	font-size: 25px;
+	margin-bottom: 25px;
+	color: #333;
+	text-align: center;
+}
+
+.signupInputRow {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 10px;
+}
+
+.signupInputStyle {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #fff;
+  font-size: 15px;
+  outline: none;
+  margin-top: 5px;
+}
+
+.signupInputStyle::placeholder {
+	color: #666;
+	font-size: 15px;
+}
+
+.signupInputStyle:focus {
+	outline: none;
+}
+
+.signupPasswordField {
+	position: relative;
+	margin-bottom: 10px;
+}
+
+.signupRegisterButton {
+	width: 100%;
+	padding: 12px;
+	background-color: #a3a31a;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	font-size: 15px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+	margin-bottom: 15px;
+}
+
+.signupRegisterButton:hover {
+	background-color: #8a8a15;
+}
+
+.signupLoginLink {
+	text-align: center;
+	font-size: 12px;
+	color: #333;
+}
+
+.signupLoginLink a {
+	color: #333;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+.signupLoginLink a:hover {
+	text-decoration: underline;
+}
+
+.signupImageContainer {
+	width: 50%;
+	background-image: url("../assets/signUp/barberChair.jpeg");
+	background-size: cover;
+	background-position: center;
+}
+
+.signupBackButton {
+	position: absolute;
+	width: 100px;
+	padding: 12px;
+	left: 30px;
+	bottom: 20px;
+	background-color: #a3a31a;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	font-size: 15px;
+	cursor: pointer;
+	margin-bottom: 15px;
+	z-index: 1;
+	opacity: 200%;
+}
+
+@media (max-width: 768px) {
+	.signupPrincipalContainer {
+		flex-direction: column;
+		width: 90%;
+		height: auto;
+	}
+
+	.signupImageContainer {
+		display: none;
+	}
+
+	.signupFormContainer {
+		width: 100%;
+	}
+
+	.signupLogoImage {
+		position: relative;
+		top: 20px;
+		left: 0;
+		text-align: center;
+		width: 100%;
+	}
+
+	.signupFormBox {
+		width: 90%;
+		margin: 60px auto 10px auto;
+		padding: 20px;
+	}
+
+	.signupInputRow {
+		flex-direction: column;
+		gap: 0;
+	}
+}
+
+/* schedulingTimelineSection */
+
+.initialSchedulingTimelineSection {
+	height: 100%;
+	padding: 15px 50px;
+	border-radius: 5px;
+	display: flex;
+	flex-direction: column;
+	background-color: #ffffff;
+}
+
+.initialSchedulingTimelineDiv {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	row-gap: 10px;
+	justify-content: center;
+	align-items: center;
+	font-size: 50px;
+	color: #9fa324;
+}
+
+.initialSchedulingTimelineImage {
+	background-image: url("../assets/schedulingTimelinePage/initialSchedullingTimelineIcon.svg");
+	width: 100px;
+	height: 100px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
+.employeeSchedulingTimelineSection {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding-bottom: 10px;
+	border-radius: 5px;
+	background-color: #fff;
+	height: 100%;
+}
+
+.employeeSchedulingTimelineHeader {
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
+	width: 900px;
+	height: 70px;
+	font-size: 16px;
+}
+
+.employeeSchedulingTimelineHeaderManagementButton {
+	font-size: 14px;
+	padding: 10px 20px;
+	border-radius: 5px;
+	border: none;
+	background-color: #9fa324;
+	cursor: pointer;
+	color: #fff;
+	transition: all 0.1s ease;
+	border: 1px solid #9fa324;
+}
+
+.employeeSchedulingTimelineHeaderManagementButton:hover {
+	color: #9fa324;
+	background-color: white;
+}
+
+.schedulingTimelineHeaderSelectionSection {
+	width: 240px;
+	height: 47px;
+	position: relative;
+}
+
+.schedulingTimelineHeaderSelectionContainer {
+	width: 100%;
+	height: 100%;
+	padding: 15px;
+	background-color: #f5f5f5;
+	border: 1px solid #f5f5f5;
+	border-radius: 12px;
+	font-size: 14px;
+	appearance: none;
+	cursor: pointer;
+	transition: all 0.1s ease;
+}
+
+.schedulingTimelineHeaderSelectionContainer:focus {
+	border: 1px solid black;
+	outline: none;
+}
+
+.schedulingTimelineHeaderSelectionContainer:hover {
+	border: 1px solid black;
+}
+
+.schedulingTimelineHeaderCustomArrow {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	width: 30px;
+	height: 20px;
+	transform: translateY(-50%);
+	background-image: url("../assets/schedulingTimelinePage/arrowDown.svg");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	pointer-events: none;
+}
+
+.schedulingTimelineEmployeesCard {
+	background-color: #d9d9d9;
+	display: flex;
+	column-gap: 10px;
+	width: fit-content;
+	border-radius: 45px;
+}
+
+.schedulingTimelineHeaderEmployeesCardImage {
+	width: 45px;
+	height: 45px;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-weight: bold;
+	color: white;
+	font-size: 16px;
+}
+
+.schedulingTimelineHeaderEmployeesCardName {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	padding-right: 20px;
+	font-size: 14px;
+}
+
+.schedulingTimelineHeaderDateCard {
+	display: flex;
+	align-items: center;
+	column-gap: 10px;
+}
+
+.schedulingTimelineHeaderDateCardCarousel {
+	display: flex;
+}
+
+.schedulingTimelineHeaderDateCardCarouselForwardMonth {
+	font-size: 30px;
+	transition: all 0.1s ease;
+	cursor: pointer;
+}
+
+.schedulingTimelineHeaderDateCardCarouselForwardMonth:hover {
+	color: #9fa324;
+	transform: scale(1.1);
+}
+
+.schedulingTimelineHeaderDateCardCarouselPreviousMonth {
+	font-size: 30px;
+	transition: all 0.1s ease;
+	cursor: pointer;
+}
+
+.schedulingTimelineHeaderDateCardCarouselPreviousMonth:hover {
+	color: #9fa324;
+	transform: scale(1.1);
+}
+
+.schedulingTimelineHeaderDateCardText {
+	display: flex;
+	width: 130px;
+	justify-content: flex-start;
+	align-items: center;
+	color: #9fa324;
+	font-size: 15px;
+}
+
+.schedulingTimelineMain {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	place-items: center;
+	gap: 15px;
+	width: 800px;
+}
+
+.schedulingTimelineMainHeader {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.schedulingTimelineMainCard {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 10px;
+	transition: all 0.2s ease;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.schedulingTimelineMainCard:hover {
+	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+	transform: scale(1.1);
+}
+
+/*modalAppointmentScheduling*/
+
+.appointmentModalOverlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100vh;
+	width: 100vw;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+.appointmentModal {
+	background-color: #ffffff;
+	padding: 2rem;
+	border-radius: 12px;
+	width: 500px;
+	min-height: 525px;
+	display: flex;
+	flex-direction: column;
+	gap: 1.2rem;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+	margin: 2rem;
+}
+
+.modalFormRows {
+	display: flex;
+	column-gap: 10px;
+}
+
+.modalLabel {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 10px;
+	font-weight: 500;
+	font-size: 0.95rem;
+	color: #333;
+}
+
+.modalBoxStyles {
+	margin-top: 0.5rem;
+	padding: 0.6rem;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	font-size: 0.95rem;
+	background-color: #f9f9f9;
+}
+
+textarea.modalBoxStyles {
+	width: 100%;
+	height: auto;
+	min-height: 5px;
+	resize: vertical;
+	box-sizing: border-box;
+	resize: none;
+}
+
+.appointmentModalButtons {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 1rem;
+}
+
+.appointmentModalButtons button {
+	flex: 1;
+	padding: 0.7rem;
+	border: none;
+	border-radius: 8px;
+	font-size: 1rem;
+	font-weight: bold;
+	cursor: pointer;
+	margin: 0 0.25rem;
+}
+
+#modalButtonSaveAppointment,
+#modalButtonSaveBlock {
+	background-color: #e2e200;
+	color: #fff;
+}
+
+#modalButtonSaveAppointment:hover,
+#modalButtonSaveBlock:hover {
+	background-color: #c1c638;
+}
+
+#modalButtonCancelAppointment,
+#modalButtonCancelBlock {
+	background-color: #dc3545;
+	color: #fff;
+}
+
+#modalButtonCancelAppointment:hover,
+#modalButtonCancelBlock:hover {
+	background-color: #c82333;
+}
+
+.appointmentToggleContainer {
+	display: flex;
+	background: #e9e9e9;
+	border-radius: 10px;
+	overflow: hidden;
+	margin-bottom: 1rem;
+}
+
+.appointmentToggleContainer button {
+	flex: 1;
+	padding: 0.8rem;
+	border: none;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 0.95rem;
+}
+
+.appointmentToggleActive {
+	background-color: #e2e200;
+	color: #000;
+}
+
+.appointmentToggleInactive {
+	background-color: #f0f0f0;
+	color: #444;
+}
+
+.SchedulingTimelineCardDefault {
+	background-color: #d9d9d9;
+}
+
+.SchedulingTimelineCardBlocked {
+	background-color: #eb4335;
+}
+
+.SchedulingTimelineCardPending {
+	background-color: #e2e200;
+}
+
+.todayCard {
+	position: relative;
+}
+
+.todayCard::after {
+	content: "";
+	position: absolute;
+	top: 8px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 10px;
+	height: 10px;
+	background-color: black;
+	border-radius: 50%;
+}
+
+.invisible {
+	background-color: #f5f5f5;
+}
+
+/* ServiceDashboard */
+
+.serviceDashboardMainContainer {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	padding: 15px 50px;
+}
+
+.registerStaffButton {
+	width: fit-content;
+	padding: 10px 30px;
+	border-radius: 5px;
+	border: 1px solid #9fa324;
+	font-size: 16px;
+	background-color: #9fa324;
+	color: #fff;
+	transition: all 0.1s ease;
+	cursor: pointer;
+}
+
+.registerStaffButton:hover {
+	background-color: transparent;
+	color: #9fa324;
+}
+
+.noDataContainer {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+}
+
+.noDataImage {
+	background-image: url("../assets/servicesPage/noDataServices.svg");
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+	height: 100px;
+	width: 100px;
+}
+
+.noDataTitle {
+	font-size: 50px;
+	color: #9fa324;
+}
+
+/* ServiceCard */
+
+.serviceCardContainer {
+  display: flex;
+  padding: 20px;
+  margin-top: 15px;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  transition: all 0.1s ease;
+}
+
+.serviceCardContainer:hover {
+  transform: scale(1.01);
+}
+
+.servicePriceArea {
+  color: #8a8a15;
+}
+
+.serviceDurationArea {
+  display: flex;
+  color: #5f5f5f;
+}
+
+.clockIcon {
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.serviceCardInfo {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	row-gap: 10px;
+}
+
+.serviceCardButtonContainer {
+	display: flex;
+	column-gap: 10px;
+}
+
+.serviceCardEditButton {
+	padding: 10px 0px;
+	width: 150px;
+	border: none;
+	cursor: pointer;
+	border-radius: 5px;
+	font-size: 16px;
+	color: white;
+	background-color: #dee33e;
+	transition: all 0.3s ease;
+}
+
+.serviceCardEditButton:hover {
+	background-color: #c1c638;
+}
+
+.serviceCardDeleteButton {
+	padding: 10px 0px;
+	width: 150px;
+	border: none;
+	cursor: pointer;
+	border-radius: 5px;
+	font-size: 16px;
+	color: white;
+	background-color: #dc3545;
+	transition: all 0.3s ease;
+}
+
+.serviceCardDeleteButton:hover {
+	background-color: #c82333;
+}
+
+/* ServiceModal */
+
+.serviceModalMainContainer {
+	z-index: 100;
+	width: 100%;
+	height: 100vh;
+	position: fixed;
+	top: 0;
+	left: 0;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.serviceModalContent {
+	width: 500px;
+	max-width: 80%;
+	height: auto;
+	background: white;
+	border-radius: 12px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+	display: flex;
+	flex-direction: column;
+	row-gap: 10px;
+	position: relative;
+	overflow: hidden;
+	padding-bottom: 40px;
+}
+
+.serviceModalHeader {
+	padding: 20px 0;
+	position: relative;
+}
+
+.serviceModalCloseButton {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	cursor: pointer;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	background: #eb4335;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.serviceModalBody {
+	display: flex;
+	flex-direction: column;
+	row-gap: 15px;
+	padding: 0px 60px;
+}
+
+.serviceNameModalInput {
+	border: none;
+	background-color: #f5f5f5;
+	padding: 15px 10px;
+	border-radius: 5px;
+}
+
+.serviceInputLabel {
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+}
+
+.serviceModalPriceAndDurationFields {
+	display: flex;
+	justify-content: space-between;
+}
+
+.servicePriceAndDurationModalInputs {
+  border: none;
+  background-color: #f5f5f5;
+  padding: 15px 10px;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.serviceModalTextArea {
+	border: none;
+	background-color: #f5f5f5;
+	padding: 15px 10px;
+	border-radius: 5px;
+	resize: none;
+}
+
+.serviceModalSaveButton {
+	padding: 10px 0px;
+	width: 150px;
+	border: none;
+	cursor: pointer;
+	border-radius: 5px;
+	font-size: 16px;
+	background-color: #dee33e;
+	transition: all 0.3s ease;
+	align-self: center;
+	color: #fff;
+}
+
+.serviceModalSaveButton:hover {
+	background-color: #c1c638;
+}
+
+/* EditUserProfileModal*/
+
+.editUserProfileModalMainContainer {
+	z-index: 100;
+	width: 100%;
+	height: 100vh;
+	position: fixed;
+	top: 0;
+	left: 0;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.editUserProfileModalContent {
+	width: 600px;
+	max-width: 80%;
+	height: auto;
+	background: white;
+	border-radius: 12px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+	display: flex;
+	flex-direction: column;
+	row-gap: 10px;
+	position: relative;
+	overflow: hidden;
+	padding-bottom: 40px;
+}
+
+.editUserProfileModalHeader {
+	padding: 20px 0;
+	position: relative;
+}
+
+.editUserProfileModalCloseButton {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	cursor: pointer;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	background: #eb4335;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.editUserProfileModalBody {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	row-gap: 15px;
+	padding: 0px 60px;
+}
+
+.editUserProfileModalTitle {
+	font-size: 25px;
+	margin-bottom: 10px;
+}
+
+.editUserProfileModalFields {
+	display: flex;
+	column-gap: 20px;
+}
+
+.editUserProfileModalInputs {
+	border: none;
+	width: 200px;
+	background-color: #f5f5f5;
+	padding: 15px 10px;
+	border-radius: 5px;
+}
+
+.editUserProfileModalSaveButton {
+	padding: 10px 0px;
+	width: 150px;
+	border: none;
+	cursor: pointer;
+	border-radius: 5px;
+	font-size: 16px;
+	background-color: #dee33e;
+	transition: all 0.3s ease;
+	align-self: center;
+	color: #fff;
+}
+
+.editUserProfileModalSaveButton:hover {
+	background-color: #c1c638;
+}
