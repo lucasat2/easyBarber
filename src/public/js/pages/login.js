@@ -29,7 +29,7 @@ export default function login() {
   logoContainer.classList.add("loginLogoContainer");
 
   const logo = document.createElement("img");
-  logo.src = "../assets/logo.jpeg";
+  logo.src = "../assets/logo.png";
   logo.alt = "EasyBarber Logo";
   logo.classList.add("loginLogoStyle");
 

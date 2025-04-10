@@ -14,7 +14,7 @@ export default function signup() {
   logo.classList.add("signupLogoImage");
 
   const logoImg = document.createElement("img");
-  logoImg.src = "../assets/logo.jpeg";
+  logoImg.src = "../assets/logo.png";
   logoImg.alt = "EasyBarber Logo";
 
   logo.appendChild(logoImg);

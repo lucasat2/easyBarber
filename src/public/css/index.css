@@ -62,6 +62,7 @@ body {
 }
 
 .loginLogoContainer {
+	width: 130px;
 	position: absolute;
 	top: 20px;
 	right: 20px;
@@ -69,12 +70,7 @@ body {
 }
 
 .loginLogoStyle {
-	width: 150px;
-	height: 120px;
-	margin-top: -30px;
-	object-fit: cover;
-	margin-right: -30px;
-	margin-left: -30px;
+	width: 100%;
 }
 
 .loginSecondContainer {
@@ -205,19 +201,15 @@ body {
 }
 
 .signupLogoImage {
+	width: 130px;
 	position: absolute;
-	top: 10px;
+	top: 20px;
 	left: 15px;
 	z-index: 2;
 }
 
 .signupLogoImage img {
-	width: 135px;
-	/* Reduced size for better positioning */
-	height: auto;
-	object-fit: contain;
-	margin-top: -25px;
-	margin-left: -20px;
+	width: 100%;
 }
 
 .signupFormBox {
