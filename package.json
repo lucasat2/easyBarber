@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./src/app.js",
-    "dev": "nodemon ./src/app.js"
+    "dev": "nodemon ./src/app.js",
+    "swagger": "http-server ./swagger-ui -p 10002"
   },
   "keywords": [],
   "author": "",

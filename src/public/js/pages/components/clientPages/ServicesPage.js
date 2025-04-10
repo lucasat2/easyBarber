@@ -2,6 +2,7 @@ import navigateTo from "./NavigateTo.js";
 import ScheduleAppointment from "./ScheduleAppointment.js";
 import {MessageNotification} from "../MessageNotification.js";
 import NotFound from "./NotFound.js";
+import NothingHere from "./NothingHere.js";
 
 export default function ServicesPage() {
 	const container = document.createElement("div");
@@ -11,8 +12,8 @@ export default function ServicesPage() {
 
 	if (!idCompany) {
 		MessageNotification("ID da empresa não encontrado na URL.", "#ff6347");
-		container.innerHTML = "Erro ao carregar a página.";
-		return container;
+		NotFound();
+		return;
 	}
 
 	buildContent(container, idCompany);
@@ -218,7 +219,13 @@ function buildContent(container, idCompany) {
 		.catch(err => {
 			console.error("Erro ao buscar os serviços:", err);
 			MessageNotification(err.message, "#ff6347");
-			NotFound();
+			content.appendChild(
+				NothingHere(
+					"Esta empresa ainda não disponibilizou seus serviços",
+					"../../../../../assets/externalSchedulingPage/build.svg"
+				)
+			);
+			return;
 		});
 
 	content.appendChild(cardsServices);
