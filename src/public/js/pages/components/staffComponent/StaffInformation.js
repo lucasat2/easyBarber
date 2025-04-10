@@ -48,9 +48,56 @@ export default async function StaffInformation(data, onSave) {
 
   const inputElements = {};
 
+  function applyMask(input, type) {
+    input.addEventListener("input", () => {
+      let value = input.value.replace(/\D/g, "");
+      let masked = "";
+
+      if (type === "cpf") {
+        value = value.slice(0, 11);
+        if (value.length <= 3) masked = value;
+        else if (value.length <= 6)
+          masked = `${value.slice(0, 3)}.${value.slice(3)}`;
+        else if (value.length <= 9)
+          masked = `${value.slice(0, 3)}.${value.slice(3, 6)}.${value.slice(
+            6
+          )}`;
+        else
+          masked = `${value.slice(0, 3)}.${value.slice(3, 6)}.${value.slice(
+            6,
+            9
+          )}-${value.slice(9)}`;
+      }
+
+      if (type === "cep") {
+        value = value.slice(0, 8);
+        if (value.length <= 5) masked = value;
+        else masked = `${value.slice(0, 5)}-${value.slice(5)}`;
+      }
+
+      if (type === "phone") {
+        value = value.slice(0, 11);
+        if (value.length < 3) {
+          masked = value;
+        } else if (value.length < 7) {
+          masked = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+        } else if (value.length <= 10) {
+          masked = `(${value.slice(0, 2)}) ${value.slice(2, 6)}-${value.slice(
+            6
+          )}`;
+        } else {
+          masked = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(
+            7
+          )}`;
+        }
+      }
+
+      input.value = masked;
+    });
+  }
+
   function createField(labelText, value, name, type = "text") {
     const label = document.createElement("label");
-    label.style.fontWeight = "bold";
     label.style.display = "flex";
     label.style.flexDirection = "column";
     label.style.gap = "0.25rem";
@@ -63,6 +110,10 @@ export default async function StaffInformation(data, onSave) {
     input.style.padding = "0.5rem";
     input.style.border = "1px solid #ccc";
     input.style.borderRadius = "4px";
+
+    if (name === "cpf") applyMask(input, "cpf");
+    if (name === "phoneNumber") applyMask(input, "phone");
+    if (name === "postalCode") applyMask(input, "cep");
 
     inputElements[name] = input;
     label.appendChild(input);
@@ -174,11 +225,10 @@ export default async function StaffInformation(data, onSave) {
       postalCode: inputElements["postalCode"].value.trim(),
     };
 
-    // Se houver ID, estamos atualizando (PUT); senão, estamos criando (POST)
     const isUpdate = !!id;
 
     if (isUpdate) {
-      payload.id = id; // adiciona o ID apenas para PUT
+      payload.id = id;
     }
 
     try {
@@ -214,7 +264,6 @@ export default async function StaffInformation(data, onSave) {
 
   modalContent.appendChild(form);
 
-  // Fecha o modal ao clicar fora do conteúdo
   div.addEventListener("click", (e) => {
     if (e.target === div) {
       div.remove();
