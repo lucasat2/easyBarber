@@ -419,12 +419,12 @@ body {
 	cursor: pointer;
 	color: #fff;
 	transition: all 0.1s ease;
+	border: 1px solid #9fa324;
 }
 
 .employeeSchedulingTimelineHeaderManagementButton:hover {
 	color: #9fa324;
 	background-color: white;
-	border: 1px solid #9fa324;
 }
 
 .schedulingTimelineHeaderSelectionSection {

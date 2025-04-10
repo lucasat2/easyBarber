@@ -368,7 +368,6 @@ export default function ScheduleAppointment() {
 				cost: selectedService.price
 			};
 		} else {
-			mainDiv.innerHTML = "Serviço não encontrado.";
 			MessageNotification("Serviço não encontrado", "#ff6347");
 			return;
 		}
@@ -584,7 +583,8 @@ export default function ScheduleAppointment() {
 					)
 				);
 
-				if (!staffs) {
+				if (!staffs || staffs.length == 0) {
+					MessageNotification("Nenhum funcionário encontrado para o serviço", "#ff6347");
 					containerContent.appendChild(
 						NothingHere(
 							"Este serviço ainda não possui funcionários disponíveis",
