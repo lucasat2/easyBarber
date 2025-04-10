@@ -95,6 +95,7 @@ body {
   background-color: #fff;
   font-size: 15px;
   outline: none;
+  margin-top: 10px;
 }
 
 .loginLoginButton {
@@ -171,10 +172,6 @@ body {
   align-items: center;
 }
 
-.signupInfullWidth {
-  width: 100%;
-}
-
 .signupLogoImage {
   position: absolute;
   top: 10px;
@@ -184,7 +181,6 @@ body {
 
 .signupLogoImage img {
   width: 135px;
-  /* Reduced size for better positioning */
   height: auto;
   object-fit: contain;
   margin-top: -25px;
@@ -192,12 +188,26 @@ body {
 }
 
 .signupFormBox {
-  width: 450px;
+  width: 500px;
   background: #dee33e;
   padding: 40px;
   border-radius: 15px;
   margin-top: 0px;
-  /* Increased top margin to create more space below logo */
+}
+
+.signupInputLabel {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.signupFieldContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-right: 10px;
 }
 
 .signupTitleStyle {
@@ -222,6 +232,7 @@ body {
   background-color: #fff;
   font-size: 15px;
   outline: none;
+  margin-top: 5px;
 }
 
 .signupInputStyle::placeholder {
