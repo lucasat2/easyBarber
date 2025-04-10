@@ -739,7 +739,7 @@ textarea.modalBoxStyles {
 	width: fit-content;
 	padding: 10px 30px;
 	border-radius: 5px;
-	border: none;
+	border: 1px solid #9fa324;
 	font-size: 16px;
 	background-color: #9fa324;
 	color: #fff;
@@ -750,7 +750,6 @@ textarea.modalBoxStyles {
 .registerStaffButton:hover {
 	background-color: transparent;
 	color: #9fa324;
-	border: 1px solid #9fa324;
 }
 
 .noDataContainer {
