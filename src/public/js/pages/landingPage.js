@@ -46,7 +46,7 @@ export default function landing() {
       position: sticky;
       top: 0;
       z-index: 1000;
-      padding: 0 1rem; /* Adjusted padding */
+      padding: 0 1rem; 
     }
 
     .header-container {
@@ -54,7 +54,7 @@ export default function landing() {
       align-items: center;
       justify-content: space-between;
       padding: 1rem 0;
-      position: relative; /* Needed for absolute positioning of mobile-nav */
+      position: relative; 
     }
 
     .logo {
@@ -70,12 +70,12 @@ export default function landing() {
     }
 
     .nav {
-      display: none; /* Hidden on mobile by default */
+      display: none; 
     }
 
     @media (min-width: 768px) {
       .nav {
-        display: flex; /* Shown on desktop */
+        display: flex; 
         align-items: center;
         gap: 2rem;
       }
@@ -129,60 +129,61 @@ export default function landing() {
     .btn-lg {
       padding: 0.75rem 2rem;
       font-size: 1.125rem;
+      gap: 0.5rem;
     }
 
     .mobile-menu {
-      display: flex; /* Show hamburger on mobile */
+      display: flex; 
       border-color: #cfa912;
     }
 
 
     @media (min-width: 768px) {
       .mobile-menu {
-        display: none; /* Hide hamburger on desktop */
+        display: none; 
       }
     }
 
-    /* Styles for the Mobile Navigation Menu */
+    
     .mobile-nav {
-      display: none; /* Hidden by default */
+      display: none; 
       position: absolute;
-      top: 100%; /* Position below the header */
-      left: -1rem; /* Align with header edge considering header padding */
-      right: -1rem; /* Align with header edge considering header padding */
+      top: 100%; 
+      left: -1rem; 
+      right: -1rem; 
       background-color: white;
       border-top: 1px solid #e2e8f0;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      z-index: 999; /* Below header (1000) but above content */
-      padding: 0.5rem 0; /* Add some vertical padding */
+      z-index: 999; 
+      padding: 0.5rem 0; 
     }
 
-    /* Style for when the mobile menu is open */
+    
     .mobile-nav.is-open {
       display: block;
     }
 
-    /* Styles for links within the mobile menu */
+    
     .mobile-nav .nav-link {
-      display: block; /* Make links take full width */
-      padding: 0.75rem 2rem; /* Match container padding + extra */
-      color: #1e293b; /* Dark text on white background */
-      border-bottom: 1px solid #f1f5f9; /* Separator lines */
-      text-decoration: none; /* Ensure no underline */
-      font-weight: 500; /* Match desktop link weight */
-      transition: background-color 0.2s, color 0.2s; /* Smooth hover */
+      display: block; 
+      padding: 0.75rem 2rem; 
+      color: #1e293b; 
+      border-bottom: 1px solid #f1f5f9; 
+      text-decoration: none; 
+      font-weight: 500; 
+      transition: background-color 0.2s, color 0.2s; 
     }
     .mobile-nav .nav-link:last-child {
-        border-bottom: none; /* No border on the last item */
+        border-bottom: none; 
     }
 
     .mobile-nav .nav-link:hover {
-      background-color: #f8fafc; /* Light background on hover */
-      color: #cfa912; /* Highlight color on hover */
+      background-color: #f8fafc; 
+      color: #cfa912; 
     }
 
 
-    /* Hero Section */
+    
     .hero {
       position: relative;
       padding: 5rem 0 7rem;
@@ -231,7 +232,7 @@ export default function landing() {
     .hero-subtitle {
       font-size: 1.125rem;
       color: #e2e8f0;
-      max-width: 36rem;
+      max-width: 38rem;
       margin-bottom: 2rem;
     }
 
@@ -351,10 +352,13 @@ export default function landing() {
     .card {
       background-color: white;
       border-radius: 0.5rem;
-      padding: 2rem;
+      padding: 2rem 3rem;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       border: 1px solid #e2e8f0;
       color: #1e293b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .icon-container {
@@ -431,9 +435,10 @@ export default function landing() {
     .footer-contact {
       text-align: center;
     }
-     .footer-contact .text-white {
-         color: white !important;
-     }
+
+    .footer-contact .text-white {
+        color: white !important;
+    }
 
     @media (min-width: 768px) {
       .footer-contact {
@@ -466,17 +471,14 @@ export default function landing() {
         width: auto;
     }
 
-    .mobile-menu img {
-        /* Adjust filter if needed for mobile menu icon color */
-        /* filter: invert(69%) sepia(43%) saturate(1041%) hue-rotate(358deg) brightness(86%) contrast(84%); */
-    }
+
     .logo img {
-         display: block;
-         width: 2.5rem; height: 2.5rem;
+        display: block;
+        width: 2.5rem; height: 2.5rem;
     }
     .footer-logo img {
-         display: block;
-         width: 2.5rem; height: 2.5rem;
+        display: block;
+        width: 2.5rem; height: 2.5rem;
     }
     `;
 
@@ -623,7 +625,7 @@ export default function landing() {
 	const adminTitle = createElement("h3", "card-title", "Módulo WebAdmin");
 	const adminDesc = createElement(
 		"p",
-		"",
+		"text-center",
 		"Onde o administrador da barbearia pode gerenciar todo o estabelecimento. Este módulo permite o controle dos profissionais, a criação e gestão de cronogramas de funcionários, além de adicionar, editar ou remover serviços e profissionais. A página oferece uma interface prática e intuitiva, focada na organização eficiente do ambiente de trabalho."
 	);
 	adminCard.appendChild(adminIconContainer);
@@ -639,7 +641,7 @@ export default function landing() {
 	const clientTitle = createElement("h3", "card-title", "Módulo Cliente");
 	const clientDesc = createElement(
 		"p",
-		"",
+		"text-center",
 		"Possibilita ao cliente realizar seus próprios agendamentos de maneira simples e rápida. A página foi projetada para proporcionar uma experiência fácil e acessível, permitindo que os clientes escolham o serviço desejado, o profissional e o horário de sua preferência."
 	);
 	clientCard.appendChild(clientIconContainer);
