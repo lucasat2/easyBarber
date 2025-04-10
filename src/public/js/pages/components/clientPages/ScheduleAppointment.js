@@ -45,7 +45,7 @@ function formatDateToBR(dateStr) {
 	dateEl.style.fontSize = "1rem";
 	dateEl.style.color = "#222";
 	dateEl.style.margin = "0";
-	dateEl.style.textTransform = "capitalize"; // Deixa "terça-feira" com a primeira letra maiúscula
+	dateEl.style.textTransform = "capitalize";
 
 	const dateIcon = document.createElement("img");
 	dateIcon.src = "../assets/externalSchedulingPage/calendar.svg";
@@ -403,7 +403,6 @@ export default function ScheduleAppointment() {
 				containerContent.style.flexDirection = "column";
 				containerContent.style.gap = "2rem";
 				containerContent.style.padding = "2rem";
-				// containerContent.id = "selectYourStaff";
 
 				const contentServiceInformation = document.createElement("div");
 				contentServiceInformation.style.background = "#fbfbfe";
@@ -575,7 +574,6 @@ export default function ScheduleAppointment() {
 					)
 				);
 
-				console.log(staffs);
 				if (!staffs) {
 					containerContent.appendChild(
 						NothingHere(
