@@ -12,14 +12,12 @@ import {
 import { SchedulingTimelineDiv } from "./SchedulingTimelineContainer.js";
 
 function createModal() {
-  //Cria a estrutura do modal
   const overlay = document.createElement("div");
   overlay.classList.add("appointmentModalOverlay");
 
   const modal = document.createElement("div");
   modal.classList.add("appointmentModal");
-  
-  //Botões de mudança de estado
+
   const toggleContainer = document.createElement("div");
   toggleContainer.classList.add("appointmentToggleContainer");
 
@@ -31,10 +29,8 @@ function createModal() {
   btnBlock.textContent = "Bloquear um horário";
   btnBlock.classList.add("appointmentToggleInactive");
 
-  //Onde ficará o formulário
   const formContainer = document.createElement("div");
 
-  // Troca visual e de conteúdo
   btnAppoint.addEventListener("click", async () => {
     updateToggle("agendar");
     renderForm("agendar");
@@ -45,7 +41,6 @@ function createModal() {
     renderForm("bloquear");
   });
 
-  //Atualiza visual dos botões de escolha
   function updateToggle(mode) {
     if (mode === "agendar") {
       btnAppoint.classList.add("appointmentToggleActive");
@@ -60,13 +55,12 @@ function createModal() {
     }
   }
 
-  //Função para gerar dois formulários diferentes
   let renderId = 0;
 
   async function renderForm(mode) {
     const currentId = ++renderId;
     formContainer.innerHTML = "";
-  
+
     let form;
     if (mode === "agendar") {
       form = await createApointForm();
@@ -98,7 +92,6 @@ function createModal() {
   });
 }
 
-//Função cria campo de input
 function createField(labelText, element) {
   const label = document.createElement("label");
   label.textContent = labelText;
@@ -107,21 +100,18 @@ function createField(labelText, element) {
   return label;
 }
 
-//Função para criar o formulário de agendamento
 async function createApointForm() {
   const { selectStaff, selectService } = await populateSelects();
 
   const form = document.createElement("form");
   form.id = "form-agendamento";
 
-  // Data
   const inputData = document.createElement("input");
   inputData.type = "date";
   inputData.required = true;
   inputData.classList.add("modalBoxStyles");
   inputData.name = "date";
 
-  //
   const inputClientName = document.createElement("input");
   inputClientName.type = "text";
   inputClientName.placeholder = "Nome do cliente";
@@ -136,6 +126,41 @@ async function createApointForm() {
   inputClientPhone.classList.add("modalBoxStyles");
   inputClientPhone.name = "clientPhone";
 
+  inputClientPhone.addEventListener("input", (e) => {
+    const input = e.target;
+    const selectionStart = input.selectionStart;
+    const raw = input.value.replace(/\D/g, "");
+
+    let formatted = "";
+
+    if (raw.length <= 10) {
+      formatted = raw.replace(
+        /^(\d{0,2})(\d{0,4})(\d{0,4}).*/,
+        (_, ddd, p1, p2) => {
+          return `${ddd ? "(" + ddd : ""}${ddd && p1 ? ") " + p1 : ""}${
+            p2 ? "-" + p2 : ""
+          }`;
+        }
+      );
+    } else {
+      formatted = raw.replace(
+        /^(\d{0,2})(\d{0,5})(\d{0,4}).*/,
+        (_, ddd, p1, p2) => {
+          return `${ddd ? "(" + ddd : ""}${ddd && p1 ? ") " + p1 : ""}${
+            p2 ? "-" + p2 : ""
+          }`;
+        }
+      );
+    }
+
+    const oldLength = input.value.length;
+    input.value = formatted;
+    const newLength = formatted.length;
+    const diff = newLength - oldLength;
+
+    input.setSelectionRange(selectionStart + diff, selectionStart + diff);
+  });
+
   const inputClientEmail = document.createElement("input");
   inputClientEmail.type = "email";
   inputClientEmail.placeholder = "E-mail do cliente";
@@ -143,20 +168,17 @@ async function createApointForm() {
   inputClientEmail.classList.add("modalBoxStyles");
   inputClientEmail.name = "clientEmail";
 
-  // Horário inicial
   const selectDateTime = document.createElement("input");
   selectDateTime.type = "time";
   selectDateTime.required = true;
   selectDateTime.classList.add("modalBoxStyles");
   selectDateTime.name = "appointmentTime";
 
-  // Observações
   const textareaObs = document.createElement("textarea");
   textareaObs.placeholder = "Observações";
   textareaObs.classList.add("modalBoxStyles");
   textareaObs.name = "observation";
 
-  // Botões
   const btnSave = document.createElement("button");
   btnSave.id = "modalButtonSaveAppointment";
   btnSave.textContent = "Salvar";
@@ -173,7 +195,6 @@ async function createApointForm() {
     );
   });
 
-  // Linhas
   const line1 = document.createElement("div");
   line1.classList.add("modalFormRows");
   const line2 = document.createElement("div");
@@ -184,15 +205,12 @@ async function createApointForm() {
   line4.classList.add("modalFormRows");
   const divButtons = document.createElement("div");
   divButtons.classList.add("appointmentModalButtons");
-  
-  // Montar o form
+
   form.appendChild(line1);
   form.appendChild(line2);
   form.appendChild(line3);
   form.appendChild(line4);
   form.appendChild(divButtons);
-
-  //Populando os inputs
 
   line1.appendChild(createField("Profissional", selectStaff));
   line1.appendChild(createField("Nome do Cliente", inputClientName));
@@ -209,7 +227,6 @@ async function createApointForm() {
   divButtons.appendChild(btnSave);
   divButtons.appendChild(btnCancel);
 
-  // Ao enviar o formulário
   form.addEventListener("submit", async (e) => {
     try {
       e.preventDefault();
@@ -267,11 +284,9 @@ async function createApointForm() {
   return form;
 }
 
-//Função para gerar formulário de bloquear horário
 async function createBlockForm() {
   const form = document.createElement("form");
 
-  // Select Profissional
   const selectStaff = document.createElement("select");
   selectStaff.classList.add("modalBoxStyles");
 
@@ -288,7 +303,6 @@ async function createBlockForm() {
     MessageNotification(error.message, "#ff6347");
   }
 
-  // Inputs de data e hora para início
   const inputStartDate = document.createElement("input");
   inputStartDate.type = "date";
   inputStartDate.required = true;
@@ -299,7 +313,6 @@ async function createBlockForm() {
   inputStartTime.required = true;
   inputStartTime.classList.add("modalBoxStyles");
 
-  // Inputs de data e hora para término
   const inputEndDate = document.createElement("input");
   inputEndDate.type = "date";
   inputEndDate.required = true;
@@ -310,13 +323,11 @@ async function createBlockForm() {
   inputEndTime.required = true;
   inputEndTime.classList.add("modalBoxStyles");
 
-  // Observações
   const textareaObs = document.createElement("textarea");
   textareaObs.placeholder = "Observações";
   textareaObs.classList.add("modalBoxStyles");
   textareaObs.classList.remove("modalLabel");
 
-  // Botões
   const btnSave = document.createElement("button");
   btnSave.id = "modalButtonSaveBlock";
   btnSave.textContent = "Salvar";
@@ -333,7 +344,6 @@ async function createBlockForm() {
     );
   });
 
-  // Linhas do formulário
   const line1 = document.createElement("div");
   line1.classList.add("modalFormRows");
   line1.appendChild(createField("Profissional", selectStaff));
@@ -353,14 +363,12 @@ async function createBlockForm() {
   divButtons.appendChild(btnSave);
   divButtons.appendChild(btnCancel);
 
-  // Montar form
   form.appendChild(line1);
   form.appendChild(line2);
   form.appendChild(line3);
   form.appendChild(createField("Observações", textareaObs));
   form.appendChild(divButtons);
 
-  // Ao enviar o formulário
   form.addEventListener("submit", async (e) => {
     try {
       e.preventDefault();
@@ -417,7 +425,6 @@ async function createBlockForm() {
   return form;
 }
 
-// Preenchendo os selects no modal
 async function populateSelects() {
   const selectStaff = document.createElement("select");
   selectStaff.classList.add("modalBoxStyles");
