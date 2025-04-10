@@ -28,4 +28,4 @@ function generateRandomColor() {
 }
 
 
-export { SchedulingTimelineEmployeesCard };
+export { SchedulingTimelineEmployeesCard , generateRandomColor};

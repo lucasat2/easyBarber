@@ -3,6 +3,7 @@ import { MessageNotification } from "./MessageNotification.js";
 import StaffManager from "./staffComponent/index.js";
 import { ServiceDashboard } from "./serviceComponent/ServiceDashboard.js";
 import { EditUserProfileModal } from "./editUserComponent/EditUserProfileModal.js";
+import { generateRandomColor } from "./schedulingComponent/SchedulingTimelineEmployeesCard.js";
 
 export default function header() {
   const root = document.getElementById("root");
@@ -76,15 +77,19 @@ export default function header() {
 
   const divImage = document.createElement("div");
   divImage.style.height = "48px";
-  divImage.style.width = "48px";
+  divImage.style.width = "60px";
   divImage.style.borderRadius = "50%";
   divImage.style.overflow = "hidden";
+  divImage.style.display = "flex";
+  divImage.style.justifyContent = "center";
+  divImage.style.alignItems = "center";
+  divImage.style.backgroundColor = generateRandomColor();
 
-  const image = document.createElement("img");
-  image.src = "https://picsum.photos/500";
-  image.style.height = "100%";
-  image.style.width = "100%";
-  image.style.objectFit = "cover";
+  const image = document.createElement("div");
+  image.innerHTML = "Empresa"
+  image.style.color = "white";
+  image.style.fontWeight = "bold";
+  image.style.fontSize = "16px";
 
   const contentUser = document.createElement("div");
   contentUser.style.display = "flex";
@@ -301,6 +306,8 @@ export default function header() {
       linkExternalPageField.href = data.link_client;
 
       nameUser.innerText = data.name;
+      const firstLetter = data.name.charAt(0).toUpperCase();
+      image.innerText = firstLetter
     })
     .catch((error) => {
       MessageNotification(error.message, "#ff6347");
