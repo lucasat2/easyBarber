@@ -3,6 +3,7 @@ import ConfirmScheduling from "./ConfirmScheduling.js";
 import {MessageNotification} from "../MessageNotification.js";
 import navigateTo from "./NavigateTo.js";
 import NotFound from "./NotFound.js";
+import NothingHere from "./NothingHere.js";
 
 function formatDateToBR(dateStr) {
 	const container = document.createElement("div");
@@ -402,9 +403,10 @@ export default function ScheduleAppointment() {
 				containerContent.style.flexDirection = "column";
 				containerContent.style.gap = "2rem";
 				containerContent.style.padding = "2rem";
+				// containerContent.id = "selectYourStaff";
 
 				const contentServiceInformation = document.createElement("div");
-				contentServiceInformation.style.background = "#fbfbfe"
+				contentServiceInformation.style.background = "#fbfbfe";
 
 				const nameWrapper = document.createElement("div");
 				nameWrapper.style.display = "flex";
@@ -561,6 +563,7 @@ export default function ScheduleAppointment() {
 
 				confirm.appendChild(button);
 				mainDiv.appendChild(confirm);
+				mainDiv.appendChild(containerContent);
 
 				const hoursToWork = document.createElement("div");
 				hoursToWork.id = "hoursToWork";
@@ -571,6 +574,17 @@ export default function ScheduleAppointment() {
 						"../../../../../assets/externalSchedulingPage/select_staff.svg"
 					)
 				);
+
+				console.log(staffs);
+				if (!staffs) {
+					containerContent.appendChild(
+						NothingHere(
+							"Este serviço ainda não possui funcionários disponíveis",
+							"../../../../../assets/externalSchedulingPage/person_off.svg"
+						)
+					);
+					return;
+				}
 
 				staffs.forEach(staff => {
 					const div = document.createElement("div");
@@ -763,8 +777,6 @@ export default function ScheduleAppointment() {
 
 				containerHoursToWork.appendChild(hoursToWork);
 				containerContent.appendChild(containerHoursToWork);
-
-				mainDiv.appendChild(containerContent);
 			})
 			.catch(error => {
 				console.error("Erro ao buscar os serviços:", error);
