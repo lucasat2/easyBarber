@@ -74,7 +74,6 @@ function createModal() {
     }
   }
 
-  //Posicionamento dos elementos
   toggleContainer.appendChild(btnAppoint);
   toggleContainer.appendChild(btnBlock);
 

@@ -10,7 +10,6 @@ export default async function StaffManager() {
   mainContainer.style.height = "100%";
   mainContainer.style.padding = "15px 50px";
 
-  // Botão de cadastro
   const createButton = document.createElement("button");
   createButton.textContent = "Cadastrar um novo funcionário";
   Object.assign(createButton.style, {
@@ -36,7 +35,6 @@ export default async function StaffManager() {
     createButton.style.color = "#fff";
   });
 
-  // Evento ainda vazio
   createButton.addEventListener("click", async () => {
     const root = document.getElementById("root");
     const section = await StaffInformation({}, loadStaff);
@@ -46,7 +44,6 @@ export default async function StaffManager() {
 
   mainContainer.appendChild(createButton);
 
-  // Lista de funcionários
   const staffList = document.createElement("div");
   staffList.style.display = "flex";
   staffList.style.flexDirection = "column";
@@ -54,7 +51,6 @@ export default async function StaffManager() {
 
   mainContainer.appendChild(staffList);
 
-  // Função para criar um item de funcionário
   function createStaffItem({ id, name, surname }) {
     const item = document.createElement("div");
     Object.assign(item.style, {
@@ -124,7 +120,6 @@ export default async function StaffManager() {
 
         const editIcon = document.createElement("img");
 
-        // Use the absolute path here:
         editIcon.src = "../../assets/staff/edit.svg";
         editIcon.alt = "Editar";
         editIcon.style.width = "20px";
@@ -149,7 +144,6 @@ export default async function StaffManager() {
 
         const deleteIcon = document.createElement("img");
 
-        // Use the absolute path here:
         deleteIcon.src = "../../assets/staff/delete.svg";
         deleteIcon.alt = "Deletar";
         deleteIcon.style.width = "20px";
@@ -238,7 +232,6 @@ export default async function StaffManager() {
     return item;
   }
 
-  // Carrega os funcionários
   async function loadStaff() {
     try {
       const res = await fetch("/api/staff");
