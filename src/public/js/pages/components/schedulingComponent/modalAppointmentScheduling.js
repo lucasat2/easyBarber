@@ -18,7 +18,7 @@ function createModal() {
 
   const modal = document.createElement("div");
   modal.classList.add("appointmentModal");
-
+  
   //Botões de mudança de estado
   const toggleContainer = document.createElement("div");
   toggleContainer.classList.add("appointmentToggleContainer");
@@ -52,7 +52,7 @@ function createModal() {
       btnAppoint.classList.remove("appointmentToggleInactive");
       btnBlock.classList.add("appointmentToggleInactive");
       btnBlock.classList.remove("appointmentToggleActive");
-    } else {
+    } else if (mode === "bloquear") {
       btnBlock.classList.add("appointmentToggleActive");
       btnBlock.classList.remove("appointmentToggleInactive");
       btnAppoint.classList.add("appointmentToggleInactive");
@@ -61,14 +61,21 @@ function createModal() {
   }
 
   //Função para gerar dois formulários diferentes
-  async function renderForm(mode) {
-    formContainer.innerHTML = "";
+  let renderId = 0;
 
+  async function renderForm(mode) {
+    const currentId = ++renderId;
+    formContainer.innerHTML = "";
+  
+    let form;
     if (mode === "agendar") {
-      const form = await createApointForm();
-      formContainer.appendChild(form);
-    } else {
-      const form = await createBlockForm();
+      form = await createApointForm();
+    } else if (mode === "bloquear") {
+      form = await createBlockForm();
+    }
+
+    if (currentId === renderId) {
+      formContainer.innerHTML = "";
       formContainer.appendChild(form);
     }
   }
@@ -81,7 +88,6 @@ function createModal() {
   modal.appendChild(formContainer);
 
   renderForm("agendar");
-
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
 
@@ -170,36 +176,38 @@ async function createApointForm() {
   // Linhas
   const line1 = document.createElement("div");
   line1.classList.add("modalFormRows");
-
-  line1.appendChild(createField("Profissional", selectStaff));
-  line1.appendChild(createField("Nome do Cliente", inputClientName));
-
   const line2 = document.createElement("div");
   line2.classList.add("modalFormRows");
-  line2.appendChild(createField("Serviço", selectService));
-  line2.appendChild(createField("Telefone do Cliente", inputClientPhone));
-
   const line3 = document.createElement("div");
   line3.classList.add("modalFormRows");
-  line3.appendChild(createField("Data", inputData));
-  line3.appendChild(createField("E-mail do cliente", inputClientEmail));
-
   const line4 = document.createElement("div");
   line4.classList.add("modalFormRows");
-  line4.appendChild(createField("Horário inicial", selectDateTime));
-  line4.appendChild(createField("Observações", textareaObs));
-
   const divButtons = document.createElement("div");
   divButtons.classList.add("appointmentModalButtons");
-  divButtons.appendChild(btnSave);
-  divButtons.appendChild(btnCancel);
-
+  
   // Montar o form
   form.appendChild(line1);
   form.appendChild(line2);
   form.appendChild(line3);
   form.appendChild(line4);
   form.appendChild(divButtons);
+
+  //Populando os inputs
+
+  line1.appendChild(createField("Profissional", selectStaff));
+  line1.appendChild(createField("Nome do Cliente", inputClientName));
+
+  line2.appendChild(createField("Serviço", selectService));
+  line2.appendChild(createField("Telefone do Cliente", inputClientPhone));
+
+  line3.appendChild(createField("Data", inputData));
+  line3.appendChild(createField("E-mail do cliente", inputClientEmail));
+
+  line4.appendChild(createField("Horário inicial", selectDateTime));
+  line4.appendChild(createField("Observações", textareaObs));
+
+  divButtons.appendChild(btnSave);
+  divButtons.appendChild(btnCancel);
 
   // Ao enviar o formulário
   form.addEventListener("submit", async (e) => {

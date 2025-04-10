@@ -97,6 +97,21 @@ async function ColorCardAppointments(
     schedulingTimelineContainer,
     cardReferences
   );
+    const today = new Date().getDate() -1
+    const todayMonth = new Date().getMonth()
+    const todayYear = new Date().getFullYear()
+    const todayCard = `Card-${today}-${todayMonth}-${todayYear}`
+    console.log(todayCard)
+
+    cardReferences.forEach((card) => {
+      if (card.selector === todayCard) {
+        const cardElement = document.querySelector(`.${card.selector}`);
+        if (cardElement) {
+          cardElement.classList.add("todayCard");
+        }
+      }
+    });
+
   cardReferences.forEach(({ date, selector }) => {
     const foundPendindgAppointments = appointments.filter(
       (appointment) =>
@@ -107,6 +122,7 @@ async function ColorCardAppointments(
       (appointment) =>
         appointment.status === "BLOQUEADO"
     );
+
 
     const classNames = getCardClassesForAppointments(foundBlockedAppointments);
     const foundElements = [];
@@ -140,6 +156,8 @@ async function ColorCardAppointments(
         }
       });
     }
+
+
   });
 }
 

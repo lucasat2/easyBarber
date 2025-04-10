@@ -28,7 +28,7 @@ function DailyAppointmentsModal(date, appointmentsData) {
   modalContent.style.maxWidth = "80%";
   modalContent.style.background = "white";
   modalContent.style.borderRadius = "12px";
-  modalContent.style.boxShadow = "0 4px 20px rgba(0, 0, 0, 0.15)";
+  modalContent.style.boxShadow = "0 4px 20px rgba(0, 0, 0, 0.5)";
   modalContent.style.display = "flex";
   modalContent.style.flexDirection = "column";
   modalContent.style.rowGap = "10px";

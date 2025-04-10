@@ -20,6 +20,11 @@ export default function login() {
   const rightSide = document.createElement("div");
   rightSide.classList.add("loginRightSideStyle");
 
+  const backButton = document.createElement("button");
+  backButton.textContent = "Início";
+  backButton.classList.add("loginBackButton");
+  rightSide.appendChild(backButton);
+
   const logoContainer = document.createElement("div");
   logoContainer.classList.add("loginLogoContainer");
 
@@ -133,6 +138,12 @@ export default function login() {
   div.querySelector("#goToSignUp").addEventListener("click", (e) => {
     e.preventDefault();
     const event = onNavigate("/signup");
+    document.dispatchEvent(event);
+  });
+
+  backButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    const event = onNavigate("/");
     document.dispatchEvent(event);
   });
 

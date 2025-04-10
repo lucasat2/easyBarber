@@ -2,8 +2,11 @@ function SchedulingTimelineEmployeesCard(name) {
   const employeesDiv = document.createElement("div");
   employeesDiv.classList.add("schedulingTimelineEmployeesCard");
 
+  const firstLetter = name.charAt(0).toUpperCase();
+
   const employeesImageDiv = document.createElement("div");
-  employeesImageDiv.style.backgroundImage = `url("https://picsum.photos/490")`;
+  employeesImageDiv.textContent = firstLetter;
+  employeesImageDiv.style.backgroundColor = generateRandomColor();
   employeesImageDiv.classList.add("schedulingTimelineHeaderEmployeesCardImage");
   employeesDiv.appendChild(employeesImageDiv);
 
@@ -15,4 +18,14 @@ function SchedulingTimelineEmployeesCard(name) {
   return employeesDiv;
 }
 
-export { SchedulingTimelineEmployeesCard };
+function generateRandomColor() {
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
+
+export { SchedulingTimelineEmployeesCard , generateRandomColor};
