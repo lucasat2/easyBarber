@@ -101,13 +101,7 @@ A pasta `src/public/` contém a interface de agendamento externo com imagens e p
 
 ---
 
-## 📌 Status do Projeto
-
-🚧 Em desenvolvimento — melhorias e novas funcionalidades a caminho!
-
----
-
-## 👤 Autor
+## 👤 Autores
 
 Feito por [Lucas Ataide,Gabriell Queiroz,Fabiano Santos,Bruno Catunda]  
 🔗[santosfabin](https://github.com/santosfabin )
