@@ -62,6 +62,7 @@ body {
 }
 
 .loginLogoContainer {
+	width: 130px;
 	position: absolute;
 	top: 20px;
 	right: 20px;
@@ -69,12 +70,7 @@ body {
 }
 
 .loginLogoStyle {
-	width: 150px;
-	height: 120px;
-	margin-top: -30px;
-	object-fit: cover;
-	margin-right: -30px;
-	margin-left: -30px;
+	width: 100%;
 }
 
 .loginSecondContainer {
@@ -191,18 +187,15 @@ body {
 }
 
 .signupLogoImage {
+	width: 130px;
 	position: absolute;
-	top: 10px;
+	top: 20px;
 	left: 15px;
 	z-index: 2;
 }
 
 .signupLogoImage img {
-  width: 135px;
-  height: auto;
-  object-fit: contain;
-  margin-top: -25px;
-  margin-left: -20px;
+	width: 100%;
 }
 
 .signupFormBox {
@@ -419,12 +412,12 @@ body {
 	cursor: pointer;
 	color: #fff;
 	transition: all 0.1s ease;
+	border: 1px solid #9fa324;
 }
 
 .employeeSchedulingTimelineHeaderManagementButton:hover {
 	color: #9fa324;
 	background-color: white;
-	border: 1px solid #9fa324;
 }
 
 .schedulingTimelineHeaderSelectionSection {
