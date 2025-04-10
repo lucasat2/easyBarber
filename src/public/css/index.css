@@ -32,6 +32,24 @@ body {
 	object-position: right center;
 	transform: scale(1.3) translate(-25px, -18px);
 	opacity: 70%;
+	z-index: 0;
+}
+
+.loginBackButton {
+	position: absolute;
+	width: 100px;
+	padding: 12px;
+	right: 30px;
+	bottom: 20px;
+	background-color: #a3a31a;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	font-size: 15px;
+	cursor: pointer;
+	margin-bottom: 15px;
+	z-index:1;
+	opacity: 200%;
 }
 
 .loginRightSideStyle {
@@ -287,6 +305,23 @@ body {
 	background-image: url("../assets/signUp/barberChair.jpeg");
 	background-size: cover;
 	background-position: center;
+}
+
+.signupBackButton {
+	position: absolute;
+	width: 100px;
+	padding: 12px;
+	left: 30px;
+	bottom: 20px;
+	background-color: #a3a31a;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	font-size: 15px;
+	cursor: pointer;
+	margin-bottom: 15px;
+	z-index:1;
+	opacity: 200%;
 }
 
 @media (max-width: 768px) {
@@ -661,11 +696,27 @@ textarea.modalBoxStyles {
 }
 
 .SchedulingTimelineCardBlocked {
-	background-color: rgb(43, 59, 41);
+	background-color: #eb4335;
 }
 
 .SchedulingTimelineCardPending {
 	background-color: #e2e200;
+}
+
+.todayCard {
+	position: relative;
+}
+
+.todayCard::after {
+    content: "";
+	position: absolute;
+	bottom: 8px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 10px;
+	height: 10px;
+	background-color: black;
+	border-radius: 50%;
 }
 
 .invisible {

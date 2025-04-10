@@ -13,10 +13,10 @@ function BlockedCard(date, appointmentData) {
   cardContainer.style.display = "flex";
   cardContainer.style.justifyContent = "space-between";
   cardContainer.style.padding = "20px";
-  cardContainer.style.marginBottom = "15px";
+  cardContainer.style.margin = "15px";
   cardContainer.style.color = "#FFF";
   cardContainer.style.backgroundColor = "#dc3545";
-  cardContainer.style.boxShadow = "0 2px 10px rgba(0, 0, 0, 0.1)";
+  cardContainer.style.boxShadow = "0 0 12px rgba(0, 0, 0, 0.3)";
   cardContainer.style.borderRadius = "8px";
   cardContainer.style.alignItems = "center";
   cardContainer.style.flexWrap = "wrap";

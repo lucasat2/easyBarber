@@ -153,10 +153,7 @@ aboutDescriptionContainer.appendChild(aboutList)
   footer.appendChild(contactInfo);
   div.appendChild(footer);
 
-  return div;
-}
-
-window.addEventListener("scroll", () => {
+  window.addEventListener("scroll", () => {
     const header = document.querySelector(".headerLandingPage");
     if (window.scrollY > 0) {
       header.style.backgroundColor = "black";
@@ -164,3 +161,6 @@ window.addEventListener("scroll", () => {
       header.style.backgroundColor = "transparent";
     }
   });
+
+  return div;
+}

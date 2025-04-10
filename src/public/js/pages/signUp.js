@@ -91,6 +91,11 @@ export default function signup() {
   const imageContainer = document.createElement("div");
   imageContainer.classList.add("signupImageContainer");
 
+  const backButton = document.createElement("button");
+  backButton.textContent = "Início"
+  backButton.classList.add("signupBackButton")
+  div.appendChild(backButton)
+
   container.appendChild(formContainer);
   container.appendChild(imageContainer);
   div.appendChild(container);
@@ -123,6 +128,11 @@ export default function signup() {
       const data = await response.json();
 
       MessageNotification(data.message, " #28a745");
+
+      e.preventDefault();
+      const event = onNavigate("/login");
+      document.dispatchEvent(event);
+      
     } catch (error) {
       MessageNotification(error.message, "#ff6347");
     }
@@ -133,6 +143,12 @@ export default function signup() {
     const event = onNavigate("/login");
     document.dispatchEvent(event);
   });
+
+    backButton.addEventListener("click", (e)=>{
+      e.preventDefault();
+      const event = onNavigate("/");
+      document.dispatchEvent(event);
+    })
 
   return div;
 }
