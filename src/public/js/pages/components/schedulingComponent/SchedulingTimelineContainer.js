@@ -98,7 +98,10 @@ async function ColorCardAppointments(
     cardReferences
   );
     const today = new Date().getDate() -1
-    const todayCard = `Card-${today}-${month}-${year}`
+    const todayMonth = new Date().getMonth()
+    const todayYear = new Date().getFullYear()
+    const todayCard = `Card-${today}-${todayMonth}-${todayYear}`
+    console.log(todayCard)
 
     cardReferences.forEach((card) => {
       if (card.selector === todayCard) {
