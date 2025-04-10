@@ -39,6 +39,7 @@ function ServiceModal(isEdit, serviceData) {
 	nameInput.placeholder = "Nome";
 	nameInput.id = "serviceName";
 	nameInput.classList.add("serviceNameModalInput");
+  nameInput.maxLength = 50;
 	modalBody.appendChild(nameInput);
 
 	const priceAndDurationFields = document.createElement("div");
