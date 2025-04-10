@@ -480,10 +480,13 @@ body {
 .schedulingTimelineHeaderEmployeesCardImage {
 	width: 45px;
 	height: 45px;
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: cover;
-	border-radius: 50px;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-weight: bold;
+	color: white;
+	font-size: 16px;
 }
 
 .schedulingTimelineHeaderEmployeesCardName {
@@ -710,7 +713,7 @@ textarea.modalBoxStyles {
 .todayCard::after {
     content: "";
 	position: absolute;
-	bottom: 8px;
+	top: 8px;
 	left: 50%;
 	transform: translateX(-50%);
 	width: 10px;
