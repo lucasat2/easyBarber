@@ -3,6 +3,7 @@ import ConfirmScheduling from "./ConfirmScheduling.js";
 import {MessageNotification} from "../MessageNotification.js";
 import navigateTo from "./NavigateTo.js";
 import NotFound from "./NotFound.js";
+import NothingHere from "./NothingHere.js";
 
 function formatDateToBR(dateStr) {
 	const container = document.createElement("div");
@@ -44,7 +45,7 @@ function formatDateToBR(dateStr) {
 	dateEl.style.fontSize = "1rem";
 	dateEl.style.color = "#222";
 	dateEl.style.margin = "0";
-	dateEl.style.textTransform = "capitalize"; // Deixa "terça-feira" com a primeira letra maiúscula
+	dateEl.style.textTransform = "capitalize";
 
 	const dateIcon = document.createElement("img");
 	dateIcon.src = "../assets/externalSchedulingPage/calendar.svg";
@@ -167,6 +168,8 @@ async function updateAvailableTimes(
 		);
 
 		if (!response.ok) {
+			hoursToWork.innerHTML = "";
+
 			hoursToWork.appendChild(
 				showStaffUnavailable(
 					"Funcionário indispoíveis",
@@ -183,6 +186,7 @@ async function updateAvailableTimes(
 		const data = await response.json();
 
 		if (!data.getSchedules || !data.getSchedules.availableTimes) {
+			hoursToWork.innerHTML = "";
 			hoursToWork.appendChild(
 				showStaffUnavailable(
 					"Funcionário indispoíveis",
@@ -237,6 +241,7 @@ async function updateAvailableTimes(
 		}
 
 		if (availableTimes.length === 0) {
+			hoursToWork.innerHTML = "";
 			hoursToWork.appendChild(
 				showStaffUnavailable(
 					"Funcionário indispoíveis",
@@ -282,6 +287,7 @@ async function updateAvailableTimes(
 			hoursToWork.style.width = "100%";
 		});
 	} catch (error) {
+		hoursToWork.innerHTML = "";
 		hoursToWork.appendChild(
 			showStaffUnavailable(
 				"Funcionário indispoíveis",
@@ -328,7 +334,12 @@ export default function ScheduleAppointment() {
 		})
 		.catch(error => {
 			MessageNotification(error.message, "#ff6347");
-			mainDiv.innerHTML = "Erro ao buscar o nome da empresa.";
+			mainDiv.appendChild(
+				NothingHere(
+					"Erro ao buscar o nome da empresa",
+					"../../../../../assets/externalSchedulingPage/person_off.svg"
+				)
+			);
 		});
 
 	async function buildContent(mainDiv, idService) {
@@ -404,7 +415,7 @@ export default function ScheduleAppointment() {
 				containerContent.style.padding = "2rem";
 
 				const contentServiceInformation = document.createElement("div");
-				contentServiceInformation.style.background = "#fbfbfe"
+				contentServiceInformation.style.background = "#fbfbfe";
 
 				const nameWrapper = document.createElement("div");
 				nameWrapper.style.display = "flex";
@@ -561,6 +572,7 @@ export default function ScheduleAppointment() {
 
 				confirm.appendChild(button);
 				mainDiv.appendChild(confirm);
+				mainDiv.appendChild(containerContent);
 
 				const hoursToWork = document.createElement("div");
 				hoursToWork.id = "hoursToWork";
@@ -571,6 +583,16 @@ export default function ScheduleAppointment() {
 						"../../../../../assets/externalSchedulingPage/select_staff.svg"
 					)
 				);
+
+				if (!staffs) {
+					containerContent.appendChild(
+						NothingHere(
+							"Este serviço ainda não possui funcionários disponíveis",
+							"../../../../../assets/externalSchedulingPage/person_off.svg"
+						)
+					);
+					return;
+				}
 
 				staffs.forEach(staff => {
 					const div = document.createElement("div");
@@ -763,8 +785,6 @@ export default function ScheduleAppointment() {
 
 				containerHoursToWork.appendChild(hoursToWork);
 				containerContent.appendChild(containerHoursToWork);
-
-				mainDiv.appendChild(containerContent);
 			})
 			.catch(error => {
 				console.error("Erro ao buscar os serviços:", error);
