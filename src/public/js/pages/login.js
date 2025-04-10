@@ -44,17 +44,28 @@ export default function login() {
   const inputGroupEmail = document.createElement("div");
   inputGroupEmail.classList.add("loginInputGroupStyle");
 
+  const labelEmail = document.createElement("label");
+  labelEmail.htmlFor = "email";
+  labelEmail.textContent = "E-mail";
+  labelEmail.classList.add("loginInputLabel");
+
   const inputEmail = document.createElement("input");
   inputEmail.type = "email";
   inputEmail.id = "email";
-  inputEmail.placeholder = "Email";
+  inputEmail.placeholder = "E-mail";
   inputEmail.required = true;
   inputEmail.classList.add("loginInputStyle");
 
+  inputGroupEmail.appendChild(labelEmail);
   inputGroupEmail.appendChild(inputEmail);
 
   const inputGroupPassword = document.createElement("div");
   inputGroupPassword.classList.add("loginInputGroupStyle");
+
+  const labelPassword = document.createElement("label");
+  labelPassword.htmlFor = "password";
+  labelPassword.textContent = "Senha";
+  labelPassword.classList.add("loginInputLabel");
 
   const inputPassword = document.createElement("input");
   inputPassword.type = "password";
@@ -63,13 +74,13 @@ export default function login() {
   inputPassword.required = true;
   inputPassword.classList.add("loginInputStyle");
 
+  inputGroupPassword.appendChild(labelPassword);
   inputGroupPassword.appendChild(inputPassword);
 
   const loginButton = document.createElement("button");
   loginButton.type = "submit";
   loginButton.classList.add("loginLoginButton");
   loginButton.textContent = "Entrar";
-
   loginButton.id = "goToDashboard";
 
   const registerLink = document.createElement("div");
@@ -118,12 +129,10 @@ export default function login() {
 
       if (!response.ok) {
         const errorData = await response.json();
-
         throw new Error(errorData.error || "Falha não identificada");
       }
 
       const event = onNavigate("/dashboard");
-
       document.dispatchEvent(event);
     } catch (error) {
       MessageNotification(error.message, "#ff6347");
