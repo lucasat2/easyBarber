@@ -168,6 +168,8 @@ async function updateAvailableTimes(
 		);
 
 		if (!response.ok) {
+			hoursToWork.innerHTML = "";
+
 			hoursToWork.appendChild(
 				showStaffUnavailable(
 					"Funcionário indispoíveis",
@@ -184,6 +186,7 @@ async function updateAvailableTimes(
 		const data = await response.json();
 
 		if (!data.getSchedules || !data.getSchedules.availableTimes) {
+			hoursToWork.innerHTML = "";
 			hoursToWork.appendChild(
 				showStaffUnavailable(
 					"Funcionário indispoíveis",
@@ -238,6 +241,7 @@ async function updateAvailableTimes(
 		}
 
 		if (availableTimes.length === 0) {
+			hoursToWork.innerHTML = "";
 			hoursToWork.appendChild(
 				showStaffUnavailable(
 					"Funcionário indispoíveis",
@@ -283,6 +287,7 @@ async function updateAvailableTimes(
 			hoursToWork.style.width = "100%";
 		});
 	} catch (error) {
+		hoursToWork.innerHTML = "";
 		hoursToWork.appendChild(
 			showStaffUnavailable(
 				"Funcionário indispoíveis",
@@ -329,7 +334,12 @@ export default function ScheduleAppointment() {
 		})
 		.catch(error => {
 			MessageNotification(error.message, "#ff6347");
-			mainDiv.innerHTML = "Erro ao buscar o nome da empresa.";
+			mainDiv.appendChild(
+				NothingHere(
+					"Erro ao buscar o nome da empresa",
+					"../../../../../assets/externalSchedulingPage/person_off.svg"
+				)
+			);
 		});
 
 	async function buildContent(mainDiv, idService) {
