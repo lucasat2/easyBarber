@@ -30,22 +30,42 @@ export default function signup() {
   form.id = "signUpForm";
 
   const inputFields = [
-    { id: "name", placeholder: "Nome da Empresa", type: "text" },
-    { id: "cnpj", placeholder: "CNPJ", type: "text" },
-    { id: "phoneNumber", placeholder: "Telefone", type: "text" },
-    { id: "state", placeholder: "Estado", type: "text" },
-    { id: "city", placeholder: "Cidade", type: "text" },
-    { id: "street", placeholder: "Endereço", type: "text" },
-    { id: "number", placeholder: "Número", type: "text" },
-    { id: "postalCode", placeholder: "CEP", type: "text" },
-    { id: "email", placeholder: "E-mail", type: "email" },
-    { id: "password", placeholder: "Senha", type: "password" },
+    {
+      id: "name",
+      label: "Nome da Empresa",
+      placeholder: "Nome da Empresa",
+      type: "text",
+    },
+    { id: "cnpj", label: "CNPJ", placeholder: "CNPJ", type: "text" },
+    {
+      id: "phoneNumber",
+      label: "Telefone",
+      placeholder: "Telefone",
+      type: "text",
+    },
+    { id: "state", label: "Estado", placeholder: "Estado", type: "text" },
+    { id: "city", label: "Cidade", placeholder: "Cidade", type: "text" },
+    {
+      id: "street",
+      label: "Logradouro",
+      placeholder: "Logradouro",
+      type: "text",
+    },
+    { id: "number", label: "Número", placeholder: "Número", type: "text" },
+    { id: "postalCode", label: "CEP", placeholder: "CEP", type: "text" },
+    { id: "email", label: "E-mail", placeholder: "E-mail", type: "email" },
+    { id: "password", label: "Senha", placeholder: "Senha", type: "password" },
   ];
 
   const inputContainer = document.createElement("div");
   inputContainer.classList.add("signupInputContainer");
 
   inputFields.forEach((field, index) => {
+    const label = document.createElement("label");
+    label.htmlFor = field.id;
+    label.textContent = field.label;
+    label.classList.add("signupInputLabel");
+
     const input = document.createElement("input");
     input.type = field.type;
     input.id = field.id;
@@ -53,14 +73,19 @@ export default function signup() {
     input.required = true;
     input.classList.add("signupInputStyle");
 
+    const fieldContainer = document.createElement("div");
+    fieldContainer.classList.add("signupFieldContainer");
+    fieldContainer.appendChild(label);
+    fieldContainer.appendChild(input);
+
     if (index % 2 === 0) {
       const row = document.createElement("div");
       row.classList.add("signupInputRow");
-      row.appendChild(input);
+      row.appendChild(fieldContainer);
       inputContainer.appendChild(row);
     } else {
       const lastRow = inputContainer.lastChild;
-      lastRow.appendChild(input);
+      lastRow.appendChild(fieldContainer);
     }
   });
 
@@ -100,13 +125,57 @@ export default function signup() {
   container.appendChild(imageContainer);
   div.appendChild(container);
 
+  function maskCNPJ(value) {
+    return value
+      .replace(/\D/g, "")
+      .replace(/^(\d{2})(\d)/, "$1.$2")
+      .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+      .replace(/\.(\d{3})(\d)/, ".$1/$2")
+      .replace(/(\d{4})(\d)/, "$1-$2")
+      .slice(0, 18);
+  }
+
+  function maskPhone(value) {
+    value = value.replace(/\D/g, "");
+
+    if (value.length <= 10) {
+      return value
+        .replace(/^(\d{2})(\d)/, "($1) $2")
+        .replace(/(\d{4})(\d)/, "$1-$2")
+        .slice(0, 14);
+    } else {
+      return value
+        .replace(/^(\d{2})(\d)/, "($1) $2")
+        .replace(/(\d{5})(\d)/, "$1-$2")
+        .slice(0, 15);
+    }
+  }
+
+  function maskPostalCode(value) {
+    return value
+      .replace(/\D/g, "")
+      .replace(/^(\d{5})(\d)/, "$1-$2")
+      .slice(0, 9);
+  }
+
+  div.querySelector("#cnpj").addEventListener("input", (e) => {
+    e.target.value = maskCNPJ(e.target.value);
+  });
+
+  div.querySelector("#phoneNumber").addEventListener("input", (e) => {
+    e.target.value = maskPhone(e.target.value);
+  });
+
+  div.querySelector("#postalCode").addEventListener("input", (e) => {
+    e.target.value = maskPostalCode(e.target.value);
+  });
+
   const sendForm = div.querySelector("#signUpForm");
   sendForm.addEventListener("submit", async (e) => {
     try {
       e.preventDefault();
 
       const formData = {};
-
       inputFields.forEach((field) => {
         formData[field.id] = div.querySelector(`#${field.id}`).value;
       });
@@ -121,18 +190,16 @@ export default function signup() {
 
       if (!response.ok) {
         const errorData = await response.json();
-
         throw new Error(errorData.error || "Falha não identificada");
       }
 
       const data = await response.json();
+      MessageNotification(data.message, "#28a745");
 
-      MessageNotification(data.message, " #28a745");
-
-      e.preventDefault();
-      const event = onNavigate("/login");
-      document.dispatchEvent(event);
-      
+      setTimeout(() => {
+        const event = onNavigate("/login");
+        document.dispatchEvent(event);
+      }, 1000);
     } catch (error) {
       MessageNotification(error.message, "#ff6347");
     }

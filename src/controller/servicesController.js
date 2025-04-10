@@ -17,19 +17,15 @@ const createService = async (req, res) => {
         .json({ error: "Preenchimento obrigatório de todos os campos" });
     }
 
-    if (!validator.isAlpha(name, "pt-BR", { ignore: " " })) {
-      return res
-        .status(400)
-        .json({ error: "Nome do serviço deve conter apenas letras" });
+    if (!validator.isLength(name, { min: 1, max: 50 })) {
+      return res.status(400).json({
+        error: "O nome do serviço deve conter no máximo 50 caracteres",
+      });
     }
 
-    if (
-      !validator.matches(description, /^[a-zA-Z0-9À-ÿ\s.,]*$/) ||
-      !validator.isLength(description, { min: 0, max: 100 })
-    ) {
+    if (!validator.isLength(description, { min: 1, max: 100 })) {
       return res.status(400).json({
-        error:
-          "O campo de descrição deve conter no máximo 100 caracteres e apenas letras, números, vírgulas, espaços e/ou pontos",
+        error: "O campo de descrição deve conter no máximo 100 caracteres",
       });
     }
 
@@ -130,20 +126,15 @@ const updateService = async (req, res) => {
       return res.status(400).json({ error: "ID de usuário inválido" });
     }
 
-    if (name && !validator.isAlpha(name, "pt-BR", { ignore: " " })) {
-      return res
-        .status(400)
-        .json({ error: "Nome do serviço deve conter apenas letras" });
+    if (name && !validator.isLength(name, { min: 1, max: 50 })) {
+      return res.status(400).json({
+        error: "O nome do serviço deve conter no máximo 50 caracteres",
+      });
     }
 
-    if (
-      description &&
-      (!validator.matches(description, /^[a-zA-Z0-9À-ÿ\s.,]*$/) ||
-        !validator.isLength(description, { min: 0, max: 100 }))
-    ) {
+    if (description && !validator.isLength(description, { min: 1, max: 100 })) {
       return res.status(400).json({
-        error:
-          "O campo de descrição deve conter no máximo 100 caracteres e apenas letras, números, vírgulas, espaços e/ou pontos",
+        error: "O campo de descrição deve conter no máximo 100 caracteres",
       });
     }
 

@@ -2,9 +2,8 @@ const validator = require("validator");
 const usersServices = require("../services/usersServices.js");
 const companyNamePattern = /^[A-Za-zÀ-ÖØ-öø-ÿ&0-9- ]+$/;
 const codePostalPattern = /^\d{5}-?\d{3}$/;
-const passwordPattern =
-  /^(?=.*[a-zà-öø-ÿ])(?=.*[A-ZÀ-ÖØ-ß])(?=.*\d)(?=.*[!@#$%^&*()_+={[}\]:;"'<>,.?/~`|\\-])[A-Za-zÀ-ÖØ-öø-ÿ\d!@#$%^&*()_+={[}\]:;"'<>,.?/~`|\\-]{8,}$/;
 const cnpjPattern = /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/;
+const phoneNumberPattern = /^\(?\d{2}\)?[\s\-]?\d{4,5}[\-]?\d{4}$/;
 
 const getCompanyData = async (req, res) => {
   try {
@@ -73,7 +72,7 @@ const createUser = async (req, res) => {
       return res.status(400).json({ error: "Formato de CNPJ inválido" });
     }
 
-    if (!validator.isMobilePhone(phoneNumber, "pt-BR", { strictMode: false })) {
+    if (!phoneNumberPattern.test(phoneNumber)) {
       return res.status(400).json({ error: "Número de telefone inválido" });
     }
 
@@ -109,10 +108,9 @@ const createUser = async (req, res) => {
       return res.status(400).json({ error: "Formato de e-mail inválido" });
     }
 
-    if (!passwordPattern.test(password)) {
+    if (!validator.isLength(password, { min: 3 })) {
       return res.status(400).json({
-        error:
-          "A senha deve possuir pelo menos 8 caracteres, uma letra minúscula, uma letra maiúscula, um número e um caractere especial",
+        error: "A senha deve possuir pelo menos 3 caracteres",
       });
     }
 
@@ -175,10 +173,7 @@ const updateUser = async (req, res) => {
       return res.status(400).json({ error: "Formato de CNPJ inválido" });
     }
 
-    if (
-      phoneNumber &&
-      !validator.isMobilePhone(phoneNumber, "pt-BR", { strictMode: false })
-    ) {
+    if (phoneNumber && !phoneNumberPattern.test(phoneNumber)) {
       return res.status(400).json({ error: "Número de telefone inválido" });
     }
 
@@ -214,10 +209,9 @@ const updateUser = async (req, res) => {
       return res.status(400).json({ error: "Formato de e-mail inválido" });
     }
 
-    if (password && !passwordPattern.test(password)) {
+    if (password && !validator.isLength(password, { min: 3 })) {
       return res.status(400).json({
-        error:
-          "A senha deve possuir pelo menos 8 caracteres, uma letra minúscula, uma letra maiúscula, um número e um caractere especial",
+        error: "A senha deve possuir pelo menos 3 caracteres",
       });
     }
 

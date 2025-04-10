@@ -41,7 +41,6 @@ export default function Main() {
 
 		root.appendChild(container);
 
-		// Agora sim, fetch do nome da empresa aqui
 		fetch("/api/customer/company", {
 			method: "POST",
 			headers: {
