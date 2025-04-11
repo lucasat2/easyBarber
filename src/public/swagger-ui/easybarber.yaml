@@ -1,317 +1,2212 @@
-openapi: 3.0.0
+openapi: 3.1.0
 info:
-  title: EasyBarber API
+  title: API de Agendamento
   version: 1.0.0
-  description: API RESTful para gerenciamento de agendamentos, clientes, serviços e usuários no sistema EasyBarber.
+  description: API para gerenciamento de agendamentos, clientes, serviços, funcionários e autenticação de usuários (empresas).
+servers:
+  - url: /api
+
+components:
+  schemas:
+    # --- Schemas de Erro ---
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Mensagem de erro detalhada.
+          example: "Formato de e-mail inválido"
+      required:
+        - error
+
+    # --- Schemas de Autenticação ---
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: Email da conta da empresa.
+          example: "empresa@exemplo.com"
+        password:
+          type: string
+          format: password
+          description: Senha da conta da empresa.
+          example: "senhaSuperSecreta"
+
+    LoginSuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+      required:
+        - success
+      description: Resposta de sucesso ao login. O cookie 'session_id' é definido no cabeçalho Set-Cookie.
+
+    CheckLoginResponse:
+      type: object
+      properties:
+        loggedIn:
+          type: boolean
+          example: true
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: ID do usuário autenticado.
+      required:
+        - loggedIn
+        - user
+
+    LogoutSuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+      required:
+        - success
+
+    # --- Schemas de Usuários/Empresas ---
+    UserCreateRequest:
+      type: object
+      required:
+        - name
+        - cnpj
+        - phoneNumber
+        - state
+        - city
+        - street
+        - number
+        - postalCode
+        - email
+        - password
+      properties:
+        name:
+          type: string
+          description: Nome da empresa.
+          example: "Barbearia Top Ltda"
+        cnpj:
+          type: string
+          description: CNPJ da empresa (formato XX.XXX.XXX/XXXX-XX).
+          example: "12.345.678/0001-99"
+        phoneNumber:
+          type: string
+          description: Telefone da empresa (formato (XX) XXXXX-XXXX ou (XX) XXXX-XXXX).
+          example: "(11) 98765-4321"
+        state:
+          type: string
+          description: Estado da empresa.
+          example: "São Paulo"
+        city:
+          type: string
+          description: Cidade da empresa.
+          example: "São Paulo"
+        street:
+          type: string
+          description: Rua da empresa.
+          example: "Avenida Paulista"
+        number:
+          type: integer
+          description: Número do endereço da empresa.
+          example: 1000
+        postalCode:
+          type: string
+          description: CEP da empresa (formato XXXXX-XXX).
+          example: "01310-100"
+        email:
+          type: string
+          format: email
+          description: Email de login da empresa.
+          example: "contato@barbeariatop.com"
+        password:
+          type: string
+          format: password
+          description: Senha para a conta da empresa (mínimo 3 caracteres).
+          example: "senha123"
+
+    UserCreateSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Usuário criado com sucesso"
+      required:
+        - message
+
+    UserUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Novo nome da empresa.
+        cnpj:
+          type: string
+          description: Novo CNPJ da empresa.
+        phoneNumber:
+          type: string
+          description: Novo telefone da empresa.
+        state:
+          type: string
+          description: Novo estado da empresa.
+        city:
+          type: string
+          description: Nova cidade da empresa.
+        street:
+          type: string
+          description: Nova rua da empresa.
+        number:
+          type: integer
+          description: Novo número do endereço da empresa.
+        postalCode:
+          type: string
+          description: Novo CEP da empresa.
+        email:
+          type: string
+          format: email
+          description: Novo email de login da empresa.
+        password:
+          type: string
+          format: password
+          description: Nova senha para a conta da empresa (mínimo 3 caracteres).
+
+    UserUpdateSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Usuário atualizado com sucesso."
+      required:
+        - message
+
+    CompanyData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        company_address_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        cnpj:
+          type: string
+        phone_number:
+          type: string
+        link_client:
+          type: string
+          description: Link para a página do cliente desta empresa.
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      # Adicionar mais detalhes do endereço se necessário, buscando em companies_address
+
+    # --- Schemas de Serviços ---
+    Service:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        company_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          maxLength: 50
+          example: "Corte de Cabelo Masculino"
+        description:
+          type: string
+          maxLength: 100
+          example: "Corte moderno e estilizado"
+        price:
+          type: number
+          format: float
+          description: Preço do serviço.
+          example: 50.00
+        average_duration:
+          type: integer
+          description: Duração média do serviço em minutos.
+          example: 45
+        status:
+          type: boolean
+          description: Indica se o serviço está ativo.
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ServiceCreateRequest:
+      type: object
+      required:
+        - name
+        - description
+        - price
+        - averageDuration
+      properties:
+        name:
+          type: string
+          maxLength: 50
+          example: "Barba Terapia"
+        description:
+          type: string
+          maxLength: 100
+          example: "Modelagem de barba com toalha quente e massagem."
+        price:
+          type: number
+          format: float
+          example: 35.50
+        averageDuration:
+          type: integer
+          description: Duração em minutos.
+          example: 30
+
+    ServiceCreateSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Serviço criado com sucesso"
+      required:
+        - message
+
+    ServiceUpdateRequest:
+      type: object
+      required:
+        - serviceID
+      properties:
+        serviceID:
+          type: string
+          format: uuid
+          description: ID do serviço a ser atualizado.
+        name:
+          type: string
+          maxLength: 50
+        description:
+          type: string
+          maxLength: 100
+        price:
+          type: number
+          format: float
+        averageDuration:
+          type: integer
+
+    ServiceUpdateSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Serviço atualizado com sucesso"
+      required:
+        - message
+
+    ServiceDeleteRequest:
+       type: object
+       required:
+         - serviceId
+       properties:
+         serviceId:
+           type: string
+           format: uuid
+           description: ID do serviço a ser marcado como inativo.
+
+    ServiceDeleteSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Serviço deletado com sucesso" # Na verdade, marcado como inativo
+      required:
+        - message
+
+    ServiceListResponse:
+       type: array
+       items:
+         $ref: '#/components/schemas/Service'
+
+    # --- Schemas de Funcionários (Staff) ---
+    Staff:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        company_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: "João"
+        surname:
+          type: string
+          example: "Silva"
+        cpf:
+          type: string
+          example: "111.222.333-44"
+        email:
+          type: string
+          format: email
+          example: "joao.silva@barbeariatop.com"
+        phone_number:
+          type: string
+          example: "(11) 91234-5678"
+        birthdate:
+          type: string
+          format: date
+          example: "1990-05-15"
+        postal_code:
+          type: string
+          example: "01310-100"
+        status:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    StaffListResponse:
+      type: object
+      properties:
+        response:
+          type: array
+          items:
+            $ref: '#/components/schemas/Staff'
+
+    StaffCreateRequest:
+      type: object
+      required:
+        - name
+        - surname
+        - cpf
+        - email
+        - phoneNumber
+        - birthdate
+        - postalCode
+      properties:
+        name:
+          type: string
+          example: "Carlos"
+        surname:
+          type: string
+          example: "Pereira"
+        cpf:
+          type: string
+          example: "999.888.777-66"
+        email:
+          type: string
+          format: email
+          example: "carlos.pereira@barbeariatop.com"
+        phoneNumber:
+          type: string
+          example: "(21) 98877-6655"
+        birthdate:
+          type: string
+          format: date
+          example: "1985-10-20"
+        postalCode:
+          type: string
+          example: "20000-000"
+
+    StaffCreateSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Funcionário criado com sucesso"
+      required:
+        - message
+
+    StaffUpdateRequest:
+      type: object
+      required:
+        - id # ID do funcionário a ser atualizado
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        surname:
+          type: string
+        cpf:
+          type: string
+        email:
+          type: string
+          format: email
+        phoneNumber:
+          type: string
+        birthdate:
+          type: string
+          format: date
+        postalCode:
+          type: string
+
+    StaffUpdateSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Funcionário atualizado com sucesso"
+      required:
+        - message
+
+    StaffDeleteRequest:
+       type: object
+       required:
+         - staffId
+       properties:
+         staffId:
+           type: string
+           format: uuid
+           description: ID do funcionário a ser marcado como inativo.
+
+    StaffDeleteSuccessResponse:
+       type: object
+       properties:
+         message:
+           type: string
+           example: "Funcionário deletado com sucesso" # Marcado como inativo
+       required:
+         - message
+
+    AssociateServiceRequest:
+       type: object
+       required:
+         - staffId
+         - serviceId
+       properties:
+         staffId:
+           type: string
+           format: uuid
+           description: ID do funcionário.
+         serviceId:
+           type: string
+           format: uuid
+           description: ID do serviço a ser associado.
+
+    AssociateServiceSuccessResponse:
+       type: object
+       properties:
+         message:
+           type: string
+           example: "Associação realizada com sucesso"
+       required:
+         - message
+
+    DisassociateServiceRequest:
+       type: object
+       required:
+         - staffId
+         - serviceId
+       properties:
+         staffId:
+           type: string
+           format: uuid
+           description: ID do funcionário.
+         serviceId:
+           type: string
+           format: uuid
+           description: ID do serviço a ser desassociado.
+
+    DisassociateServiceSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Desvinculação realizada com sucesso"
+      required:
+        - message
+
+    ShiftDetail:
+      type: object
+      properties:
+        week_day:
+          type: string
+          enum: ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"]
+        start_time_1:
+          type: string
+          format: time # HH:MM:SS ou HH:MM
+          example: "09:00:00"
+        end_time_1:
+          type: string
+          format: time
+          example: "12:00:00"
+        status_1:
+          type: boolean
+          description: Status do primeiro turno (ativo/inativo).
+        start_time_2:
+          type: string
+          format: time
+          example: "13:00:00"
+        end_time_2:
+          type: string
+          format: time
+          example: "18:00:00"
+        status_2:
+          type: boolean
+          description: Status do segundo turno (ativo/inativo).
+
+    AssociateShiftsRequest:
+      type: object
+      required:
+        - staffId
+        # Adicionar todos os campos de weekDay1 a secondShiftStatus7
+        - weekDay1
+        - firstShiftStartTime1
+        - firstShiftEndTime1
+        - firstShiftStatus1
+        - secondShiftStartTime1
+        - secondShiftEndTime1
+        - secondShiftStatus1
+        # ... repetir para os 7 dias
+        - weekDay7
+        - firstShiftStartTime7
+        - firstShiftEndTime7
+        - firstShiftStatus7
+        - secondShiftStartTime7
+        - secondShiftEndTime7
+        - secondShiftStatus7
+      properties:
+        staffId:
+          type: string
+          format: uuid
+          description: ID do funcionário.
+        # Adicionar propriedades para cada dia da semana
+        weekDay1: { type: string, example: "Segunda-feira" }
+        firstShiftStartTime1: { type: string, format: time, example: "08:00" }
+        firstShiftEndTime1: { type: string, format: time, example: "12:00" }
+        firstShiftStatus1: { type: boolean, example: true }
+        secondShiftStartTime1: { type: string, format: time, example: "13:00" }
+        secondShiftEndTime1: { type: string, format: time, example: "17:00" }
+        secondShiftStatus1: { type: boolean, example: true }
+        # ... (repetir para weekDay2 a weekDay7)
+        weekDay7: { type: string, example: "Domingo" }
+        firstShiftStartTime7: { type: string, format: time, example: "00:00" } # Exemplo inativo
+        firstShiftEndTime7: { type: string, format: time, example: "00:00" }
+        firstShiftStatus7: { type: boolean, example: false }
+        secondShiftStartTime7: { type: string, format: time, example: "00:00" }
+        secondShiftEndTime7: { type: string, format: time, example: "00:00" }
+        secondShiftStatus7: { type: boolean, example: false }
+
+    AssociateShiftsSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Operação de vinculação de horário realizada com sucesso"
+      required:
+        - message
+
+    StaffServiceLink:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        service_id:
+          type: string
+          format: uuid
+        staff_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    StaffServiceListResponse:
+       type: array
+       items:
+         $ref: '#/components/schemas/StaffServiceLink'
+
+    StaffHoursListResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ShiftDetail' # Reutilizando ShiftDetail
+
+    # --- Schemas de Agendamentos (Appointments) ---
+    AppointmentDTOBased: # Baseado no DTO
+      type: object
+      properties:
+        client_id:
+          type: string
+          format: uuid
+          nullable: true # Pode ser null para bloqueios
+        created_at:
+          type: string
+          format: date-time
+        date_hour_begin:
+          type: string
+          format: date-time
+          description: Data e hora UTC de início do agendamento/bloqueio.
+        date_hour_end:
+          type: string
+          format: date-time
+          description: Data e hora UTC de fim do agendamento/bloqueio.
+        id:
+          type: string
+          format: uuid
+        observation:
+          type: string
+          maxLength: 100
+          nullable: true
+        service_id:
+          type: string
+          format: uuid
+          nullable: true # Pode ser null para bloqueios
+        staff_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: ["AGENDADO", "CONCLUÍDO", "CANCELADO", "BLOQUEADO"]
+        updated_at:
+          type: string
+          format: date-time
+        appointmentStart:
+          type: string
+          description: Data formatada (local) de início do agendamento.
+          example: "15/07/2024 00:00:00" # Formato pode variar com toLocaleString
+        appointmentEnd:
+          type: string
+          description: Data formatada (local) de fim do agendamento.
+          example: "15/07/2024 00:00:00" # Formato pode variar com toLocaleString
+
+    AppointmentListResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/AppointmentDTOBased'
+
+    AppointmentDetail:
+      type: object
+      properties:
+        date_hour_begin:
+          type: string
+          format: date-time
+          description: Data e hora UTC de início.
+        observation:
+          type: string
+        client_name:
+          type: string
+        client_phone:
+          type: string
+        service_name:
+          type: string
+        service_price:
+          type: number
+          format: float
+
+    AppointmentCreateRequest:
+      type: object
+      required:
+        - employeeId
+        - serviceId
+        - date
+        - clientName
+        - clientEmail
+        - clientPhoneNumber
+        - startTime
+        - observation
+      properties:
+        employeeId:
+          type: string
+          format: uuid
+          description: ID do funcionário (staff).
+        serviceId:
+          type: string
+          format: uuid
+          description: ID do serviço.
+        date:
+          type: string
+          format: date
+          description: Data do agendamento (YYYY-MM-DD).
+          example: "2024-12-25"
+        clientName:
+          type: string
+          description: Nome do cliente.
+          example: "Fulano de Tal"
+        clientEmail:
+          type: string
+          format: email
+          description: Email do cliente.
+          example: "fulano@cliente.com"
+        clientPhoneNumber:
+          type: string
+          description: Telefone do cliente (formato pt-BR).
+          example: "(11) 99999-8888"
+        startTime:
+          type: string
+          format: time # HH:MM ou HH:MM:SS
+          description: Horário de início do agendamento.
+          example: "14:30"
+        observation:
+          type: string
+          maxLength: 100
+          description: Observações adicionais.
+          example: "Cliente prefere corte na tesoura."
+
+    AppointmentCreateSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Agendamento realizado com sucesso"
+      required:
+        - message
+
+    BlockScheduleRequest:
+      type: object
+      required:
+        - staffId
+        - startDate
+        - startTime
+        - endDate
+        - endTime
+        - observation
+      properties:
+        staffId:
+          type: string
+          format: uuid
+          description: ID do funcionário a ter o horário bloqueado.
+        startDate:
+          type: string
+          format: date
+          description: Data de início do bloqueio (YYYY-MM-DD).
+          example: "2024-12-31"
+        startTime:
+          type: string
+          format: time # HH:MM ou HH:MM:SS
+          description: Horário de início do bloqueio.
+          example: "12:00"
+        endDate:
+          type: string
+          format: date
+          description: Data de fim do bloqueio (YYYY-MM-DD).
+          example: "2024-12-31"
+        endTime:
+          type: string
+          format: time # HH:MM ou HH:MM:SS
+          description: Horário de fim do bloqueio.
+          example: "13:00"
+        observation:
+          type: string
+          maxLength: 100
+          description: Motivo do bloqueio.
+          example: "Almoço"
+
+    BlockScheduleSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Bloqueio de horário realizado com sucesso"
+      required:
+        - message
+
+    UpdateAppointmentStatusRequest:
+      type: object
+      required:
+        - appointmentId
+        - staffId # Necessário para verificar permissão
+        - newStatus
+      properties:
+        appointmentId:
+          type: string
+          format: uuid
+          description: ID do agendamento/bloqueio a ter o status alterado.
+        staffId:
+          type: string
+          format: uuid
+          description: ID do funcionário associado ao agendamento (usado para verificação de permissão pela API).
+        newStatus:
+          type: string
+          enum: ["AGENDADO", "CONCLUÍDO", "CANCELADO", "BLOQUEADO"]
+          description: Novo status para o agendamento.
+
+    UpdateAppointmentStatusSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Status de agendamento alterado com sucesso"
+      required:
+        - message
+
+    # --- Schemas de Cliente (Customer - Público) ---
+    CustomerGetCompanyRequest:
+      type: object
+      required:
+        - idCompany
+      properties:
+        idCompany:
+          type: string
+          format: uuid
+          description: ID da empresa a ser consultada.
+
+    CustomerCompanyInfoResponse:
+      type: object
+      properties:
+        result:
+          type: object
+          properties:
+            name:
+              type: string
+            phone:
+              type: string
+            email:
+              type: string
+              format: email
+
+    CustomerListServicesRequest:
+      type: object
+      required:
+        - idCompany
+      properties:
+        idCompany:
+          type: string
+          format: uuid
+          description: ID da empresa para listar serviços.
+
+    CustomerServiceListResponse:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            # Reutilizar Service ou criar um schema específico se a view do cliente for diferente
+            $ref: '#/components/schemas/Service'
+
+    CustomerListStaffRequest:
+      type: object
+      required:
+        - idCompany
+        - idService
+      properties:
+        idCompany:
+          type: string
+          format: uuid
+          description: ID da empresa.
+        idService:
+          type: string
+          format: uuid
+          description: ID do serviço para filtrar funcionários.
+
+    CustomerStaff: # Schema simplificado para o cliente
+       type: object
+       properties:
+         id:
+           type: string
+           format: uuid
+         company_id:
+           type: string
+           format: uuid
+         name:
+           type: string
+         surname:
+           type: string
+         email:
+           type: string
+           format: email
+
+    CustomerStaffListResponse:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+             $ref: '#/components/schemas/CustomerStaff'
+
+    CustomerListScheduleRequest:
+      type: object
+      required:
+        - idStaff
+        - date
+      properties:
+        idStaff:
+          type: string
+          format: uuid
+          description: ID do funcionário para verificar horários.
+        date:
+          type: string
+          format: date
+          description: Data para verificar disponibilidade (YYYY-MM-DD).
+          example: "2024-11-20"
+
+    AvailableTimeSlot:
+       type: object
+       properties:
+         start:
+           type: string
+           format: time
+           example: "09:00:00"
+         end:
+           type: string
+           format: time
+           example: "10:30:00"
+
+    CustomerScheduleResponse:
+       type: object
+       properties:
+         getSchedules: # Nome vindo do controller
+           type: object
+           properties:
+             day:
+               type: string
+               format: date
+             week_day:
+               type: string
+               enum: ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"]
+             availableTimes:
+               type: array
+               items:
+                 $ref: '#/components/schemas/AvailableTimeSlot'
+
+    CustomerAppointmentCreateRequest:
+      type: object
+      # Reutiliza campos do AppointmentCreateRequest, mas sem IDs de usuário/empresa diretos vindos do token
+      required:
+        - idCompany
+        - idStaff
+        - idService
+        - date
+        - clientName
+        - clientEmail
+        - clientPhoneNumber
+        - startTime
+        - observation
+      properties:
+        idCompany:
+          type: string
+          format: uuid
+          description: ID da empresa onde o agendamento será feito.
+        idStaff:
+          type: string
+          format: uuid
+          description: ID do funcionário (staff).
+        idService:
+          type: string
+          format: uuid
+          description: ID do serviço.
+        date:
+          type: string
+          format: date
+          description: Data do agendamento (YYYY-MM-DD).
+        clientName:
+          type: string
+        clientEmail:
+          type: string
+          format: email
+        clientPhoneNumber:
+          type: string
+        startTime:
+          type: string
+          format: time # HH:MM ou HH:MM:SS
+        observation:
+          type: string
+          maxLength: 100
+
+    CustomerAppointmentCreateResponse: # Pode ser o mesmo que AppointmentCreateSuccessResponse
+       $ref: '#/components/schemas/AppointmentCreateSuccessResponse'
+
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session_id # Nome do cookie usado para sessão
+
+security:
+  - cookieAuth: [] # Aplica autenticação por cookie globalmente
 
 paths:
-  /api/appointments/employee/{id}:
-    get:
-      summary: Listar agendamentos por funcionário
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-          description: ID do funcionário
-      responses:
-        '200':
-          description: Lista de agendamentos
-
-  /api/appointments/{id}:
-    get:
-      summary: Obter detalhes do agendamento
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-          description: ID do agendamento
-      responses:
-        '200':
-          description: Dados do agendamento
-
-  /api/appointments:
+  /login:
     post:
-      summary: Criar novo agendamento
+      tags:
+        - Autenticação
+      summary: Realiza o login do usuário (empresa)
+      description: Autentica o usuário com email e senha e define um cookie de sessão `session_id`.
+      operationId: loginUser
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                customerId:
-                  type: integer
-                serviceId:
-                  type: integer
-                employeeId:
-                  type: integer
-                date:
-                  type: string
-                  format: date-time
-                duration:
-                  type: integer
-              required: [customerId, serviceId, employeeId, date]
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login bem-sucedido. Cookie `session_id` definido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginSuccessResponse'
+        '400':
+          description: Requisição inválida (campos faltando, formato inválido).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Usuário não encontrado ou senha inválida.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security: [] # Login não requer autenticação prévia
+
+  /login/checkLogin:
+     get:
+       tags:
+         - Autenticação
+       summary: Verifica se a sessão do usuário está ativa
+       description: Usa o cookie `session_id` para verificar se o usuário está logado.
+       operationId: checkLoginStatus
+       responses:
+         '200':
+           description: Sessão ativa. Retorna status e ID do usuário.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/CheckLoginResponse'
+         '400':
+           description: Token de sessão inválido ou ausente no cookie.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+         '404':
+           description: Sessão inválida (token expirado ou inválido).
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+       # Segurança global (cookieAuth) é aplicada aqui
+
+  /logout:
+    post:
+      tags:
+        - Autenticação
+      summary: Realiza o logout do usuário
+      description: Invalida o cookie de sessão `session_id`. Requer autenticação prévia.
+      operationId: logoutUser
+      responses:
+        '200':
+          description: Logout bem-sucedido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogoutSuccessResponse'
+        '400': # Possível vindo do middleware se o cookie for inválido
+          description: Token de sessão inválido ou ausente no cookie.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404': # Possível vindo do middleware se a sessão for inválida
+          description: Sessão inválida.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
+
+  /users:
+    post:
+      tags:
+        - Usuários/Empresas
+      summary: Cria um novo usuário (empresa)
+      description: Registra uma nova empresa e seu usuário administrador.
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateRequest'
       responses:
         '201':
-          description: Agendamento criado
-
-  /api/appointments/blockSchedule:
-    post:
-      summary: Bloquear horário
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                employeeId:
-                  type: integer
-                startTime:
-                  type: string
-                  format: date-time
-                endTime:
-                  type: string
-                  format: date-time
-              required: [employeeId, startTime, endTime]
-      responses:
-        '200':
-          description: Horário bloqueado
-
-  /api/appointments/updateStatus:
+          description: Usuário (empresa) criado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCreateSuccessResponse'
+        '400':
+          description: Requisição inválida (dados faltando ou formato inválido).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflito (e-mail já cadastrado).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security: [] # Criação de usuário não requer autenticação prévia
     put:
-      summary: Atualizar status do agendamento
+      tags:
+        - Usuários/Empresas
+      summary: Atualiza dados do usuário autenticado (empresa)
+      description: Permite que o usuário autenticado atualize seus dados ou os dados da sua empresa.
+      operationId: updateUser
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                appointmentId:
-                  type: integer
-                status:
-                  type: string
-              required: [appointmentId, status]
+              $ref: '#/components/schemas/UserUpdateRequest'
       responses:
         '200':
-          description: Status atualizado
+          description: Usuário (empresa) atualizado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserUpdateSuccessResponse'
+        '400':
+          description: Requisição inválida (formato inválido).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+           description: Falha ao encontrar dados do usuário ou empresa.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
 
-  /api/company:
+  /users/company:
+    get:
+      tags:
+        - Usuários/Empresas
+      summary: Obtém dados da empresa do usuário autenticado
+      description: Retorna os dados da empresa associada ao usuário logado.
+      operationId: getCompanyData
+      responses:
+        '200':
+          description: Dados da empresa retornados com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyData'
+        '400':
+           description: ID de usuário inválido (do token).
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '404':
+           description: Falha ao encontrar dados do usuário ou empresa.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '500':
+           description: Erro interno do servidor.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
+
+  /services:
     post:
-      summary: Obter nome da empresa
+      tags:
+        - Serviços
+      summary: Cria um novo serviço para a empresa
+      operationId: createService
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                companyId:
-                  type: integer
-              required: [companyId]
-      responses:
-        '200':
-          description: Nome da empresa retornado
-
-  /api/company/services:
-    post:
-      summary: Listar serviços da empresa
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                companyId:
-                  type: integer
-              required: [companyId]
-      responses:
-        '200':
-          description: Lista de serviços
-
-  /api/company/services/staff:
-    post:
-      summary: Listar funcionários de um serviço
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                companyId:
-                  type: integer
-                serviceId:
-                  type: integer
-              required: [companyId, serviceId]
-      responses:
-        '200':
-          description: Lista de funcionários
-
-  /api/company/services/staff/schedule:
-    post:
-      summary: Listar horários disponíveis
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                staffId:
-                  type: integer
-                date:
-                  type: string
-                  format: date
-              required: [staffId, date]
-      responses:
-        '200':
-          description: Horários disponíveis
-
-  /api/company/services/staff/schedule/appointments:
-    post:
-      summary: Criar agendamento (cliente)
+              $ref: '#/components/schemas/ServiceCreateRequest'
       responses:
         '201':
-          description: Agendamento criado
-
-  /api/login:
-    post:
-      summary: Login de usuário
-      responses:
-        '200':
-          description: Login realizado com sucesso
-
-  /api/login/checkLogin:
+          description: Serviço criado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceCreateSuccessResponse'
+        '400':
+          description: Requisição inválida.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+           description: Usuário (empresa) não encontrado.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
     get:
-      summary: Verificar sessão ativa
+      tags:
+        - Serviços
+      summary: Lista todos os serviços ativos da empresa
+      operationId: listAllCompanyServices
       responses:
         '200':
-          description: Sessão válida
-
-  /api/logout:
-    post:
-      summary: Logout do usuário
+          description: Lista de serviços retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceListResponse'
+        '400':
+           description: ID de usuário inválido (do token).
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '404':
+           description: Usuário (empresa) não encontrado.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
+    put:
+      tags:
+        - Serviços
+      summary: Atualiza um serviço existente
+      operationId: updateService
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceUpdateRequest'
       responses:
         '200':
-          description: Logout realizado
+          description: Serviço atualizado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUpdateSuccessResponse'
+        '400':
+          description: Requisição inválida.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+           description: Usuário ou serviço não encontrado.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
 
-  /api/services:
+  /services/{id}:
     get:
-      summary: Listar serviços da empresa
-      responses:
-        '200':
-          description: Lista de serviços
-    post:
-      summary: Criar serviço
-      responses:
-        '201':
-          description: Serviço criado
-    put:
-      summary: Atualizar serviço
-      responses:
-        '200':
-          description: Serviço atualizado
-
-  /api/services/remove:
-    put:
-      summary: Remover serviço
-      responses:
-        '200':
-          description: Serviço removido
-
-  /api/staff:
-    get:
-      summary: Listar funcionários
-      responses:
-        '200':
-          description: Lista de funcionários
-    post:
-      summary: Criar funcionário
-      responses:
-        '201':
-          description: Funcionário criado
-    put:
-      summary: Atualizar funcionário
-      responses:
-        '200':
-          description: Funcionário atualizado
-
-  /api/staff/remove:
-    put:
-      summary: Remover funcionário
-      responses:
-        '200':
-          description: Funcionário removido
-
-  /api/staff/hoursStaff/{id}:
-    get:
-      summary: Horários do funcionário
+      tags:
+        - Serviços
+      summary: Obtém detalhes de um serviço específico
+      operationId: getServiceData
       parameters:
-        - in: path
-          name: id
+        - name: id
+          in: path
           required: true
+          description: ID do serviço a ser recuperado.
           schema:
-            type: integer
+            type: string
+            format: uuid
       responses:
         '200':
-          description: Horários obtidos
+          description: Detalhes do serviço retornados com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+        '400':
+          description: ID inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+           description: Serviço não pertence à empresa do usuário autenticado.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '404':
+           description: Usuário ou serviço não encontrado.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
 
-  /api/staff/serviceStaff/{id}:
+  /services/remove:
+    put: # Usando PUT pois altera o estado (status) do recurso
+      tags:
+        - Serviços
+      summary: Marca um serviço como inativo (soft delete)
+      operationId: deleteService
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceDeleteRequest'
+      responses:
+        '200':
+          description: Serviço marcado como inativo com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceDeleteSuccessResponse'
+        '400':
+          description: ID inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+           description: Usuário ou serviço não encontrado, ou serviço não pertence à empresa.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
+
+  /staff:
     get:
-      summary: Serviços de um funcionário
+      tags:
+        - Funcionários
+      summary: Lista todos os funcionários ativos da empresa
+      operationId: listStaff
+      responses:
+        '200':
+          description: Lista de funcionários retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                 $ref: '#/components/schemas/StaffListResponse' # Encapsula o array
+        '400':
+           description: ID de usuário inválido (do token).
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '404':
+           description: Usuário (empresa) não encontrado.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
+    post:
+      tags:
+        - Funcionários
+      summary: Cria um novo funcionário para a empresa
+      operationId: createStaff
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffCreateRequest'
+      responses:
+        '201':
+          description: Funcionário criado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffCreateSuccessResponse'
+        '400':
+          description: Requisição inválida (dados faltando ou formato inválido).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+           description: Usuário (empresa) não encontrado.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
+    put:
+      tags:
+        - Funcionários
+      summary: Atualiza dados de um funcionário existente
+      operationId: updateStaff
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffUpdateRequest'
+      responses:
+        '201': # Controller retorna 201
+          description: Funcionário atualizado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffUpdateSuccessResponse'
+        '400':
+          description: Requisição inválida.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
+
+  /staff/{id}:
+    get:
+      tags:
+        - Funcionários
+      summary: Obtém detalhes de um funcionário específico
+      operationId: getStaffData
       parameters:
-        - in: path
-          name: id
+        - name: id
+          in: path
           required: true
+          description: ID do funcionário a ser recuperado.
           schema:
-            type: integer
+            type: string
+            format: uuid
       responses:
         '200':
-          description: Serviços listados
+          description: Detalhes do funcionário retornados com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Staff'
+        '400':
+          description: ID inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+           description: Funcionário não pertence à empresa do usuário autenticado.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '404':
+           description: Usuário ou funcionário não encontrado.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
 
-  /api/staff/associateServices:
+  /staff/remove:
+    put: # Usando PUT para marcar como inativo
+      tags:
+        - Funcionários
+      summary: Marca um funcionário como inativo (soft delete)
+      operationId: removeStaff
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffDeleteRequest'
+      responses:
+        '200':
+          description: Funcionário marcado como inativo com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffDeleteSuccessResponse'
+        '400':
+          description: ID inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+           description: Usuário ou funcionário não encontrado, ou funcionário não pertence à empresa.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
+
+  /staff/associateServices:
     post:
-      summary: Associar serviços a funcionário
+      tags:
+        - Funcionários
+      summary: Associa um serviço a um funcionário
+      operationId: assignServicesToStaff
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssociateServiceRequest'
       responses:
-        '200':
-          description: Serviços associados
+        '201':
+          description: Associação realizada com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssociateServiceSuccessResponse'
+        '400':
+          description: IDs inválidos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+           description: Usuário, funcionário ou serviço não encontrado.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '409':
+           description: Conflito (serviço não da empresa, funcionário não da empresa, ou já associado).
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
 
-  /api/staff/associateShifts:
-    post:
-      summary: Associar turnos a funcionário
-      responses:
-        '200':
-          description: Turnos associados
-
-  /api/staff/disassociateServices:
+  /staff/disassociateServices:
     delete:
-      summary: Remover associação de serviços
+      tags:
+        - Funcionários
+      summary: Desassocia um serviço de um funcionário
+      operationId: unassignServiceFromStaff
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DisassociateServiceRequest'
       responses:
         '200':
-          description: Serviços desassociados
+          description: Desvinculação realizada com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisassociateServiceSuccessResponse'
+        '400':
+           description: IDs inválidos.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '404':
+           description: Usuário, funcionário ou serviço não encontrado.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '409':
+           description: Conflito (serviço/funcionário não da empresa, ou não estavam associados).
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
 
-  /api/users:
+  /staff/associateShifts:
+     post:
+       tags:
+         - Funcionários
+       summary: Define ou atualiza os horários de trabalho de um funcionário
+       operationId: assignSchedulesToEmployee
+       requestBody:
+         required: true
+         content:
+           application/json:
+             schema:
+               $ref: '#/components/schemas/AssociateShiftsRequest'
+       responses:
+         '200':
+           description: Horários vinculados/atualizados com sucesso.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/AssociateShiftsSuccessResponse'
+         '400':
+           description: Requisição inválida (formato de dados, IDs).
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+         '404':
+           description: Usuário ou funcionário não encontrado, ou funcionário não da empresa.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+         '500':
+           description: Erro interno do servidor.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+       # Segurança global (cookieAuth) é aplicada aqui
+
+  /staff/serviceStaff/{id}:
+     get:
+       tags:
+         - Funcionários
+       summary: Obtém os serviços associados a um funcionário específico
+       operationId: getServiceStaff
+       parameters:
+         - name: id
+           in: path
+           required: true
+           description: ID do funcionário.
+           schema:
+             type: string
+             format: uuid
+       responses:
+         '200':
+           description: Lista de serviços vinculados retornada.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/StaffServiceListResponse'
+         '500':
+           description: Erro interno do servidor.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+       # Segurança global (cookieAuth) é aplicada aqui
+
+  /staff/hoursStaff/{id}:
+     get:
+       tags:
+         - Funcionários
+       summary: Obtém os horários de trabalho definidos para um funcionário
+       operationId: getHoursStaff
+       parameters:
+         - name: id
+           in: path
+           required: true
+           description: ID do funcionário.
+           schema:
+             type: string
+             format: uuid
+       responses:
+         '200':
+           description: Lista de horários retornada.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/StaffHoursListResponse'
+         '500':
+           description: Erro interno do servidor.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+       # Segurança global (cookieAuth) é aplicada aqui
+
+  /appointments:
     post:
-      summary: Criar usuário
+      tags:
+        - Agendamentos
+      summary: Cria um novo agendamento (requer login)
+      operationId: createAppointment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentCreateRequest'
       responses:
         '201':
-          description: Usuário criado
-    put:
-      summary: Atualizar usuário
-      responses:
-        '200':
-          description: Usuário atualizado
+          description: Agendamento criado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentCreateSuccessResponse'
+        '400':
+          description: Requisição inválida (dados faltando, formato inválido, IDs inválidos).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Recurso não encontrado (usuário, funcionário, serviço, etc.).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflito (horário indisponível, funcionário não executa serviço, data passada, etc.).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
 
-  /api/users/company:
+  /appointments/employee/{id}:
     get:
-      summary: Obter dados da empresa do usuário
+      tags:
+        - Agendamentos
+      summary: Lista todos os agendamentos (e bloqueios) de um funcionário
+      operationId: listAllAppointmentsByEmployee
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do funcionário (staff).
+          schema:
+            type: string
+            format: uuid
       responses:
         '200':
-          description: Dados da empresa retornados
+          description: Lista de agendamentos retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentListResponse'
+        '400':
+          description: ID de funcionário inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
+
+  /appointments/{id}:
+    get:
+      tags:
+        - Agendamentos
+      summary: Obtém dados detalhados de um agendamento específico
+      operationId: getAppointmentFullData
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do agendamento.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detalhes do agendamento retornados com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentDetail'
+        '400':
+          description: ID inválido (agendamento ou usuário do token).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+           description: Agendamento não pertence à empresa do usuário autenticado.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '404':
+           description: Agendamento, usuário ou outros dados relacionados não encontrados.
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
+
+  /appointments/blockSchedule:
+    post:
+      tags:
+        - Agendamentos
+      summary: Cria um bloqueio na agenda de um funcionário
+      operationId: blockTimeForStaff
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlockScheduleRequest'
+      responses:
+        '201':
+          description: Bloqueio criado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockScheduleSuccessResponse'
+        '400':
+          description: Requisição inválida.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Usuário ou funcionário não encontrado/não pertence à empresa.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflito (data passada, data fim antes do início, horário já ocupado).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
+
+  /appointments/updateStatus:
+    put:
+      tags:
+        - Agendamentos
+      summary: Atualiza o status de um agendamento ou bloqueio
+      operationId: updateScheduleStatus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAppointmentStatusRequest'
+      responses:
+        '200':
+          description: Status atualizado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateAppointmentStatusSuccessResponse'
+        '400':
+          description: Requisição inválida (IDs, status inválido).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Usuário sem permissão para alterar (funcionário não pertence à empresa).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Usuário, funcionário ou agendamento não encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      # Segurança global (cookieAuth) é aplicada aqui
+
+  # --- Rotas do Cliente (Públicas) ---
+  /customer/company:
+    post:
+      tags:
+        - Cliente (Público)
+      summary: Obtém informações básicas da empresa pelo ID
+      description: Rota pública para clientes obterem nome, telefone e email da empresa.
+      operationId: customerGetCompanyInfo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerGetCompanyRequest'
+      responses:
+        '200':
+          description: Informações da empresa retornadas.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerCompanyInfoResponse'
+        '404':
+          description: Empresa não encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security: [] # Rota pública
+
+  /customer/company/services:
+    post:
+      tags:
+        - Cliente (Público)
+      summary: Lista os serviços ativos de uma empresa específica
+      description: Rota pública para clientes verem os serviços oferecidos.
+      operationId: customerListCompanyServices
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerListServicesRequest'
+      responses:
+        '200':
+          description: Lista de serviços retornada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerServiceListResponse'
+        '404':
+          description: Nenhum serviço encontrado para a empresa.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security: [] # Rota pública
+
+  /customer/company/services/staff:
+    post:
+      tags:
+        - Cliente (Público)
+      summary: Lista os funcionários que realizam um serviço específico
+      description: Rota pública para clientes verem quais funcionários fazem um determinado serviço.
+      operationId: customerListStaffByService
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerListStaffRequest'
+      responses:
+        '200':
+          description: Lista de funcionários retornada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerStaffListResponse'
+        '404':
+          description: Nenhum funcionário encontrado para o serviço na empresa.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security: [] # Rota pública
+
+  /customer/company/services/staff/schedule:
+    post:
+      tags:
+        - Cliente (Público)
+      summary: Lista os horários disponíveis de um funcionário em uma data específica
+      description: Rota pública para clientes verificarem a disponibilidade de um funcionário.
+      operationId: customerListScheduleByStaff
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerListScheduleRequest'
+      responses:
+        '200':
+          description: Horários disponíveis retornados.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerScheduleResponse'
+        '400':
+          description: Data inválida ou funcionário não trabalha no dia.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Data não enviada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security: [] # Rota pública
+
+  /customer/company/services/staff/schedule/appointments:
+    post:
+      tags:
+        - Cliente (Público)
+      summary: Cria um novo agendamento (visão do cliente)
+      description: Rota pública para clientes criarem seus próprios agendamentos.
+      operationId: customerCreateAppointment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerAppointmentCreateRequest'
+      responses:
+        # Reutiliza respostas de /appointments, mas sem necessidade de login
+        '201':
+          description: Agendamento criado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerAppointmentCreateResponse'
+        '404':
+          description: Recurso não encontrado (empresa, funcionário, serviço, etc.).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflito (horário indisponível, funcionário não executa serviço, data passada, etc.).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security: [] # Rota pública

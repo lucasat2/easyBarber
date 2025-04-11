@@ -52,7 +52,6 @@ let currentYear = today.getUTCFullYear();
 
 function createLastMonthScheduleDashboard() {
   currentMonth += 1;
-  console.log("Navegação para o próximo mês:", currentMonth);
   if (currentMonth === 12) {
     currentMonth = 0;
     currentYear += 1;
@@ -80,7 +79,6 @@ function createLastMonthScheduleDashboard() {
 
 function createNextMonthScheduleDashboard() {
   currentMonth -= 1;
-  console.log("Navegação para o mês anterior:", currentMonth);
   if (currentMonth === -1) {
     currentMonth = 11;
     currentYear -= 1;
