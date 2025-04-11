@@ -135,7 +135,6 @@ function FinishedCard(date, appointmentData) {
       appointmentData
     );
     const newAppointment = AppointmentCard(date, appointmentData);
-    console.log(date, appointmentData);
     cardContainer.innerHTML = "";
     cardContainer.appendChild(newAppointment);
 

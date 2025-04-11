@@ -115,14 +115,14 @@ body {
 }
 
 .loginInputStyle {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 5px;
-  background-color: #fff;
-  font-size: 15px;
-  outline: none;
-  margin-top: 10px;
+	width: 100%;
+	padding: 12px;
+	border: none;
+	border-radius: 5px;
+	background-color: #fff;
+	font-size: 15px;
+	outline: none;
+	margin-top: 10px;
 }
 
 .loginLoginButton {
@@ -212,26 +212,26 @@ body {
 }
 
 .signupFormBox {
-  width: 500px;
-  background: #dee33e;
-  padding: 40px;
-  border-radius: 15px;
-  margin-top: 0px;
+	width: 500px;
+	background: #dee33e;
+	padding: 40px;
+	border-radius: 15px;
+	margin-top: 0px;
 }
 
 .signupInputLabel {
-  display: block;
-  margin-bottom: 4px;
-  font-size: 14px;
-  color: #333;
-  font-weight: 500;
+	display: block;
+	margin-bottom: 4px;
+	font-size: 14px;
+	color: #333;
+	font-weight: 500;
 }
 
 .signupFieldContainer {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  margin-right: 10px;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	margin-right: 10px;
 }
 
 .signupTitleStyle {
@@ -248,15 +248,15 @@ body {
 }
 
 .signupInputStyle {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 10px;
-  border: none;
-  border-radius: 5px;
-  background-color: #fff;
-  font-size: 15px;
-  outline: none;
-  margin-top: 5px;
+	width: 100%;
+	padding: 12px;
+	margin-bottom: 10px;
+	border: none;
+	border-radius: 5px;
+	background-color: #fff;
+	font-size: 15px;
+	outline: none;
+	margin-top: 5px;
 }
 
 .signupInputStyle::placeholder {
@@ -613,7 +613,6 @@ body {
 	margin-bottom: 10px;
 	font-weight: 500;
 	font-size: 0.95rem;
-	color: #333;
 }
 
 .modalBoxStyles {
@@ -623,6 +622,7 @@ body {
 	border-radius: 8px;
 	font-size: 0.95rem;
 	background-color: #f9f9f9;
+	width: 100%;
 }
 
 textarea.modalBoxStyles {
@@ -783,35 +783,35 @@ textarea.modalBoxStyles {
 /* ServiceCard */
 
 .serviceCardContainer {
-  display: flex;
-  padding: 20px;
-  margin-top: 15px;
-  background-color: #fff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  align-items: center;
-  flex-wrap: wrap;
-  transition: all 0.1s ease;
+	display: flex;
+	padding: 20px;
+	margin-top: 15px;
+	background-color: #fff;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+	align-items: center;
+	flex-wrap: wrap;
+	transition: all 0.1s ease;
 }
 
 .serviceCardContainer:hover {
-  transform: scale(1.01);
+	transform: scale(1.01);
 }
 
 .servicePriceArea {
-  color: #8a8a15;
+	color: #8a8a15;
 }
 
 .serviceDurationArea {
-  display: flex;
-  color: #5f5f5f;
+	display: flex;
+	color: #5f5f5f;
 }
 
 .clockIcon {
-  width: 16px;
-  height: 16px;
-  margin-right: 5px;
-  vertical-align: middle;
+	width: 16px;
+	height: 16px;
+	margin-right: 5px;
+	vertical-align: middle;
 }
 
 .serviceCardInfo {
@@ -925,22 +925,23 @@ textarea.modalBoxStyles {
 }
 
 .serviceInputLabel {
-  display: flex;
-  flex-direction: column;
-  row-gap: 15px;
+	display: flex;
+	flex-direction: column;
+	row-gap: 15px;
 }
 
 .serviceModalPriceAndDurationFields {
 	display: flex;
 	justify-content: space-between;
+	gap: 0.5rem;
 }
 
 .servicePriceAndDurationModalInputs {
-  border: none;
-  background-color: #f5f5f5;
-  padding: 15px 10px;
-  border-radius: 5px;
-  width: 100%;
+	border: none;
+	background-color: #f5f5f5;
+	padding: 15px 10px;
+	border-radius: 5px;
+	width: 100%;
 }
 
 .serviceModalTextArea {

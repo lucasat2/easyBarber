@@ -74,6 +74,7 @@ export default async function StaffServicesSelection(staffId) {
       serviceRow.style.alignItems = "center";
       serviceRow.style.cursor = "pointer";
       serviceRow.style.padding = "0.5rem 0";
+      serviceRow.style.gap = "1rem";
 
       const name = document.createElement("span");
       name.textContent = service.name;

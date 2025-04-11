@@ -1,179 +1,162 @@
-import { MessageNotification } from "../MessageNotification.js";
+import {MessageNotification} from "../MessageNotification.js";
 
-function EditUserProfileModal() {
-  const containerModal = document.createElement("div");
-  containerModal.classList.add("editUserProfileModalMainContainer");
+// Função reutilizável para criar campos com label
+function createLabeledInput(placeholder) {
+	const wrapper = document.createElement("label");
+	wrapper.classList.add("editUserProfileModalInputWrapper");
 
-  containerModal.addEventListener("click", (event) => {
-    if (event.target === containerModal) {
-      containerModal.remove();
-    }
-  });
+	const p = document.createElement("p");
+  p.innerText = `${placeholder}:`
 
-  const modalContent = document.createElement("div");
-  modalContent.classList.add("editUserProfileModalContent");
-  containerModal.appendChild(modalContent);
+	const input = document.createElement("input");
+	input.placeholder = placeholder;
+	input.classList.add("editUserProfileModalInputs");
 
-  const modalHeader = document.createElement("div");
-  modalHeader.classList.add("editUserProfileModalHeader");
-  modalContent.appendChild(modalHeader);
+	wrapper.appendChild(p);
+	wrapper.appendChild(input);
 
-  const closeButton = document.createElement("div");
-  closeButton.innerHTML = "&#10006;";
-  closeButton.classList.add("editUserProfileModalCloseButton");
-  modalHeader.appendChild(closeButton);
-
-  closeButton.addEventListener("click", () => containerModal.remove());
-
-  const modalBody = document.createElement("div");
-  modalBody.classList.add("editUserProfileModalBody");
-  modalContent.appendChild(modalBody);
-
-  const modalTitle = document.createElement("div");
-  modalTitle.innerText = "Editar";
-  modalTitle.classList.add("editUserProfileModalTitle");
-  modalBody.appendChild(modalTitle);
-
-  const companyNameAndCnpjFields = document.createElement("div");
-  companyNameAndCnpjFields.classList.add("editUserProfileModalFields");
-  modalBody.appendChild(companyNameAndCnpjFields);
-
-  const companyNameInput = document.createElement("input");
-  companyNameInput.placeholder = "Nome da Empresa";
-  companyNameInput.classList.add("editUserProfileModalInputs");
-  companyNameAndCnpjFields.appendChild(companyNameInput);
-
-  const cnpjInput = document.createElement("input");
-  cnpjInput.placeholder = "CNPJ";
-  cnpjInput.classList.add("editUserProfileModalInputs");
-  companyNameAndCnpjFields.appendChild(cnpjInput);
-
-  const phoneNumberAndStateFields = document.createElement("div");
-  phoneNumberAndStateFields.classList.add("editUserProfileModalFields");
-  modalBody.appendChild(phoneNumberAndStateFields);
-
-  const phoneNumberInput = document.createElement("input");
-  phoneNumberInput.placeholder = "Telefone";
-  phoneNumberInput.classList.add("editUserProfileModalInputs");
-  phoneNumberAndStateFields.appendChild(phoneNumberInput);
-
-  const stateInput = document.createElement("input");
-  stateInput.placeholder = "Estado";
-  stateInput.classList.add("editUserProfileModalInputs");
-  phoneNumberAndStateFields.appendChild(stateInput);
-
-  const cityAndAddressFields = document.createElement("div");
-  cityAndAddressFields.classList.add("editUserProfileModalFields");
-  modalBody.appendChild(cityAndAddressFields);
-
-  const cityInput = document.createElement("input");
-  cityInput.placeholder = "Cidade";
-  cityInput.classList.add("editUserProfileModalInputs");
-  cityAndAddressFields.appendChild(cityInput);
-
-  const addressInput = document.createElement("input");
-  addressInput.placeholder = "Endereço";
-  addressInput.classList.add("editUserProfileModalInputs");
-  cityAndAddressFields.appendChild(addressInput);
-
-  const numberAndPostalCodeFields = document.createElement("div");
-  numberAndPostalCodeFields.classList.add("editUserProfileModalFields");
-  modalBody.appendChild(numberAndPostalCodeFields);
-
-  const numberInput = document.createElement("input");
-  numberInput.placeholder = "Número";
-  numberInput.classList.add("editUserProfileModalInputs");
-  numberAndPostalCodeFields.appendChild(numberInput);
-
-  const postalCodeInput = document.createElement("input");
-  postalCodeInput.placeholder = "CEP";
-  postalCodeInput.classList.add("editUserProfileModalInputs");
-  numberAndPostalCodeFields.appendChild(postalCodeInput);
-
-  const emailAndPasswordFields = document.createElement("div");
-  emailAndPasswordFields.classList.add("editUserProfileModalFields");
-  modalBody.appendChild(emailAndPasswordFields);
-
-  const emailInput = document.createElement("input");
-  emailInput.placeholder = "E-mail";
-  emailInput.classList.add("editUserProfileModalInputs");
-  emailAndPasswordFields.appendChild(emailInput);
-
-  const passwordInput = document.createElement("input");
-  passwordInput.placeholder = "Senha";
-  passwordInput.classList.add("editUserProfileModalInputs");
-  emailAndPasswordFields.appendChild(passwordInput);
-
-  const saveButton = document.createElement("button");
-  saveButton.innerText = "Salvar";
-  saveButton.classList.add("editUserProfileModalSaveButton");
-  saveButton.addEventListener("click", async () => {
-    await updateUserData();
-  });
-
-  modalBody.appendChild(saveButton);
-
-  async function updateUserData() {
-    try {
-      const response = await fetch("/api/users", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: companyNameInput.value,
-          cnpj: cnpjInput.value,
-          phoneNumber: phoneNumberInput.value,
-          state: stateInput.value,
-          city: cityInput.value,
-          street: addressInput.value,
-          number: numberInput.value,
-          postalCode: postalCodeInput.value,
-          email: emailInput.value,
-          password: passwordInput.value,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-
-        throw new Error(errorData.error || "Falha Desconhecida");
-      }
-
-      const data = await response.json();
-
-      companyNameInput.value = "";
-      cnpjInput.value = "";
-      phoneNumberInput.value = "";
-      stateInput.value = "";
-      cityInput.value = "";
-      addressInput.value = "";
-      numberInput.value = "";
-      postalCodeInput.value = "";
-      emailInput.value = "";
-      passwordInput.value = "";
-
-      MessageNotification(data.message, "#28a745");
-
-      const answer = await fetch("/api/users/company");
-
-      if (!answer.ok) {
-        throw new Error(
-          "Falha ao atualizar o nome da empresa no perfil superior"
-        );
-      }
-
-      const result = await answer.json();
-
-      document.getElementById("username").innerText = result.name;
-      const firstLetter = result.name.charAt(0).toUpperCase();
-      document.getElementById("companyTag").innerText = firstLetter
-    } catch (error) {
-      MessageNotification(error.message, "#ff6347");
-    }
-  }
-
-  document.body.appendChild(containerModal);
+	return {wrapper, input};
 }
 
-export { EditUserProfileModal };
+function EditUserProfileModal() {
+	const containerModal = document.createElement("div");
+	containerModal.classList.add("editUserProfileModalMainContainer");
+
+	// Fecha o modal clicando fora do conteúdo
+	containerModal.addEventListener("click", event => {
+		if (event.target === containerModal) containerModal.remove();
+	});
+
+	// Estrutura do modal
+	const modalContent = document.createElement("div");
+	modalContent.classList.add("editUserProfileModalContent");
+	containerModal.appendChild(modalContent);
+
+	const modalHeader = document.createElement("div");
+	modalHeader.classList.add("editUserProfileModalHeader");
+	modalContent.appendChild(modalHeader);
+
+	const closeButton = document.createElement("div");
+	closeButton.innerHTML = "&#10006;";
+	closeButton.classList.add("editUserProfileModalCloseButton");
+	closeButton.addEventListener("click", () => containerModal.remove());
+	modalHeader.appendChild(closeButton);
+
+	const modalBody = document.createElement("div");
+	modalBody.classList.add("editUserProfileModalBody");
+	modalContent.appendChild(modalBody);
+
+	const modalTitle = document.createElement("div");
+	modalTitle.innerText = "Editar";
+	modalTitle.classList.add("editUserProfileModalTitle");
+	modalBody.appendChild(modalTitle);
+
+	// Campos do formulário
+	const fields = [
+		{label: "Nome da Empresa", ref: "companyName"},
+		{label: "CNPJ", ref: "cnpj"},
+		{label: "Telefone", ref: "phoneNumber"},
+		{label: "Estado", ref: "state"},
+		{label: "Cidade", ref: "city"},
+		{label: "Endereço", ref: "address"},
+		{label: "Número", ref: "number"},
+		{label: "CEP", ref: "postalCode"},
+		{label: "E-mail", ref: "email"},
+		{label: "Senha", ref: "password"}
+	];
+
+	const inputs = {};
+
+	for (let i = 0; i < fields.length; i += 2) {
+		const row = document.createElement("div");
+		row.classList.add("editUserProfileModalFields");
+
+		[fields[i], fields[i + 1]].forEach(field => {
+			if (!field) return;
+			const {wrapper, input} = createLabeledInput(field.label,);
+			inputs[field.ref] = input;
+			row.appendChild(wrapper);
+		});
+
+		modalBody.appendChild(row);
+	}
+
+	// Botão de salvar
+	const saveButton = document.createElement("button");
+	saveButton.innerText = "Salvar";
+	saveButton.classList.add("editUserProfileModalSaveButton");
+	saveButton.addEventListener("click", async () => {
+		await updateUserData();
+	});
+	modalBody.appendChild(saveButton);
+
+	// Função para salvar as informações
+	async function updateUserData() {
+		try {
+			const response = await fetch("/api/users", {
+				method: "PUT",
+				headers: {"Content-Type": "application/json"},
+				body: JSON.stringify({
+					name: inputs.companyName.value,
+					cnpj: inputs.cnpj.value,
+					phoneNumber: inputs.phoneNumber.value,
+					state: inputs.state.value,
+					city: inputs.city.value,
+					street: inputs.address.value,
+					number: inputs.number.value,
+					postalCode: inputs.postalCode.value,
+					email: inputs.email.value,
+					password: inputs.password.value
+				})
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.error || "Falha Desconhecida");
+			}
+
+			const data = await response.json();
+			MessageNotification(data.message, "#28a745");
+
+			const profileUpdate = await fetch("/api/users/company");
+			if (!profileUpdate.ok) {
+				throw new Error("Falha ao atualizar o nome da empresa no topo");
+			}
+
+			const result = await profileUpdate.json();
+			document.getElementById("username").innerText = result.name;
+		} catch (error) {
+			MessageNotification(error.message, "#ff6347");
+		}
+	}
+
+	// Carrega as informações existentes
+	async function getInfo() {
+		try {
+			const response = await fetch("/api/users/company/info");
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.error || "Falha Desconhecida");
+			}
+
+			const data = await response.json();
+			inputs.companyName.value = data.name || "";
+			inputs.cnpj.value = data.cnpj || "";
+			inputs.phoneNumber.value = data.phoneNumber || "";
+			inputs.state.value = data.state || "";
+			inputs.city.value = data.city || "";
+			inputs.address.value = data.street || "";
+			inputs.number.value = data.number || "";
+			inputs.postalCode.value = data.postalCode || "";
+			inputs.email.value = data.email || "";
+			inputs.password.value = "";
+		} catch (error) {
+			MessageNotification(error.message, "#ff6347");
+		}
+	}
+
+	getInfo();
+	document.body.appendChild(containerModal);
+}
+
+export {EditUserProfileModal};

@@ -172,7 +172,7 @@ async function updateAvailableTimes(
 
 			hoursToWork.appendChild(
 				showStaffUnavailable(
-					"Funcionário indispoíveis",
+					"Funcionário indisponíveis",
 					"../../../../../assets/externalSchedulingPage/person_off.svg"
 				)
 			);
@@ -189,7 +189,7 @@ async function updateAvailableTimes(
 			hoursToWork.innerHTML = "";
 			hoursToWork.appendChild(
 				showStaffUnavailable(
-					"Funcionário indispoíveis",
+					"Funcionário indisponíveis",
 					"../../../../../assets/externalSchedulingPage/person_off.svg"
 				)
 			);
@@ -244,7 +244,7 @@ async function updateAvailableTimes(
 			hoursToWork.innerHTML = "";
 			hoursToWork.appendChild(
 				showStaffUnavailable(
-					"Funcionário indispoíveis",
+					"Funcionário indisponíveis",
 					"../../../../../assets/externalSchedulingPage/person_off.svg"
 				)
 			);
@@ -290,7 +290,7 @@ async function updateAvailableTimes(
 		hoursToWork.innerHTML = "";
 		hoursToWork.appendChild(
 			showStaffUnavailable(
-				"Funcionário indispoíveis",
+				"Funcionário indisponíveis",
 				"../../../../../assets/externalSchedulingPage/person_off.svg"
 			)
 		);
