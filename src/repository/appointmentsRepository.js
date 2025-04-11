@@ -293,6 +293,7 @@ const insertNewAppointment = async (
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
+      timeZone: "America/Sao_Paulo",
     });
 
     const todayTimeArray = todayTime.split(":");
@@ -672,6 +673,7 @@ const setEmployeeScheduleAsBlocked = async (
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
+      timeZone: "America/Sao_Paulo",
     });
 
     const todayTimeArray = todayTime.split(":");
