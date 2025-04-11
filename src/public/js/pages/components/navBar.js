@@ -77,7 +77,7 @@ export default function header() {
 
   const divImage = document.createElement("div");
   divImage.style.height = "48px";
-  divImage.style.width = "60px";
+  divImage.style.width = "35px";
   divImage.style.borderRadius = "50%";
   divImage.style.overflow = "hidden";
   divImage.style.display = "flex";
@@ -86,6 +86,7 @@ export default function header() {
   divImage.style.backgroundColor = generateRandomColor();
 
   const image = document.createElement("div");
+  image.id = "companyTag"
   image.innerHTML = "Empresa"
   image.style.color = "white";
   image.style.fontWeight = "bold";
