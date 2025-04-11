@@ -166,6 +166,8 @@ function EditUserProfileModal() {
       const result = await answer.json();
 
       document.getElementById("username").innerText = result.name;
+      const firstLetter = result.name.charAt(0).toUpperCase();
+      document.getElementById("companyTag").innerText = firstLetter
     } catch (error) {
       MessageNotification(error.message, "#ff6347");
     }

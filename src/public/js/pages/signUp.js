@@ -22,6 +22,16 @@ export default function signup() {
   const formBox = document.createElement("div");
   formBox.classList.add("signupFormBox");
 
+  const backButton = document.createElement("button");
+  backButton.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#000">
+      <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/>
+    </svg>
+    Voltar
+  `;
+  backButton.classList.add("loginBackButton");
+  formBox.appendChild(backButton)
+
   const title = document.createElement("h2");
   title.textContent = "Cadastre-se";
   title.classList.add("signupTitleStyle");
@@ -115,11 +125,6 @@ export default function signup() {
 
   const imageContainer = document.createElement("div");
   imageContainer.classList.add("signupImageContainer");
-
-  const backButton = document.createElement("button");
-  backButton.textContent = "Início"
-  backButton.classList.add("signupBackButton")
-  div.appendChild(backButton)
 
   container.appendChild(formContainer);
   container.appendChild(imageContainer);

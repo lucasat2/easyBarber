@@ -75,21 +75,22 @@ export default function header() {
 	divProfile.style.display = "flex";
 	divProfile.style.gap = "1rem";
 
-	const divImage = document.createElement("div");
-	divImage.style.height = "48px";
-	divImage.style.width = "48px";
-	divImage.style.borderRadius = "50%";
-	divImage.style.overflow = "hidden";
-	divImage.style.display = "flex";
-	divImage.style.justifyContent = "center";
-	divImage.style.alignItems = "center";
-	divImage.style.backgroundColor = generateRandomColor();
+  const divImage = document.createElement("div");
+  divImage.style.height = "48px";
+  divImage.style.width = "48px";
+  divImage.style.borderRadius = "50%";
+  divImage.style.overflow = "hidden";
+  divImage.style.display = "flex";
+  divImage.style.justifyContent = "center";
+  divImage.style.alignItems = "center";
+  divImage.style.backgroundColor = generateRandomColor();
 
-	const image = document.createElement("div");
-	image.innerHTML = "Empresa";
-	image.style.color = "white";
-	image.style.fontWeight = "bold";
-	image.style.fontSize = "16px";
+  const image = document.createElement("div");
+  image.id = "companyTag"
+  image.innerHTML = "Empresa"
+  image.style.color = "white";
+  image.style.fontWeight = "bold";
+  image.style.fontSize = "16px";
 
 	const contentUser = document.createElement("div");
 	contentUser.style.display = "flex";

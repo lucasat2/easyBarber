@@ -36,21 +36,33 @@ body {
 }
 
 .loginBackButton {
-	position: absolute;
-	width: 100px;
-	padding: 12px;
-	right: 30px;
-	bottom: 20px;
-	background-color: #a3a31a;
-	color: #fff;
+	align-self: flex-start;
+	color: #000;
 	border: none;
-	border-radius: 5px;
 	font-size: 15px;
-	cursor: pointer;
 	margin-bottom: 15px;
+	cursor: pointer;
+	background-color: transparent;
+	display: flex;
+	align-items: center;
+	border-radius: 5px;
+	padding: 4px 8px;
+	height: 30px;
+	box-sizing: border-box;
+	transition: background-color 0.3s, box-shadow 0.3s;
+	gap: 10px;
 	z-index: 1;
 	opacity: 200%;
 }
+
+.loginBackButton:hover{
+	background-color: #a3a31a;
+	box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+.loginBackButton svg {
+	display: block;
+  }
 
 .loginRightSideStyle {
 	flex: 1;
@@ -74,6 +86,7 @@ body {
 }
 
 .loginSecondContainer {
+	position: relative;
 	width: 350px;
 	display: flex;
 	flex-direction: column;
