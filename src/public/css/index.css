@@ -51,6 +51,8 @@ body {
 	box-sizing: border-box;
 	transition: background-color 0.3s, box-shadow 0.3s;
 	gap: 10px;
+	z-index: 1;
+	opacity: 200%;
 }
 
 .loginBackButton:hover{
@@ -72,6 +74,7 @@ body {
 }
 
 .loginLogoContainer {
+	width: 130px;
 	position: absolute;
 	top: 20px;
 	right: 20px;
@@ -79,12 +82,7 @@ body {
 }
 
 .loginLogoStyle {
-	width: 150px;
-	height: 120px;
-	margin-top: -30px;
-	object-fit: cover;
-	margin-right: -30px;
-	margin-left: -30px;
+	width: 100%;
 }
 
 .loginSecondContainer {
@@ -216,19 +214,15 @@ body {
 }
 
 .signupLogoImage {
+	width: 130px;
 	position: absolute;
-	top: 10px;
+	top: 20px;
 	left: 15px;
 	z-index: 2;
 }
 
 .signupLogoImage img {
-	width: 135px;
-	/* Reduced size for better positioning */
-	height: auto;
-	object-fit: contain;
-	margin-top: -25px;
-	margin-left: -20px;
+	width: 100%;
 }
 
 .signupFormBox {
@@ -331,7 +325,7 @@ body {
 	font-size: 15px;
 	cursor: pointer;
 	margin-bottom: 15px;
-	z-index:1;
+	z-index: 1;
 	opacity: 200%;
 }
 
@@ -430,12 +424,12 @@ body {
 	cursor: pointer;
 	color: #fff;
 	transition: all 0.1s ease;
+	border: 1px solid #9fa324;
 }
 
 .employeeSchedulingTimelineHeaderManagementButton:hover {
 	color: #9fa324;
 	background-color: white;
-	border: 1px solid #9fa324;
 }
 
 .schedulingTimelineHeaderSelectionSection {
@@ -722,7 +716,7 @@ textarea.modalBoxStyles {
 }
 
 .todayCard::after {
-    content: "";
+	content: "";
 	position: absolute;
 	top: 8px;
 	left: 50%;
@@ -740,17 +734,17 @@ textarea.modalBoxStyles {
 /* ServiceDashboard */
 
 .serviceDashboardMainContainer {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 15px 50px;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	padding: 15px 50px;
 }
 
 .registerStaffButton {
 	width: fit-content;
 	padding: 10px 30px;
 	border-radius: 5px;
-	border: none;
+	border: 1px solid #9fa324;
 	font-size: 16px;
 	background-color: #9fa324;
 	color: #fff;
@@ -761,15 +755,14 @@ textarea.modalBoxStyles {
 .registerStaffButton:hover {
 	background-color: transparent;
 	color: #9fa324;
-	border: 1px solid #9fa324;
 }
 
 .noDataContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
 }
 
 .noDataImage {
@@ -789,14 +782,14 @@ textarea.modalBoxStyles {
 /* ServiceCard */
 
 .serviceCardContainer {
-  display: flex;
-  padding: 20px;
-  margin-top: 15px;
-  background-color: #fff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  align-items: center;
-  flex-wrap: wrap;
+	display: flex;
+	padding: 20px;
+	margin-top: 15px;
+	background-color: #fff;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+	align-items: center;
+	flex-wrap: wrap;
 }
 
 .serviceCardInfo {
@@ -1040,304 +1033,4 @@ textarea.modalBoxStyles {
 
 .editUserProfileModalSaveButton:hover {
 	background-color: #c1c638;
-}
-
-/*landingPage*/
-
-.headerLandingPage {
-	background-color: transparent;
-	transition: background-color 0.3s ease;
-	padding: 20px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	width: 100%;
-	position: fixed;
-	top: 0;
-	z-index: 10;
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.internal-nav a {
-	color: white;
-	text-transform: uppercase;
-	text-decoration: none;
-	font-weight: bold;
-	padding: 10px;
-	display: inline-block;
-}
-
-.external-nav a {
-	background-color: #fafafa;
-	color: #131313;
-	padding: 10px 20px;
-	font-size: 1rem;
-	border: none;
-	border-radius: 8px;
-	text-decoration: none;
-	transition: transform 0.3s ease;
-}
-
-.external-nav a:hover {
-	transform: scale(2.05);
-	cursor: pointer;
-}
-
-.logo-img {
-	width: 60px;
-	height: 60px;
-	margin-right: 10px;
-}
-
-.hero {
-	position: relative;
-	min-height: 100vh;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	padding: 4rem;
-	color: #fff;
-}
-
-.hero-background {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 1)),
-		url("/assets/landingPage/landingBackground.jpg") no-repeat center
-			center/cover;
-	z-index: -1;
-	filter: grayscale(100%);
-}
-
-.hero-content {
-	position: relative;
-	z-index: 1;
-	padding: 20px;
-	border-radius: 8px;
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-}
-
-.hero-title {
-	font-size: 3rem;
-	text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-.hero-description {
-	font-size: 1.5rem;
-	margin: 20px 0;
-}
-
-.hero-button {
-	all: unset;
-	color: #131313;
-	background: #fafafa;
-	padding: 15px 30px;
-	margin-top: 1rem;
-	font-size: 1.5rem;
-	font-weight: 700;
-	cursor: pointer;
-	width: fit-content;
-	border-radius: 5rem;
-	transition: all 0.3s ease;
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-}
-
-.hero-button:hover {
-	gap: 1rem;
-}
-
-.hero-button::after {
-	content: "";
-	display: inline-block;
-	width: 35px;
-	height: 35px;
-	background-image: url("../assets/landingPage/arrow_black.svg");
-	background-size: contain;
-	background-repeat: no-repeat;
-	background-position: center;
-	margin-left: 8px;
-	vertical-align: middle;
-}
-
-.hero-secondary {
-	padding: 15px;
-	background-color: rgba(0, 0, 0, 0.7);
-	border-radius: 12px;
-	max-width: 600px;
-}
-
-.secondary-list {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr); /* 2 colunas fixas */
-	gap: 16px;
-	list-style-type: none;
-}
-
-.benefit-item {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	margin: 8px 0;
-}
-
-.benefit-item span {
-	display: inline-block;
-	vertical-align: middle;
-}
-
-.benefit-icon {
-	width: 24px; /* Tamanho ideal para ícone de lista */
-	height: 24px;
-	margin-right: 12px;
-	object-fit: contain;
-	filter: brightness(0) invert(1);
-}
-
-.benefit-icon:hover {
-	transform: scale(1.1); /* Aumenta um pouco no hover */
-}
-
-.about {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	text-align: center;
-	padding: 10rem 20px 20px;
-	background: black;
-	background-clip: padding-box;
-	box-sizing: border-box;
-	width: 100%;
-}
-
-.about-title {
-	color: #fff;
-	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-	margin-bottom: 15px;
-	font-size: 2.5rem;
-}
-
-.about-description-div {
-	margin: 20px;
-	max-width: 1200px;
-	padding: 20px;
-	display: flex;
-	flex-direction: column;
-	gap: 15px;
-	text-align: left;
-	color: white;
-}
-
-.about-item {
-	gap: 20px;
-	margin-left: 1rem;
-}
-
-.benefit-item {
-	margin: 5px 0;
-	color: #e2e200;
-	font-size: 1.2rem;
-	text-transform: capitalize;
-}
-
-.objective {
-	background-color: black; /* fundo preto */
-	padding: 40px 20px;
-	text-align: center;
-}
-
-.objective-title {
-	color: #fff;
-	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-	margin-bottom: 24px;
-	font-size: 2.5rem;
-}
-
-.objectives-list {
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	flex-wrap: wrap;
-	gap: 20px;
-	padding: 0;
-	margin: 0 auto;
-	list-style-type: none;
-	max-width: 1000px;
-}
-
-.objective-benefit-item {
-	background-color: black;
-	border: 2px solid white;
-	border-radius: 12px;
-	padding: 20px;
-	width: 250px; /* controla o tamanho do card */
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	text-align: center;
-	gap: 10px;
-	transition: transform 0.3s ease;
-}
-
-.objective-benefit-item:hover {
-	transform: translateY(-5px); /* efeito sutil ao passar o mouse */
-}
-
-/* Imagem dentro do card */
-.objective-benefit-img {
-	width: 60px;
-	height: 60px;
-	object-fit: contain;
-	margin-bottom: 10px;
-}
-
-/* Título do card */
-.objective-benefit-title {
-	font-size: 1.2rem;
-	font-weight: bold;
-	color: white;
-	margin: 0;
-}
-
-/* Descrição do card */
-.objective-benefit-description {
-	font-size: 0.95rem;
-	color: white;
-	line-height: 1.4;
-}
-
-.footerLandingPage {
-	background-color: black;
-	color: #fff;
-	text-align: center;
-	padding: 20px;
-}
-
-html {
-	scroll-behavior: smooth;
-}
-
-@media (max-width: 700px) {
-	.secondary-list {
-		grid-template-columns: 1fr; /* 1 coluna quando ficar pequeno */
-	}
-}
-
-@media (max-width: 500px) {
-	.hero-button::after {
-		display: none;
-	}
-	.hero {
-		padding: 1rem;
-	}
-	.internal-nav {
-		display: none;
-	}
 }
