@@ -27,15 +27,16 @@ class AppointmentDTO {
   }
 
   convertAppointmentDate(date) {
-      const convertedDate = new Date(date);
+    const convertedDate = new Date(date);
 
-      const appointmentDate = new Date(
-        convertedDate.getFullYear(),
-        convertedDate.getMonth(),
-        convertedDate.getDate()
-      ).toLocaleString("pt-BR")
-
-      return appointmentDate
+    const appointmentDate = new Date(
+      convertedDate.getUTCFullYear(),
+      convertedDate.getUTCMonth(),
+      convertedDate.getUTCDate(),
+      0, 0, 0
+    ).toLocaleString("pt-BR");
+  
+    return appointmentDate;
   }
 }
 

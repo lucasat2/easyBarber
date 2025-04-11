@@ -101,8 +101,7 @@ async function ColorCardAppointments(
     const todayMonth = new Date().getMonth()
     const todayYear = new Date().getFullYear()
     const todayCard = `Card-${today}-${todayMonth}-${todayYear}`
-    console.log(todayCard)
-
+    
     cardReferences.forEach((card) => {
       if (card.selector === todayCard) {
         const cardElement = document.querySelector(`.${card.selector}`);
@@ -174,6 +173,7 @@ const getCardClassesForAppointments = function (appointments) {
     const start = new Date(
       `${startYear}-${startMonth}-${startDay}T${startTime}`
     );
+
     const end = new Date(`${endYear}-${endMonth}-${endDay}T${endTime}`);
     const classesArray = [];
 
