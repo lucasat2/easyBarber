@@ -1,6 +1,7 @@
 const validator = require("validator");
 const appointmentsServices = require("../services/appointmentsServices.js");
 const timePattern = /^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/;
+const phonePattern = /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/;
 
 const listAllAppointmentsByEmployee = async (req, res) => {
   try {
@@ -112,7 +113,7 @@ const createAppointment = async (req, res) => {
       return res.status(400).json({ error: "Formato de e-mail inválido" });
     }
 
-    if (!validator.isMobilePhone(clientPhoneNumber, "pt-BR")) {
+    if (!phonePattern.test(clientPhoneNumber)) {
       return res
         .status(400)
         .json({ error: "Formato de número de telefone inválido" });
