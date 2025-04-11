@@ -244,46 +244,28 @@ const getSchedules = async (staff, date) => {
 				availableTimes: scheduleWithOutAppointments
 			};
 		}
-		// Verifica se há algum bloqueio que abrange o dia inteiro
-		const isCompletelyBlocked = unavailableAppointments.some(
-			appointment =>
-				appointment.status === "BLOQUEADO" &&
-				appointment.date_hour_begin.toISOString().split("T")[0] <= date &&
-				appointment.date_hour_end.toISOString().split("T")[0] >= date
-		);
-
-		if (isCompletelyBlocked) {
-			return {
-				day: date,
-				week_day: dayName,
-				availableTimes: [] // Retorna um array vazio se estiver completamente bloqueado
-			};
-		}
-
-		// funcionario tem agendamente esse dia
 
 		// horários agendados
+		const getTimeString = dateObj => {
+			const hour = dateObj.getUTCHours().toString().padStart(2, "0");
+			const minute = dateObj.getUTCMinutes().toString().padStart(2, "0");
+			return `${hour}:${minute}:00`;
+		};
+
+		const startOfDay = new Date(date + "T00:00:00Z");
+		const endOfDay = new Date(date + "T23:59:59Z");
+
 		const schedulesWithAppointments = unavailableAppointments.map(hour => {
-			const startHour = hour.date_hour_begin
-				.getUTCHours()
-				.toString()
-				.padStart(2, "0");
-			const startMinute = hour.date_hour_begin
-				.getUTCMinutes()
-				.toString()
-				.padStart(2, "0");
-			const endHour = hour.date_hour_end
-				.getUTCHours()
-				.toString()
-				.padStart(2, "0");
-			const endMinute = hour.date_hour_end
-				.getUTCMinutes()
-				.toString()
-				.padStart(2, "0");
+			const realStart = new Date(hour.date_hour_begin);
+			const realEnd = new Date(hour.date_hour_end);
+
+			// recorta os horários se cruzarem dias
+			const clippedStart = realStart < startOfDay ? startOfDay : realStart;
+			const clippedEnd = realEnd > endOfDay ? endOfDay : realEnd;
 
 			return {
-				start: `${startHour}:${startMinute}:00`,
-				end: `${endHour}:${endMinute}:00`
+				start: getTimeString(clippedStart),
+				end: getTimeString(clippedEnd)
 			};
 		});
 
