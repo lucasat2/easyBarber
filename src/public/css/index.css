@@ -74,7 +74,7 @@ body {
 }
 
 .loginLogoContainer {
-	width: 130px;
+	width: 100px;
 	position: absolute;
 	top: 20px;
 	right: 20px;
@@ -200,7 +200,7 @@ body {
 }
 
 .signupLogoImage {
-	width: 130px;
+	width: 100px;
 	position: absolute;
 	top: 20px;
 	left: 15px;
