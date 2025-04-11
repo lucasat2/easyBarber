@@ -90,26 +90,26 @@ async function ColorCardAppointments(
 	cardReferences,
 	appointments
 ) {
-	await GenerateCards(
-		getDaysInMonth,
-		year,
-		month,
-		schedulingTimelineContainer,
-		cardReferences
-	);
-	const today = new Date().getDate() - 1;
-	const todayMonth = new Date().getMonth();
-	const todayYear = new Date().getFullYear();
-	const todayCard = `Card-${today}-${todayMonth}-${todayYear}`;
-
-	cardReferences.forEach(card => {
-		if (card.selector === todayCard) {
-			const cardElement = document.querySelector(`.${card.selector}`);
-			if (cardElement) {
-				cardElement.classList.add("todayCard");
-			}
-		}
-	});
+  await GenerateCards(
+    getDaysInMonth,
+    year,
+    month,
+    schedulingTimelineContainer,
+    cardReferences
+  );
+    const today = new Date().getDate() -1
+    const todayMonth = new Date().getMonth()
+    const todayYear = new Date().getFullYear()
+    const todayCard = `Card-${today}-${todayMonth}-${todayYear}`
+    
+    cardReferences.forEach((card) => {
+      if (card.selector === todayCard) {
+        const cardElement = document.querySelector(`.${card.selector}`);
+        if (cardElement) {
+          cardElement.classList.add("todayCard");
+        }
+      }
+    });
 
 	cardReferences.forEach(({date, selector}) => {
 		const foundPendindgAppointments = appointments.filter(
@@ -165,11 +165,12 @@ const getCardClassesForAppointments = function (appointments) {
 		const [startDay, startMonth, startYear] = startDate.split("/");
 		const [endDay, endMonth, endYear] = endDate.split("/");
 
-		const start = new Date(
-			`${startYear}-${startMonth}-${startDay}T${startTime}`
-		);
-		const end = new Date(`${endYear}-${endMonth}-${endDay}T${endTime}`);
-		const classesArray = [];
+    const start = new Date(
+      `${startYear}-${startMonth}-${startDay}T${startTime}`
+    );
+
+    const end = new Date(`${endYear}-${endMonth}-${endDay}T${endTime}`);
+    const classesArray = [];
 
 		for (const dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
 			const dayIndex = dt.getDate() - 1;

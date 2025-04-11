@@ -30,7 +30,13 @@ function changePage() {
     currentPage.appendChild(page);
   });
 
-  // Carrega a rota atual baseada na URL
+  window.onpopstate = function () {
+    const currentPath = window.location.pathname;
+    const page = objectRouter.getPage(currentPath)?.();
+    currentPage.innerHTML = "";
+    if (page) currentPage.appendChild(page);
+  };
+
   const currentPath = window.location.pathname;
   const page = objectRouter.getPage(currentPath)?.();
 
@@ -38,6 +44,7 @@ function changePage() {
   if (page) currentPage.appendChild(page);
   else currentPage.appendChild(login());
 }
+
 
 async function onPageLoad() {
   const currentPath = window.location.pathname;
