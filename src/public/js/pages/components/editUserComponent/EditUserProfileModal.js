@@ -225,10 +225,6 @@ function EditUserProfileModal() {
       e.target.value = maskPhone(e.target.value);
     });
 
-  console.log(containerModal.querySelector("#cnpj"));
-  console.log(containerModal.querySelector("#phoneNumber"));
-  console.log(containerModal.querySelector("#postalCode"));
-
   containerModal.querySelector("#postalCode").addEventListener("input", (e) => {
     e.target.value = maskPostalCode(e.target.value);
   });
